@@ -1,6 +1,5 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
-import { Button } from '@/components/ui/button'
-import { Database, Plus } from 'lucide-react'
+import { Database } from 'lucide-react'
 
 const databases = [
   { id: 'postgres', name: 'PostgreSQL', description: 'Open-source relational database' },

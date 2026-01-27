@@ -2,6 +2,7 @@
 
 import { createClient } from '@/lib/supabase/server'
 import { redirect } from 'next/navigation'
+import { loginSchema, signupSchema, resetPasswordSchema, updatePasswordSchema } from '@/lib/validations/auth'
 
 export async function logout() {
   const supabase = await createClient()
@@ -12,12 +13,19 @@ export async function logout() {
 export async function login(formData: FormData) {
   const supabase = await createClient()
 
-  const data = {
+  const rawData = {
     email: formData.get('email') as string,
     password: formData.get('password') as string,
   }
 
-  const { error } = await supabase.auth.signInWithPassword(data)
+  // Validate input
+  const result = loginSchema.safeParse(rawData)
+  if (!result.success) {
+    const error = result.error.errors[0]?.message || 'Invalid input'
+    redirect('/login?error=' + encodeURIComponent(error))
+  }
+
+  const { error } = await supabase.auth.signInWithPassword(result.data)
 
   if (error) {
     redirect('/login?error=' + encodeURIComponent(error.message))
@@ -29,12 +37,19 @@ export async function login(formData: FormData) {
 export async function signup(formData: FormData) {
   const supabase = await createClient()
 
-  const data = {
+  const rawData = {
     email: formData.get('email') as string,
     password: formData.get('password') as string,
   }
 
-  const { error } = await supabase.auth.signUp(data)
+  // Validate input
+  const result = signupSchema.safeParse(rawData)
+  if (!result.success) {
+    const error = result.error.errors[0]?.message || 'Invalid input'
+    redirect('/signup?error=' + encodeURIComponent(error))
+  }
+
+  const { error } = await supabase.auth.signUp(result.data)
 
   if (error) {
     redirect('/signup?error=' + encodeURIComponent(error.message))
@@ -46,8 +61,19 @@ export async function signup(formData: FormData) {
 export async function resetPassword(formData: FormData) {
   const supabase = await createClient()
 
+  const rawData = {
+    email: formData.get('email') as string,
+  }
+
+  // Validate input
+  const result = resetPasswordSchema.safeParse(rawData)
+  if (!result.success) {
+    const error = result.error.errors[0]?.message || 'Invalid input'
+    redirect('/reset-password?error=' + encodeURIComponent(error))
+  }
+
   const { error } = await supabase.auth.resetPasswordForEmail(
-    formData.get('email') as string,
+    result.data.email,
     {
       redirectTo: `${process.env.NEXT_PUBLIC_APP_URL}/callback?next=/update-password`,
     }
@@ -63,8 +89,20 @@ export async function resetPassword(formData: FormData) {
 export async function updatePassword(formData: FormData) {
   const supabase = await createClient()
 
-  const { error } = await supabase.auth.updateUser({
+  const rawData = {
     password: formData.get('password') as string,
+    confirmPassword: formData.get('confirmPassword') as string,
+  }
+
+  // Validate input
+  const result = updatePasswordSchema.safeParse(rawData)
+  if (!result.success) {
+    const error = result.error.errors[0]?.message || 'Invalid input'
+    redirect('/update-password?error=' + encodeURIComponent(error))
+  }
+
+  const { error } = await supabase.auth.updateUser({
+    password: result.data.password,
   })
 
   if (error) {

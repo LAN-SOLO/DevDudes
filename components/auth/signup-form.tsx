@@ -1,5 +1,6 @@
 'use client'
 
+import { useState } from 'react'
 import { useSearchParams } from 'next/navigation'
 import Link from 'next/link'
 import { signup } from '@/app/actions/auth'
@@ -7,11 +8,13 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card'
+import { PasswordStrength } from '@/components/auth/password-strength'
 
 export function SignupForm() {
   const searchParams = useSearchParams()
   const error = searchParams.get('error')
   const message = searchParams.get('message')
+  const [password, setPassword] = useState('')
 
   return (
     <Card className="w-full max-w-md">
@@ -47,9 +50,15 @@ export function SignupForm() {
               id="password"
               name="password"
               type="password"
-              minLength={6}
+              minLength={8}
               required
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
             />
+            <PasswordStrength password={password} />
+            <p className="text-xs text-muted-foreground">
+              Min 8 characters with uppercase, lowercase, and number
+            </p>
           </div>
         </CardContent>
         <CardFooter className="flex flex-col space-y-4">

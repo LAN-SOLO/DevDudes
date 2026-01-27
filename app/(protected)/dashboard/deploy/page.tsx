@@ -1,6 +1,5 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
-import { Button } from '@/components/ui/button'
-import { Globe, Cloud, Server, ArrowRight } from 'lucide-react'
+import { Globe, Cloud, Server } from 'lucide-react'
 
 const providers = [
   {
