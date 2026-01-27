@@ -5,7 +5,8 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
-import { Sparkles, ArrowRight, Check } from 'lucide-react'
+import { Sparkles, ArrowRight, ArrowLeft, Check, Loader2 } from 'lucide-react'
+import { createProject } from '@/app/actions/projects'
 
 const appTypes = [
   { id: 'crm', label: 'CRM', description: 'Customer relationship management' },
@@ -21,6 +22,30 @@ export default function GeneratorPage() {
   const [selectedType, setSelectedType] = useState<string | null>(null)
   const [appName, setAppName] = useState('')
   const [description, setDescription] = useState('')
+  const [isCreating, setIsCreating] = useState(false)
+  const [error, setError] = useState<string | null>(null)
+
+  const handleCreate = async () => {
+    setIsCreating(true)
+    setError(null)
+
+    const formData = new FormData()
+    formData.set('name', appName)
+    formData.set('description', description)
+    formData.set('app_type', selectedType || '')
+
+    try {
+      const result = await createProject(formData)
+      if (result?.error) {
+        setError(result.error)
+        setIsCreating(false)
+      }
+      // If successful, createProject redirects to the project page
+    } catch {
+      setError('Failed to create project. Make sure database is set up.')
+      setIsCreating(false)
+    }
+  }
 
   return (
     <div className="space-y-6">
@@ -54,6 +79,12 @@ export default function GeneratorPage() {
           </div>
         ))}
       </div>
+
+      {error && (
+        <div className="p-3 text-sm text-red-500 bg-red-50 border border-red-200 rounded-md">
+          {error}
+        </div>
+      )}
 
       {/* Step 1: Choose App Type */}
       {step === 1 && (
@@ -127,6 +158,7 @@ export default function GeneratorPage() {
             </div>
             <div className="flex justify-between">
               <Button variant="outline" onClick={() => setStep(1)}>
+                <ArrowLeft className="mr-2 h-4 w-4" />
                 Back
               </Button>
               <Button
@@ -147,7 +179,7 @@ export default function GeneratorPage() {
           <CardHeader>
             <CardTitle>Ready to Generate</CardTitle>
             <CardDescription>
-              Review your choices and generate your application
+              Review your choices and create your project
             </CardDescription>
           </CardHeader>
           <CardContent className="space-y-4">
@@ -170,12 +202,22 @@ export default function GeneratorPage() {
               )}
             </div>
             <div className="flex justify-between">
-              <Button variant="outline" onClick={() => setStep(2)}>
+              <Button variant="outline" onClick={() => setStep(2)} disabled={isCreating}>
+                <ArrowLeft className="mr-2 h-4 w-4" />
                 Back
               </Button>
-              <Button className="gap-2">
-                <Sparkles className="h-4 w-4" />
-                Generate App
+              <Button onClick={handleCreate} disabled={isCreating} className="gap-2">
+                {isCreating ? (
+                  <>
+                    <Loader2 className="h-4 w-4 animate-spin" />
+                    Creating...
+                  </>
+                ) : (
+                  <>
+                    <Sparkles className="h-4 w-4" />
+                    Create Project
+                  </>
+                )}
               </Button>
             </div>
           </CardContent>

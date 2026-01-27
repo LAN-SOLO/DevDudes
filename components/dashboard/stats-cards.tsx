@@ -1,37 +1,40 @@
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { FolderOpen, Sparkles, Clock, TrendingUp } from 'lucide-react'
+import { getProjectStats } from '@/app/actions/projects'
 
-const stats = [
-  {
-    title: 'Total Projects',
-    value: '0',
-    description: 'Create your first app',
-    icon: FolderOpen,
-  },
-  {
-    title: 'Apps Generated',
-    value: '0',
-    description: 'Start generating',
-    icon: Sparkles,
-  },
-  {
-    title: 'Hours Saved',
-    value: '0',
-    description: 'vs manual development',
-    icon: Clock,
-  },
-  {
-    title: 'This Month',
-    value: '0',
-    description: 'apps created',
-    icon: TrendingUp,
-  },
-]
+export async function StatsCards() {
+  const stats = await getProjectStats()
 
-export function StatsCards() {
+  const cards = [
+    {
+      title: 'Total Projects',
+      value: stats.total.toString(),
+      description: stats.total === 0 ? 'Create your first app' : 'projects created',
+      icon: FolderOpen,
+    },
+    {
+      title: 'Apps Deployed',
+      value: stats.deployed.toString(),
+      description: stats.deployed === 0 ? 'Deploy your first app' : 'in production',
+      icon: Sparkles,
+    },
+    {
+      title: 'In Draft',
+      value: stats.draft.toString(),
+      description: 'awaiting configuration',
+      icon: Clock,
+    },
+    {
+      title: 'This Month',
+      value: stats.thisMonth.toString(),
+      description: 'projects created',
+      icon: TrendingUp,
+    },
+  ]
+
   return (
     <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-      {stats.map((stat) => (
+      {cards.map((stat) => (
         <Card key={stat.title}>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">{stat.title}</CardTitle>
