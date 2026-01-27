@@ -13,16 +13,18 @@ import {
   ChevronRight,
   FileCode,
   Database,
-  Globe
+  Globe,
+  Workflow,
 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { useState } from 'react'
 
 const navItems = [
   { href: '/dashboard', label: 'Dashboard', icon: LayoutDashboard },
-  { href: '/dashboard/generator', label: 'App Generator', icon: Sparkles },
-  { href: '/dashboard/templates', label: 'Templates', icon: FileCode },
+  { href: '/dashboard/generator', label: 'Quick Generate', icon: Sparkles },
+  { href: '/dashboard/pipeline', label: 'Pipeline', icon: Workflow },
   { href: '/dashboard/projects', label: 'Projects', icon: FolderOpen },
+  { href: '/dashboard/templates', label: 'Templates', icon: FileCode },
   { href: '/dashboard/connections', label: 'Connections', icon: Database },
   { href: '/dashboard/deploy', label: 'Deploy', icon: Globe },
   { href: '/dashboard/profile', label: 'Profile', icon: User },
