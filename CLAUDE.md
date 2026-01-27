@@ -28,13 +28,15 @@ npm run lint     # Run ESLint
 ```
 app/
 ├── (auth)/           # Auth pages (login, signup, reset-password, update-password, callback)
-├── (protected)/      # Auth-guarded routes (dashboard)
+├── (protected)/      # Auth-guarded routes
+│   └── dashboard/    # Main dashboard, generator, projects, profile, settings
 ├── actions/auth.ts   # Server actions for auth (login, signup, logout, etc.)
 ├── page.tsx          # Landing page
 └── layout.tsx        # Root layout
 
 components/
 ├── auth/             # Auth forms and logout button
+├── dashboard/        # Dashboard components (sidebar, header, stats, quick-actions)
 ├── landing/          # Landing page sections (header, hero, features, pricing, footer)
 └── ui/               # shadcn/ui components
 
