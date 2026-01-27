@@ -5,20 +5,30 @@ import { useRouter } from 'next/navigation'
 import { useWizard } from './wizard-context'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
-import { Check, Loader2, ArrowRight, Download, Edit } from 'lucide-react'
+import { Check, Loader2, ArrowRight, Download, Edit, AlertCircle } from 'lucide-react'
+import { savePresetConfig } from '@/app/actions/pipeline'
 
 export function WizardComplete() {
   const router = useRouter()
   const { config, setIsComplete, setCurrentStep } = useWizard()
   const [isSaving, setIsSaving] = useState(false)
+  const [error, setError] = useState<string | null>(null)
 
   const handleSaveAndContinue = async () => {
     setIsSaving(true)
-    // TODO: Save config to project and navigate to Combo Dude
-    await new Promise(resolve => setTimeout(resolve, 1500))
+    setError(null)
+
+    const result = await savePresetConfig(null, config)
+
+    if (result.error) {
+      setError(result.error)
+      setIsSaving(false)
+      return
+    }
+
     setIsSaving(false)
-    // Navigate to combo dude for AI generation
-    router.push('/dashboard/pipeline/combo')
+    // Navigate to combo dude for AI generation with the project ID
+    router.push(`/dashboard/pipeline/combo?project=${result.projectId}`)
   }
 
   const handleExportConfig = () => {
@@ -49,6 +59,17 @@ export function WizardComplete() {
         </CardDescription>
       </CardHeader>
       <CardContent className="space-y-6">
+        {/* Error Display */}
+        {error && (
+          <div className="rounded-lg bg-destructive/10 border border-destructive/20 p-4 flex items-start gap-3">
+            <AlertCircle className="h-5 w-5 text-destructive flex-shrink-0 mt-0.5" />
+            <div>
+              <p className="font-medium text-destructive">Failed to save configuration</p>
+              <p className="text-sm text-muted-foreground">{error}</p>
+            </div>
+          </div>
+        )}
+
         {/* Config Summary */}
         <div className="rounded-lg bg-muted p-4 space-y-3">
           <div className="grid gap-3 sm:grid-cols-2">
