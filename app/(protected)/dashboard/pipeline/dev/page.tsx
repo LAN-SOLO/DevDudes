@@ -328,9 +328,9 @@ export function cn(...inputs: ClassValue[]) {
             Interactive development environment for {project?.name}
           </p>
         </div>
-        <Link href={`/dashboard/pipeline/deploy?project=${projectId}`}>
+        <Link href={`/dashboard/pipeline/test?project=${projectId}`}>
           <Button>
-            Continue to Deploy
+            Continue to Test
             <ArrowRight className="ml-2 h-4 w-4" />
           </Button>
         </Link>

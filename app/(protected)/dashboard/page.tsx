@@ -1,6 +1,7 @@
 import { StatsCards } from '@/components/dashboard/stats-cards'
 import { QuickActions } from '@/components/dashboard/quick-actions'
 import { RecentActivity } from '@/components/dashboard/recent-activity'
+import { ActiveProjects } from '@/components/dashboard/active-projects'
 
 export default function DashboardPage() {
   return (
@@ -13,9 +14,10 @@ export default function DashboardPage() {
       </div>
       <StatsCards />
       <div className="grid gap-6 lg:grid-cols-2">
+        <ActiveProjects />
         <QuickActions />
-        <RecentActivity />
       </div>
+      <RecentActivity />
     </div>
   )
 }

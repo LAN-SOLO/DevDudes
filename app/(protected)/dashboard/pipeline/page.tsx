@@ -50,7 +50,7 @@ const dudes = [
     name: 'Test Dude',
     description: 'Automated testing and quality assurance',
     icon: TestTube,
-    status: 'coming',
+    status: 'available',
     href: '/dashboard/pipeline/test',
   },
   {

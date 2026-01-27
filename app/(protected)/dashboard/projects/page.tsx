@@ -1,12 +1,13 @@
 import Link from 'next/link'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
-import { FolderOpen, Plus, MoreVertical } from 'lucide-react'
+import { FolderOpen, Plus, MoreVertical, ArrowRight, Workflow } from 'lucide-react'
 import { getProjects } from '@/app/actions/projects'
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
+  DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
 
@@ -19,8 +20,42 @@ const statusColors: Record<string, string> = {
   archived: 'bg-red-100 text-red-700',
 }
 
+const pipelineSteps = ['Preset', 'Combo', 'Prepair', 'Dev', 'Deploy', 'Docu']
+
+function getPipelineProgress(status: string): number {
+  switch (status) {
+    case 'draft': return 0
+    case 'configuring': return 1
+    case 'generating': return 2
+    case 'ready': return 4
+    case 'deployed': return 5
+    default: return 0
+  }
+}
+
+function getNextPipelineStep(status: string, projectId: string): { label: string; href: string } | null {
+  switch (status) {
+    case 'draft':
+      return { label: 'Start Pipeline', href: `/dashboard/pipeline/preset` }
+    case 'configuring':
+      return { label: 'Continue to Combo', href: `/dashboard/pipeline/combo?project=${projectId}` }
+    case 'generating':
+      return { label: 'Continue to Prepair', href: `/dashboard/pipeline/prepair?project=${projectId}` }
+    case 'ready':
+      return { label: 'Continue to Deploy', href: `/dashboard/pipeline/deploy?project=${projectId}` }
+    case 'deployed':
+      return { label: 'View Documentation', href: `/dashboard/pipeline/docu?project=${projectId}` }
+    default:
+      return null
+  }
+}
+
 export default async function ProjectsPage() {
   const { data: projects, error } = await getProjects()
+
+  // Separate active pipeline projects from completed ones
+  const activeProjects = projects?.filter(p => !['deployed', 'archived'].includes(p.status)) || []
+  const completedProjects = projects?.filter(p => ['deployed', 'archived'].includes(p.status)) || []
 
   return (
     <div className="space-y-6">
@@ -31,7 +66,7 @@ export default async function ProjectsPage() {
             Manage your generated applications
           </p>
         </div>
-        <Link href="/dashboard/generator">
+        <Link href="/dashboard/pipeline/preset">
           <Button>
             <Plus className="mr-2 h-4 w-4" />
             New Project
@@ -62,75 +97,186 @@ export default async function ProjectsPage() {
             </div>
             <h3 className="font-medium mb-1">No projects yet</h3>
             <p className="text-sm text-muted-foreground text-center max-w-xs mb-4">
-              Generate your first application to see it here.
+              Start the pipeline to create your first application.
             </p>
-            <Link href="/dashboard/generator">
+            <Link href="/dashboard/pipeline/preset">
               <Button>
-                <Plus className="mr-2 h-4 w-4" />
-                Create Your First App
+                <Workflow className="mr-2 h-4 w-4" />
+                Start Pipeline
               </Button>
             </Link>
           </CardContent>
         </Card>
       )}
 
-      {projects && projects.length > 0 && (
-        <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-          {projects.map((project) => (
-            <Card key={project.id} className="hover:shadow-md transition-shadow">
-              <CardHeader className="pb-3">
-                <div className="flex items-start justify-between">
-                  <div className="space-y-1">
-                    <CardTitle className="text-lg">
-                      <Link
-                        href={`/dashboard/projects/${project.id}`}
-                        className="hover:underline"
+      {/* Active Pipeline Projects */}
+      {activeProjects.length > 0 && (
+        <div className="space-y-4">
+          <h3 className="text-lg font-semibold">Active Pipeline</h3>
+          <div className="grid gap-4">
+            {activeProjects.map((project) => {
+              const progress = getPipelineProgress(project.status)
+              const nextStep = getNextPipelineStep(project.status, project.id)
+
+              return (
+                <Card key={project.id} className="hover:shadow-md transition-shadow">
+                  <CardHeader className="pb-3">
+                    <div className="flex items-start justify-between">
+                      <div className="space-y-1 flex-1">
+                        <div className="flex items-center gap-3">
+                          <CardTitle className="text-lg">
+                            <Link
+                              href={`/dashboard/projects/${project.id}`}
+                              className="hover:underline"
+                            >
+                              {project.name}
+                            </Link>
+                          </CardTitle>
+                          <span
+                            className={`inline-block px-2 py-0.5 text-xs rounded-full ${
+                              statusColors[project.status] || statusColors.draft
+                            }`}
+                          >
+                            {project.status}
+                          </span>
+                        </div>
+                        <CardDescription className="line-clamp-1">
+                          {project.description || 'No description'}
+                        </CardDescription>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        {nextStep && (
+                          <Link href={nextStep.href}>
+                            <Button size="sm">
+                              {nextStep.label}
+                              <ArrowRight className="ml-2 h-4 w-4" />
+                            </Button>
+                          </Link>
+                        )}
+                        <DropdownMenu>
+                          <DropdownMenuTrigger asChild>
+                            <Button variant="ghost" size="icon" className="h-8 w-8">
+                              <MoreVertical className="h-4 w-4" />
+                            </Button>
+                          </DropdownMenuTrigger>
+                          <DropdownMenuContent align="end">
+                            <DropdownMenuItem asChild>
+                              <Link href={`/dashboard/projects/${project.id}`}>
+                                View Details
+                              </Link>
+                            </DropdownMenuItem>
+                            <DropdownMenuSeparator />
+                            <DropdownMenuItem className="text-red-600">
+                              Delete
+                            </DropdownMenuItem>
+                          </DropdownMenuContent>
+                        </DropdownMenu>
+                      </div>
+                    </div>
+                  </CardHeader>
+                  <CardContent>
+                    {/* Pipeline Progress */}
+                    <div className="space-y-2">
+                      <div className="flex justify-between text-xs text-muted-foreground">
+                        <span>Pipeline Progress</span>
+                        <span>{progress} / {pipelineSteps.length} steps</span>
+                      </div>
+                      <div className="flex gap-1">
+                        {pipelineSteps.map((step, index) => (
+                          <div
+                            key={step}
+                            className={`flex-1 h-2 rounded-full ${
+                              index < progress
+                                ? 'bg-primary'
+                                : index === progress
+                                  ? 'bg-primary/50'
+                                  : 'bg-muted'
+                            }`}
+                            title={step}
+                          />
+                        ))}
+                      </div>
+                      <div className="flex justify-between text-xs text-muted-foreground">
+                        {pipelineSteps.map((step, index) => (
+                          <span
+                            key={step}
+                            className={index <= progress ? 'text-foreground' : ''}
+                          >
+                            {step}
+                          </span>
+                        ))}
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+              )
+            })}
+          </div>
+        </div>
+      )}
+
+      {/* Completed Projects */}
+      {completedProjects.length > 0 && (
+        <div className="space-y-4">
+          <h3 className="text-lg font-semibold">Completed Projects</h3>
+          <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+            {completedProjects.map((project) => (
+              <Card key={project.id} className="hover:shadow-md transition-shadow">
+                <CardHeader className="pb-3">
+                  <div className="flex items-start justify-between">
+                    <div className="space-y-1">
+                      <CardTitle className="text-lg">
+                        <Link
+                          href={`/dashboard/projects/${project.id}`}
+                          className="hover:underline"
+                        >
+                          {project.name}
+                        </Link>
+                      </CardTitle>
+                      <span
+                        className={`inline-block px-2 py-0.5 text-xs rounded-full ${
+                          statusColors[project.status] || statusColors.draft
+                        }`}
                       >
-                        {project.name}
-                      </Link>
-                    </CardTitle>
-                    <span
-                      className={`inline-block px-2 py-0.5 text-xs rounded-full ${
-                        statusColors[project.status] || statusColors.draft
-                      }`}
-                    >
-                      {project.status}
-                    </span>
+                        {project.status}
+                      </span>
+                    </div>
+                    <DropdownMenu>
+                      <DropdownMenuTrigger asChild>
+                        <Button variant="ghost" size="icon" className="h-8 w-8">
+                          <MoreVertical className="h-4 w-4" />
+                        </Button>
+                      </DropdownMenuTrigger>
+                      <DropdownMenuContent align="end">
+                        <DropdownMenuItem asChild>
+                          <Link href={`/dashboard/projects/${project.id}`}>
+                            View Details
+                          </Link>
+                        </DropdownMenuItem>
+                        <DropdownMenuItem asChild>
+                          <Link href={`/dashboard/pipeline/docu?project=${project.id}`}>
+                            View Documentation
+                          </Link>
+                        </DropdownMenuItem>
+                        <DropdownMenuSeparator />
+                        <DropdownMenuItem className="text-red-600">
+                          Archive
+                        </DropdownMenuItem>
+                      </DropdownMenuContent>
+                    </DropdownMenu>
                   </div>
-                  <DropdownMenu>
-                    <DropdownMenuTrigger asChild>
-                      <Button variant="ghost" size="icon" className="h-8 w-8">
-                        <MoreVertical className="h-4 w-4" />
-                      </Button>
-                    </DropdownMenuTrigger>
-                    <DropdownMenuContent align="end">
-                      <DropdownMenuItem asChild>
-                        <Link href={`/dashboard/projects/${project.id}`}>
-                          View Details
-                        </Link>
-                      </DropdownMenuItem>
-                      <DropdownMenuItem asChild>
-                        <Link href={`/dashboard/projects/${project.id}/edit`}>
-                          Edit
-                        </Link>
-                      </DropdownMenuItem>
-                      <DropdownMenuItem className="text-red-600">
-                        Delete
-                      </DropdownMenuItem>
-                    </DropdownMenuContent>
-                  </DropdownMenu>
-                </div>
-              </CardHeader>
-              <CardContent>
-                <CardDescription className="line-clamp-2">
-                  {project.description || 'No description'}
-                </CardDescription>
-                <p className="text-xs text-muted-foreground mt-3">
-                  Created {new Date(project.created_at).toLocaleDateString()}
-                </p>
-              </CardContent>
-            </Card>
-          ))}
+                </CardHeader>
+                <CardContent>
+                  <CardDescription className="line-clamp-2">
+                    {project.description || 'No description'}
+                  </CardDescription>
+                  <p className="text-xs text-muted-foreground mt-3">
+                    Deployed {new Date(project.updated_at).toLocaleDateString()}
+                  </p>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
         </div>
       )}
     </div>
