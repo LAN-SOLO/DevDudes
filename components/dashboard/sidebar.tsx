@@ -10,7 +10,10 @@ import {
   Settings,
   User,
   ChevronLeft,
-  ChevronRight
+  ChevronRight,
+  FileCode,
+  Database,
+  Globe
 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { useState } from 'react'
@@ -18,7 +21,10 @@ import { useState } from 'react'
 const navItems = [
   { href: '/dashboard', label: 'Dashboard', icon: LayoutDashboard },
   { href: '/dashboard/generator', label: 'App Generator', icon: Sparkles },
+  { href: '/dashboard/templates', label: 'Templates', icon: FileCode },
   { href: '/dashboard/projects', label: 'Projects', icon: FolderOpen },
+  { href: '/dashboard/connections', label: 'Connections', icon: Database },
+  { href: '/dashboard/deploy', label: 'Deploy', icon: Globe },
   { href: '/dashboard/profile', label: 'Profile', icon: User },
   { href: '/dashboard/settings', label: 'Settings', icon: Settings },
 ]
