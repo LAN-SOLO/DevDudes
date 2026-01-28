@@ -5,7 +5,17 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
-import { Database, Plus, X, Check, Loader2, AlertCircle, ExternalLink, Trash2, RefreshCw } from 'lucide-react'
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from '@/components/ui/dialog'
+import { DeleteConfirmDialog } from '@/components/ui/confirm-dialog'
+import { useToast } from '@/components/ui/toast'
+import { Database, Plus, Check, Loader2, AlertCircle, ExternalLink, Trash2, RefreshCw } from 'lucide-react'
 
 interface Connection {
   id: string
@@ -33,6 +43,7 @@ const databaseTypes: DatabaseType[] = [
 ]
 
 export default function ConnectionsPage() {
+  const { addToast } = useToast()
   const [connections, setConnections] = useState<Connection[]>([
     {
       id: '1',
@@ -47,6 +58,7 @@ export default function ConnectionsPage() {
   const [showAddModal, setShowAddModal] = useState(false)
   const [selectedType, setSelectedType] = useState<DatabaseType | null>(null)
   const [isConnecting, setIsConnecting] = useState(false)
+  const [connectionToDelete, setConnectionToDelete] = useState<Connection | null>(null)
   const [connectionForm, setConnectionForm] = useState({
     name: '',
     host: '',
@@ -86,13 +98,26 @@ export default function ConnectionsPage() {
       username: '',
       password: '',
     })
+
+    addToast({
+      type: 'success',
+      title: 'Connection established',
+      description: `Successfully connected to ${newConnection.name}`,
+    })
   }
 
-  const handleDelete = (id: string) => {
-    setConnections(connections.filter(c => c.id !== id))
+  const handleDelete = (connection: Connection) => {
+    setConnections(connections.filter(c => c.id !== connection.id))
+    setConnectionToDelete(null)
+    addToast({
+      type: 'success',
+      title: 'Connection removed',
+      description: `"${connection.name}" has been disconnected`,
+    })
   }
 
   const handleRefresh = async (id: string) => {
+    const connection = connections.find(c => c.id === id)
     setConnections(connections.map(c =>
       c.id === id ? { ...c, status: 'disconnected' as const } : c
     ))
@@ -102,6 +127,12 @@ export default function ConnectionsPage() {
     setConnections(connections.map(c =>
       c.id === id ? { ...c, status: 'connected' as const, lastSync: 'Just now' } : c
     ))
+
+    addToast({
+      type: 'success',
+      title: 'Connection refreshed',
+      description: connection ? `"${connection.name}" is now synced` : 'Connection synced',
+    })
   }
 
   const getTypeInfo = (typeId: string) => databaseTypes.find(t => t.id === typeId)
@@ -184,7 +215,7 @@ export default function ConnectionsPage() {
                       variant="ghost"
                       size="icon"
                       className="text-red-500 hover:text-red-600 hover:bg-red-50"
-                      onClick={() => handleDelete(connection.id)}
+                      onClick={() => setConnectionToDelete(connection)}
                     >
                       <Trash2 className="h-4 w-4" />
                     </Button>
@@ -212,157 +243,150 @@ export default function ConnectionsPage() {
         </Card>
       )}
 
-      {/* Add Connection Modal */}
-      {showAddModal && (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50">
-          <Card className="w-full max-w-lg max-h-[90vh] overflow-auto">
-            <CardHeader>
-              <div className="flex items-center justify-between">
-                <div>
-                  <CardTitle>
-                    {selectedType ? `Connect to ${selectedType.name}` : 'Add Database Connection'}
-                  </CardTitle>
-                  <CardDescription>
-                    {selectedType
-                      ? 'Enter your connection details'
-                      : 'Choose a database type to connect'}
-                  </CardDescription>
-                </div>
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  onClick={() => {
-                    setShowAddModal(false)
-                    setSelectedType(null)
-                  }}
-                >
-                  <X className="h-4 w-4" />
-                </Button>
+      {/* Add Connection Dialog */}
+      <Dialog open={showAddModal} onOpenChange={(open) => {
+        setShowAddModal(open)
+        if (!open) setSelectedType(null)
+      }}>
+        <DialogContent className="max-w-lg">
+          <DialogHeader>
+            <DialogTitle>
+              {selectedType ? `Connect to ${selectedType.name}` : 'Add Database Connection'}
+            </DialogTitle>
+            <DialogDescription>
+              {selectedType
+                ? 'Enter your connection details'
+                : 'Choose a database type to connect'}
+            </DialogDescription>
+          </DialogHeader>
+          <div className="py-4">
+            {!selectedType ? (
+              <div className="grid gap-3 sm:grid-cols-2">
+                {databaseTypes.map((db) => (
+                  <button
+                    key={db.id}
+                    onClick={() => {
+                      setSelectedType(db)
+                      setConnectionForm(prev => ({ ...prev, port: db.defaultPort.toString() }))
+                    }}
+                    className="flex items-start gap-3 rounded-lg border p-4 text-left transition-colors hover:border-primary hover:bg-primary/5"
+                  >
+                    <span className="text-2xl">{db.icon}</span>
+                    <div>
+                      <span className="font-medium">{db.name}</span>
+                      <p className="text-xs text-muted-foreground">{db.description}</p>
+                    </div>
+                  </button>
+                ))}
               </div>
-            </CardHeader>
-            <CardContent>
-              {!selectedType ? (
-                <div className="grid gap-3 sm:grid-cols-2">
-                  {databaseTypes.map((db) => (
-                    <button
-                      key={db.id}
-                      onClick={() => {
-                        setSelectedType(db)
-                        setConnectionForm(prev => ({ ...prev, port: db.defaultPort.toString() }))
-                      }}
-                      className="flex items-start gap-3 rounded-lg border p-4 text-left transition-colors hover:border-primary hover:bg-primary/5"
-                    >
-                      <span className="text-2xl">{db.icon}</span>
-                      <div>
-                        <span className="font-medium">{db.name}</span>
-                        <p className="text-xs text-muted-foreground">{db.description}</p>
-                      </div>
-                    </button>
-                  ))}
+            ) : (
+              <div className="space-y-4">
+                <div className="space-y-2">
+                  <Label htmlFor="name">Connection Name</Label>
+                  <Input
+                    id="name"
+                    placeholder="My Database"
+                    value={connectionForm.name}
+                    onChange={(e) => setConnectionForm({ ...connectionForm, name: e.target.value })}
+                  />
                 </div>
-              ) : (
-                <div className="space-y-4">
+
+                <div className="grid gap-4 sm:grid-cols-2">
                   <div className="space-y-2">
-                    <Label htmlFor="name">Connection Name</Label>
+                    <Label htmlFor="host">Host</Label>
                     <Input
-                      id="name"
-                      placeholder="My Database"
-                      value={connectionForm.name}
-                      onChange={(e) => setConnectionForm({ ...connectionForm, name: e.target.value })}
+                      id="host"
+                      placeholder="localhost"
+                      value={connectionForm.host}
+                      onChange={(e) => setConnectionForm({ ...connectionForm, host: e.target.value })}
                     />
                   </div>
-
-                  <div className="grid gap-4 sm:grid-cols-2">
-                    <div className="space-y-2">
-                      <Label htmlFor="host">Host</Label>
-                      <Input
-                        id="host"
-                        placeholder="localhost"
-                        value={connectionForm.host}
-                        onChange={(e) => setConnectionForm({ ...connectionForm, host: e.target.value })}
-                      />
-                    </div>
-                    <div className="space-y-2">
-                      <Label htmlFor="port">Port</Label>
-                      <Input
-                        id="port"
-                        placeholder={selectedType.defaultPort.toString()}
-                        value={connectionForm.port}
-                        onChange={(e) => setConnectionForm({ ...connectionForm, port: e.target.value })}
-                      />
-                    </div>
-                  </div>
-
                   <div className="space-y-2">
-                    <Label htmlFor="database">Database Name</Label>
+                    <Label htmlFor="port">Port</Label>
                     <Input
-                      id="database"
-                      placeholder="myapp_db"
-                      value={connectionForm.database}
-                      onChange={(e) => setConnectionForm({ ...connectionForm, database: e.target.value })}
+                      id="port"
+                      placeholder={selectedType.defaultPort.toString()}
+                      value={connectionForm.port}
+                      onChange={(e) => setConnectionForm({ ...connectionForm, port: e.target.value })}
                     />
                   </div>
+                </div>
 
-                  <div className="grid gap-4 sm:grid-cols-2">
-                    <div className="space-y-2">
-                      <Label htmlFor="username">Username</Label>
-                      <Input
-                        id="username"
-                        placeholder="postgres"
-                        value={connectionForm.username}
-                        onChange={(e) => setConnectionForm({ ...connectionForm, username: e.target.value })}
-                      />
-                    </div>
-                    <div className="space-y-2">
-                      <Label htmlFor="password">Password</Label>
-                      <Input
-                        id="password"
-                        type="password"
-                        placeholder="••••••••"
-                        value={connectionForm.password}
-                        onChange={(e) => setConnectionForm({ ...connectionForm, password: e.target.value })}
-                      />
-                    </div>
+                <div className="space-y-2">
+                  <Label htmlFor="database">Database Name</Label>
+                  <Input
+                    id="database"
+                    placeholder="myapp_db"
+                    value={connectionForm.database}
+                    onChange={(e) => setConnectionForm({ ...connectionForm, database: e.target.value })}
+                  />
+                </div>
+
+                <div className="grid gap-4 sm:grid-cols-2">
+                  <div className="space-y-2">
+                    <Label htmlFor="username">Username</Label>
+                    <Input
+                      id="username"
+                      placeholder="postgres"
+                      value={connectionForm.username}
+                      onChange={(e) => setConnectionForm({ ...connectionForm, username: e.target.value })}
+                    />
                   </div>
-
-                  <div className="rounded-lg bg-yellow-50 border border-yellow-200 p-3 flex items-start gap-2">
-                    <AlertCircle className="h-4 w-4 text-yellow-600 mt-0.5 flex-shrink-0" />
-                    <p className="text-xs text-yellow-700">
-                      Your credentials are encrypted and securely stored. We only read your database schema, never your data.
-                    </p>
-                  </div>
-
-                  <div className="flex gap-3 pt-2">
-                    <Button
-                      variant="outline"
-                      className="flex-1"
-                      onClick={() => setSelectedType(null)}
-                    >
-                      Back
-                    </Button>
-                    <Button
-                      className="flex-1"
-                      onClick={handleConnect}
-                      disabled={!connectionForm.name || !connectionForm.host || isConnecting}
-                    >
-                      {isConnecting ? (
-                        <>
-                          <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                          Connecting...
-                        </>
-                      ) : (
-                        <>
-                          <Check className="mr-2 h-4 w-4" />
-                          Connect
-                        </>
-                      )}
-                    </Button>
+                  <div className="space-y-2">
+                    <Label htmlFor="password">Password</Label>
+                    <Input
+                      id="password"
+                      type="password"
+                      placeholder="••••••••"
+                      value={connectionForm.password}
+                      onChange={(e) => setConnectionForm({ ...connectionForm, password: e.target.value })}
+                    />
                   </div>
                 </div>
-              )}
-            </CardContent>
-          </Card>
-        </div>
+
+                <div className="rounded-lg bg-yellow-50 border border-yellow-200 p-3 flex items-start gap-2 dark:bg-yellow-950/50 dark:border-yellow-900">
+                  <AlertCircle className="h-4 w-4 text-yellow-600 dark:text-yellow-500 mt-0.5 flex-shrink-0" />
+                  <p className="text-xs text-yellow-700 dark:text-yellow-400">
+                    Your credentials are encrypted and securely stored. We only read your database schema, never your data.
+                  </p>
+                </div>
+              </div>
+            )}
+          </div>
+          {selectedType && (
+            <DialogFooter>
+              <Button variant="outline" onClick={() => setSelectedType(null)}>
+                Back
+              </Button>
+              <Button
+                onClick={handleConnect}
+                disabled={!connectionForm.name || !connectionForm.host || isConnecting}
+              >
+                {isConnecting ? (
+                  <>
+                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                    Connecting...
+                  </>
+                ) : (
+                  <>
+                    <Check className="mr-2 h-4 w-4" />
+                    Connect
+                  </>
+                )}
+              </Button>
+            </DialogFooter>
+          )}
+        </DialogContent>
+      </Dialog>
+
+      {/* Delete Connection Confirmation */}
+      {connectionToDelete && (
+        <DeleteConfirmDialog
+          open={true}
+          onOpenChange={(open) => !open && setConnectionToDelete(null)}
+          itemName={`connection "${connectionToDelete.name}"`}
+          onConfirm={() => handleDelete(connectionToDelete)}
+        />
       )}
     </div>
   )

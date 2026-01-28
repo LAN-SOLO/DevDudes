@@ -8,6 +8,16 @@ import { Label } from '@/components/ui/label'
 import { Badge } from '@/components/ui/badge'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from '@/components/ui/dialog'
+import { DeleteConfirmDialog } from '@/components/ui/confirm-dialog'
+import { useToast } from '@/components/ui/toast'
+import {
   Users,
   UserPlus,
   Mail,
@@ -48,6 +58,7 @@ const roleConfig = {
 }
 
 export default function TeamPage() {
+  const { addToast } = useToast()
   const [members, setMembers] = useState<TeamMember[]>([
     {
       id: '1',
@@ -63,6 +74,7 @@ export default function TeamPage() {
   const [inviteForm, setInviteForm] = useState<{ email: string; role: 'admin' | 'member' }>({ email: '', role: 'member' })
   const [isSending, setIsSending] = useState(false)
   const [showUpgradeModal, setShowUpgradeModal] = useState(false)
+  const [memberToRemove, setMemberToRemove] = useState<TeamMember | null>(null)
   const currentPlan = 'free' // In a real app, this would come from the user's subscription
 
   const canInvite = currentPlan !== 'free'
@@ -86,17 +98,42 @@ export default function TeamPage() {
     setIsSending(false)
     setShowInviteModal(false)
     setInviteForm({ email: '', role: 'member' })
+
+    addToast({
+      type: 'success',
+      title: 'Invitation sent',
+      description: `Invite sent to ${newInvitation.email}`,
+    })
   }
 
   const handleCancelInvitation = (id: string) => {
+    const invitation = invitations.find((inv) => inv.id === id)
     setInvitations(invitations.filter((inv) => inv.id !== id))
+    addToast({
+      type: 'info',
+      title: 'Invitation cancelled',
+      description: invitation ? `Invitation to ${invitation.email} was cancelled` : 'Invitation cancelled',
+    })
   }
 
-  const handleRemoveMember = (id: string) => {
-    // Can't remove the owner
-    const member = members.find((m) => m.id === id)
-    if (member?.role === 'owner') return
-    setMembers(members.filter((m) => m.id !== id))
+  const handleRemoveMember = (member: TeamMember) => {
+    if (member.role === 'owner') return
+    setMembers(members.filter((m) => m.id !== member.id))
+    setMemberToRemove(null)
+    addToast({
+      type: 'success',
+      title: 'Member removed',
+      description: `${member.name} has been removed from the team`,
+    })
+  }
+
+  const handleCopyInviteLink = () => {
+    navigator.clipboard.writeText('https://devdudes.app/invite/abc123xyz')
+    addToast({
+      type: 'info',
+      title: 'Copied',
+      description: 'Invite link copied to clipboard',
+    })
   }
 
   const getInitials = (name: string) => {
@@ -241,7 +278,7 @@ export default function TeamPage() {
                         variant="ghost"
                         size="icon"
                         className="text-muted-foreground hover:text-red-500"
-                        onClick={() => handleRemoveMember(member.id)}
+                        onClick={() => setMemberToRemove(member)}
                       >
                         <Trash2 className="h-4 w-4" />
                       </Button>
@@ -317,7 +354,7 @@ export default function TeamPage() {
                 readOnly
                 className="font-mono text-sm"
               />
-              <Button variant="outline">
+              <Button variant="outline" onClick={handleCopyInviteLink}>
                 <Copy className="mr-2 h-4 w-4" />
                 Copy
               </Button>
@@ -326,147 +363,121 @@ export default function TeamPage() {
         </Card>
       )}
 
-      {/* Invite Modal */}
-      {showInviteModal && (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50">
-          <Card className="w-full max-w-md">
-            <CardHeader>
-              <div className="flex items-center justify-between">
-                <div>
-                  <CardTitle>Invite Team Member</CardTitle>
-                  <CardDescription>Send an invitation to join your team</CardDescription>
-                </div>
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  onClick={() => setShowInviteModal(false)}
-                >
-                  <X className="h-4 w-4" />
-                </Button>
+      {/* Invite Dialog */}
+      <Dialog open={showInviteModal} onOpenChange={setShowInviteModal}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Invite Team Member</DialogTitle>
+            <DialogDescription>Send an invitation to join your team</DialogDescription>
+          </DialogHeader>
+          <div className="space-y-4 py-4">
+            <div className="space-y-2">
+              <Label htmlFor="email">Email Address</Label>
+              <Input
+                id="email"
+                type="email"
+                placeholder="colleague@company.com"
+                value={inviteForm.email}
+                onChange={(e) => setInviteForm({ ...inviteForm, email: e.target.value })}
+              />
+            </div>
+            <div className="space-y-2">
+              <Label>Role</Label>
+              <div className="grid grid-cols-2 gap-2">
+                {(['member', 'admin'] as const).map((role) => {
+                  const config = roleConfig[role]
+                  const Icon = config.icon
+                  return (
+                    <button
+                      key={role}
+                      onClick={() => setInviteForm({ ...inviteForm, role })}
+                      className={`flex items-center gap-2 rounded-lg border p-3 transition-colors ${
+                        inviteForm.role === role
+                          ? 'border-primary bg-primary/5'
+                          : 'hover:border-primary/50'
+                      }`}
+                    >
+                      <Icon className="h-4 w-4" />
+                      <span className="font-medium">{config.label}</span>
+                    </button>
+                  )
+                })}
               </div>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              <div className="space-y-2">
-                <Label htmlFor="email">Email Address</Label>
-                <Input
-                  id="email"
-                  type="email"
-                  placeholder="colleague@company.com"
-                  value={inviteForm.email}
-                  onChange={(e) => setInviteForm({ ...inviteForm, email: e.target.value })}
-                />
-              </div>
-              <div className="space-y-2">
-                <Label>Role</Label>
-                <div className="grid grid-cols-2 gap-2">
-                  {(['member', 'admin'] as const).map((role) => {
-                    const config = roleConfig[role]
-                    const Icon = config.icon
-                    return (
-                      <button
-                        key={role}
-                        onClick={() => setInviteForm({ ...inviteForm, role })}
-                        className={`flex items-center gap-2 rounded-lg border p-3 transition-colors ${
-                          inviteForm.role === role
-                            ? 'border-primary bg-primary/5'
-                            : 'hover:border-primary/50'
-                        }`}
-                      >
-                        <Icon className="h-4 w-4" />
-                        <span className="font-medium">{config.label}</span>
-                      </button>
-                    )
-                  })}
-                </div>
-              </div>
-              <div className="flex gap-3 pt-2">
-                <Button
-                  variant="outline"
-                  className="flex-1"
-                  onClick={() => setShowInviteModal(false)}
-                >
-                  Cancel
-                </Button>
-                <Button
-                  className="flex-1"
-                  onClick={handleInvite}
-                  disabled={!inviteForm.email || isSending}
-                >
-                  {isSending ? (
-                    <>
-                      <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                      Sending...
-                    </>
-                  ) : (
-                    <>
-                      <Mail className="mr-2 h-4 w-4" />
-                      Send Invite
-                    </>
-                  )}
-                </Button>
-              </div>
-            </CardContent>
-          </Card>
-        </div>
-      )}
+            </div>
+          </div>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setShowInviteModal(false)}>
+              Cancel
+            </Button>
+            <Button onClick={handleInvite} disabled={!inviteForm.email || isSending}>
+              {isSending ? (
+                <>
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                  Sending...
+                </>
+              ) : (
+                <>
+                  <Mail className="mr-2 h-4 w-4" />
+                  Send Invite
+                </>
+              )}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
 
-      {/* Upgrade Modal */}
-      {showUpgradeModal && (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50">
-          <Card className="w-full max-w-md">
-            <CardHeader>
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-3">
-                  <div className="p-2 rounded-lg bg-primary/10">
-                    <Users className="h-5 w-5 text-primary" />
-                  </div>
-                  <div>
-                    <CardTitle>Upgrade to Pro</CardTitle>
-                    <CardDescription>Unlock team collaboration</CardDescription>
-                  </div>
-                </div>
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  onClick={() => setShowUpgradeModal(false)}
-                >
-                  <X className="h-4 w-4" />
-                </Button>
+      {/* Upgrade Dialog */}
+      <Dialog open={showUpgradeModal} onOpenChange={setShowUpgradeModal}>
+        <DialogContent>
+          <DialogHeader>
+            <div className="flex items-center gap-3">
+              <div className="p-2 rounded-lg bg-primary/10">
+                <Users className="h-5 w-5 text-primary" />
               </div>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              <p className="text-sm text-muted-foreground">
-                Team collaboration is available on Pro and Enterprise plans. Upgrade to:
-              </p>
-              <ul className="space-y-2">
-                {[
-                  'Invite up to 5 team members (Pro) or unlimited (Enterprise)',
-                  'Role-based permissions (Admin, Member)',
-                  'Shared projects and templates',
-                  'Team activity log',
-                  'Collaborative editing',
-                ].map((feature) => (
-                  <li key={feature} className="flex items-start gap-2 text-sm">
-                    <Check className="h-4 w-4 text-green-500 mt-0.5 flex-shrink-0" />
-                    {feature}
-                  </li>
-                ))}
-              </ul>
-              <div className="flex gap-3 pt-2">
-                <Button
-                  variant="outline"
-                  className="flex-1"
-                  onClick={() => setShowUpgradeModal(false)}
-                >
-                  Maybe Later
-                </Button>
-                <Button className="flex-1" asChild>
-                  <a href="/dashboard/billing">View Plans</a>
-                </Button>
+              <div>
+                <DialogTitle>Upgrade to Pro</DialogTitle>
+                <DialogDescription>Unlock team collaboration</DialogDescription>
               </div>
-            </CardContent>
-          </Card>
-        </div>
+            </div>
+          </DialogHeader>
+          <div className="space-y-4 py-4">
+            <p className="text-sm text-muted-foreground">
+              Team collaboration is available on Pro and Enterprise plans. Upgrade to:
+            </p>
+            <ul className="space-y-2">
+              {[
+                'Invite up to 5 team members (Pro) or unlimited (Enterprise)',
+                'Role-based permissions (Admin, Member)',
+                'Shared projects and templates',
+                'Team activity log',
+                'Collaborative editing',
+              ].map((feature) => (
+                <li key={feature} className="flex items-start gap-2 text-sm">
+                  <Check className="h-4 w-4 text-green-500 mt-0.5 flex-shrink-0" />
+                  {feature}
+                </li>
+              ))}
+            </ul>
+          </div>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setShowUpgradeModal(false)}>
+              Maybe Later
+            </Button>
+            <Button asChild>
+              <a href="/dashboard/billing">View Plans</a>
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* Remove Member Confirmation */}
+      {memberToRemove && (
+        <DeleteConfirmDialog
+          open={true}
+          onOpenChange={(open) => !open && setMemberToRemove(null)}
+          itemName={`team member "${memberToRemove.name}"`}
+          onConfirm={() => handleRemoveMember(memberToRemove)}
+        />
       )}
     </div>
   )
