@@ -26,6 +26,21 @@ interface ChangelogEntry {
 
 const changelog: ChangelogEntry[] = [
   {
+    version: '1.6.0',
+    date: 'January 28, 2026',
+    title: 'Team & Connections UX',
+    description: 'Improved team management and database connections with consistent dialog patterns.',
+    highlights: ['Team Management', 'Connections', 'Confirmations'],
+    changes: [
+      { type: 'improvement', text: 'Team page uses standard Dialog components for invites and upgrades' },
+      { type: 'improvement', text: 'Connections page uses standard Dialog for adding databases' },
+      { type: 'feature', text: 'Delete confirmation required before removing team members' },
+      { type: 'feature', text: 'Delete confirmation required before removing database connections' },
+      { type: 'feature', text: 'Toast notifications for all team and connection actions' },
+      { type: 'fix', text: 'Improved dark mode support for warning messages' },
+    ],
+  },
+  {
     version: '1.5.0',
     date: 'January 28, 2026',
     title: 'Keyboard Shortcuts & UX Polish',
