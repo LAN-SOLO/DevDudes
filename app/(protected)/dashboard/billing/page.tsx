@@ -3,6 +3,7 @@
 import { useState } from 'react'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
+import { useToast } from '@/components/ui/toast'
 import {
   Check,
   Zap,
@@ -12,6 +13,7 @@ import {
   Download,
   Calendar,
   AlertCircle,
+  Loader2,
 } from 'lucide-react'
 
 interface Plan {
@@ -92,6 +94,7 @@ const invoices: Invoice[] = [
 ]
 
 export default function BillingPage() {
+  const { addToast } = useToast()
   const [currentPlan] = useState('free')
   const [isProcessing, setIsProcessing] = useState<string | null>(null)
 
@@ -99,12 +102,23 @@ export default function BillingPage() {
     if (planId === currentPlan) return
 
     setIsProcessing(planId)
-    // Simulate API call
     await new Promise(resolve => setTimeout(resolve, 2000))
     setIsProcessing(null)
 
-    // In a real app, this would redirect to a payment page
-    alert(`Upgrade to ${planId} plan - Payment integration coming soon!`)
+    const plan = plans.find(p => p.id === planId)
+    addToast({
+      type: 'info',
+      title: 'Payment integration coming soon',
+      description: `Upgrade to ${plan?.name || planId} plan will be available shortly`,
+    })
+  }
+
+  const handleDownloadInvoice = (invoice: Invoice) => {
+    addToast({
+      type: 'info',
+      title: 'Downloading invoice',
+      description: `${invoice.id} is being downloaded`,
+    })
   }
 
   const currentPlanData = plans.find(p => p.id === currentPlan)
@@ -186,9 +200,9 @@ export default function BillingPage() {
             </div>
           </div>
           {currentPlan === 'free' && (
-            <div className="mt-4 rounded-lg bg-yellow-50 border border-yellow-200 p-3 flex items-start gap-2">
-              <AlertCircle className="h-4 w-4 text-yellow-600 mt-0.5 flex-shrink-0" />
-              <p className="text-xs text-yellow-700">
+            <div className="mt-4 rounded-lg bg-yellow-50 dark:bg-yellow-950/50 border border-yellow-200 dark:border-yellow-900 p-3 flex items-start gap-2">
+              <AlertCircle className="h-4 w-4 text-yellow-600 dark:text-yellow-500 mt-0.5 flex-shrink-0" />
+              <p className="text-xs text-yellow-700 dark:text-yellow-400">
                 You&apos;ve used all your database connections. Upgrade to Pro for more connections and unlimited projects.
               </p>
             </div>
@@ -244,9 +258,12 @@ export default function BillingPage() {
                   disabled={plan.id === currentPlan || isProcessing !== null}
                   onClick={() => handleUpgrade(plan.id)}
                 >
-                  {isProcessing === plan.id
-                    ? 'Processing...'
-                    : plan.id === currentPlan
+                  {isProcessing === plan.id ? (
+                    <>
+                      <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                      Processing...
+                    </>
+                  ) : plan.id === currentPlan
                       ? 'Current Plan'
                       : plan.price === 0
                         ? 'Downgrade'
@@ -266,7 +283,7 @@ export default function BillingPage() {
               <CardTitle>Payment Method</CardTitle>
               <CardDescription>Manage your payment details</CardDescription>
             </div>
-            <Button variant="outline">
+            <Button variant="outline" onClick={() => addToast({ type: 'info', title: 'Coming soon', description: 'Payment method management will be available shortly' })}>
               <CreditCard className="mr-2 h-4 w-4" />
               Add Card
             </Button>
@@ -334,7 +351,7 @@ export default function BillingPage() {
                         {invoice.status.charAt(0).toUpperCase() + invoice.status.slice(1)}
                       </p>
                     </div>
-                    <Button variant="ghost" size="icon">
+                    <Button variant="ghost" size="icon" onClick={() => handleDownloadInvoice(invoice)}>
                       <Download className="h-4 w-4" />
                     </Button>
                   </div>

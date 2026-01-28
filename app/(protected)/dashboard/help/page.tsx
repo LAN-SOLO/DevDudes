@@ -6,6 +6,7 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Textarea } from '@/components/ui/textarea'
 import { Label } from '@/components/ui/label'
+import { useToast } from '@/components/ui/toast'
 import {
   HelpCircle,
   BookOpen,
@@ -17,7 +18,6 @@ import {
   Search,
   Send,
   Loader2,
-  Check,
   Video,
   FileText,
   Code,
@@ -104,11 +104,12 @@ const resources = [
     title: 'Changelog',
     description: 'Latest updates and new features',
     icon: FileText,
-    href: '#',
+    href: '/dashboard/whats-new',
   },
 ]
 
 export default function HelpPage() {
+  const { addToast } = useToast()
   const [expandedFaq, setExpandedFaq] = useState<string | null>(null)
   const [searchQuery, setSearchQuery] = useState('')
   const [supportForm, setSupportForm] = useState({
@@ -116,7 +117,6 @@ export default function HelpPage() {
     message: '',
   })
   const [isSending, setIsSending] = useState(false)
-  const [messageSent, setMessageSent] = useState(false)
 
   const filteredFaqs = faqs.filter(
     faq =>
@@ -133,10 +133,13 @@ export default function HelpPage() {
     setIsSending(true)
     await new Promise(resolve => setTimeout(resolve, 1500))
     setIsSending(false)
-    setMessageSent(true)
     setSupportForm({ subject: '', message: '' })
 
-    setTimeout(() => setMessageSent(false), 5000)
+    addToast({
+      type: 'success',
+      title: 'Message sent',
+      description: 'We\'ll get back to you as soon as possible',
+    })
   }
 
   return (
@@ -289,12 +292,6 @@ export default function HelpPage() {
               <CardDescription>Get help from our team</CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
-              {messageSent && (
-                <div className="rounded-lg bg-green-50 border border-green-200 p-3 flex items-center gap-2 text-green-700">
-                  <Check className="h-4 w-4" />
-                  <span className="text-sm">Message sent! We&apos;ll respond soon.</span>
-                </div>
-              )}
               <div className="space-y-2">
                 <Label htmlFor="subject">Subject</Label>
                 <Input

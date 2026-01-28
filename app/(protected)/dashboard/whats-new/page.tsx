@@ -26,6 +26,21 @@ interface ChangelogEntry {
 
 const changelog: ChangelogEntry[] = [
   {
+    version: '1.8.0',
+    date: 'January 28, 2026',
+    title: 'Billing & Help UX',
+    description: 'Replaced alert dialogs with toast notifications across billing and help pages, improved dark mode support.',
+    highlights: ['Billing Toasts', 'Help Toasts', 'Dark Mode'],
+    changes: [
+      { type: 'improvement', text: 'Billing page uses toast notifications instead of browser alerts' },
+      { type: 'feature', text: 'Loading spinner on plan upgrade buttons' },
+      { type: 'feature', text: 'Toast notifications for invoice download and payment method actions' },
+      { type: 'improvement', text: 'Help page uses toast instead of inline success message for support form' },
+      { type: 'fix', text: 'Dark mode support for billing usage warning banner' },
+      { type: 'fix', text: 'Changelog resource link in help page now points to What\'s New' },
+    ],
+  },
+  {
     version: '1.7.0',
     date: 'January 28, 2026',
     title: 'Navigation & Polish',
