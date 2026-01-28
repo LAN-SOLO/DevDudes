@@ -15,6 +15,8 @@ import {
   Database,
   Globe,
   Workflow,
+  CreditCard,
+  HelpCircle,
 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { useState } from 'react'
@@ -27,8 +29,10 @@ const navItems = [
   { href: '/dashboard/templates', label: 'Templates', icon: FileCode },
   { href: '/dashboard/connections', label: 'Connections', icon: Database },
   { href: '/dashboard/deploy', label: 'Deploy', icon: Globe },
+  { href: '/dashboard/billing', label: 'Billing', icon: CreditCard },
   { href: '/dashboard/profile', label: 'Profile', icon: User },
   { href: '/dashboard/settings', label: 'Settings', icon: Settings },
+  { href: '/dashboard/help', label: 'Help', icon: HelpCircle },
 ]
 
 export function Sidebar() {
