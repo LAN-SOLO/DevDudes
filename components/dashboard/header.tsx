@@ -14,6 +14,7 @@ import { User } from '@supabase/supabase-js'
 import { Bell, CreditCard, HelpCircle } from 'lucide-react'
 import { CommandPaletteHint } from '@/components/dashboard/command-palette'
 import { MobileNav } from '@/components/dashboard/mobile-nav'
+import { ThemeToggle } from '@/components/dashboard/theme-toggle'
 
 interface DashboardHeaderProps {
   user: User
@@ -35,6 +36,9 @@ export function DashboardHeader({ user }: DashboardHeaderProps) {
       <div className="flex items-center gap-3">
         {/* Search / Command Palette */}
         <CommandPaletteHint />
+        {/* Theme Toggle */}
+        <ThemeToggle />
+
         {/* Help Button */}
         <Button variant="ghost" size="icon" asChild className="text-muted-foreground hover:text-foreground">
           <Link href="/dashboard/help" title="Help Center">
