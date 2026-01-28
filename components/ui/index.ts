@@ -39,6 +39,7 @@ export { CopyButton, CodeBlock } from './copy-button'
 
 // Layout
 export { Collapsible, CollapsibleTrigger, CollapsibleContent, Accordion } from './collapsible'
+export { ConfirmDialog, DeleteConfirmDialog, useConfirm } from './confirm-dialog'
 export { Dialog, DialogTrigger, DialogContent, DialogHeader, DialogFooter, DialogTitle, DialogDescription } from './dialog'
 export { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuItem, DropdownMenuCheckboxItem, DropdownMenuRadioItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuShortcut, DropdownMenuGroup, DropdownMenuPortal, DropdownMenuSub, DropdownMenuSubContent, DropdownMenuSubTrigger, DropdownMenuRadioGroup } from './dropdown-menu'
 export { Sheet, SheetTrigger, SheetContent, SheetHeader, SheetFooter, SheetTitle, SheetDescription } from './sheet'

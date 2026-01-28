@@ -11,10 +11,11 @@ import {
 } from '@/components/ui/dropdown-menu'
 import Link from 'next/link'
 import { User } from '@supabase/supabase-js'
-import { Bell, CreditCard, HelpCircle } from 'lucide-react'
+import { CreditCard, HelpCircle } from 'lucide-react'
 import { CommandPaletteHint } from '@/components/dashboard/command-palette'
 import { MobileNav } from '@/components/dashboard/mobile-nav'
 import { ThemeToggle } from '@/components/dashboard/theme-toggle'
+import { NotificationsDropdown } from '@/components/dashboard/notifications-dropdown'
 
 interface DashboardHeaderProps {
   user: User
@@ -22,7 +23,6 @@ interface DashboardHeaderProps {
 
 export function DashboardHeader({ user }: DashboardHeaderProps) {
   const initials = user.email?.slice(0, 2).toUpperCase() || 'U'
-  const unreadNotifications = 2 // In a real app, this would come from the database
 
   return (
     <header className="flex h-16 items-center justify-between border-b bg-background px-4 lg:px-6">
@@ -46,17 +46,8 @@ export function DashboardHeader({ user }: DashboardHeaderProps) {
           </Link>
         </Button>
 
-        {/* Notifications Button */}
-        <Button variant="ghost" size="icon" asChild className="relative text-muted-foreground hover:text-foreground">
-          <Link href="/dashboard/notifications" title="Notifications">
-            <Bell className="h-5 w-5" />
-            {unreadNotifications > 0 && (
-              <span className="absolute -top-1 -right-1 flex h-5 w-5 items-center justify-center rounded-full bg-primary text-[10px] font-medium text-primary-foreground">
-                {unreadNotifications > 9 ? '9+' : unreadNotifications}
-              </span>
-            )}
-          </Link>
-        </Button>
+        {/* Notifications Dropdown */}
+        <NotificationsDropdown />
 
         {/* User Menu */}
         <DropdownMenu>
