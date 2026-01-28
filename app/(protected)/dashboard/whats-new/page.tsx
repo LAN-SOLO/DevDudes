@@ -26,6 +26,20 @@ interface ChangelogEntry {
 
 const changelog: ChangelogEntry[] = [
   {
+    version: '1.4.0',
+    date: 'January 28, 2026',
+    title: 'Project Management & Confirmations',
+    description: 'Enhanced project management with delete/archive confirmations and toast notifications.',
+    highlights: ['Delete Confirmation', 'Archive Projects', 'Toast Notifications'],
+    changes: [
+      { type: 'feature', text: 'Delete projects with confirmation dialog' },
+      { type: 'feature', text: 'Archive projects to move them out of active list' },
+      { type: 'feature', text: 'Toast notifications for success and error feedback' },
+      { type: 'improvement', text: 'Project dropdown menus with icons and better UX' },
+      { type: 'improvement', text: 'Confirmation dialogs prevent accidental deletions' },
+    ],
+  },
+  {
     version: '1.3.0',
     date: 'January 28, 2026',
     title: 'Theme Toggle & REST API',

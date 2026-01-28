@@ -1,15 +1,9 @@
 import Link from 'next/link'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
-import { FolderOpen, Plus, MoreVertical, ArrowRight, Workflow } from 'lucide-react'
+import { FolderOpen, Plus, Workflow } from 'lucide-react'
 import { getProjects } from '@/app/actions/projects'
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu'
+import { ActiveProjectActions, ProjectActions } from '@/components/dashboard/project-actions'
 
 const statusColors: Record<string, string> = {
   draft: 'bg-gray-100 text-gray-700',
@@ -144,34 +138,11 @@ export default async function ProjectsPage() {
                           {project.description || 'No description'}
                         </CardDescription>
                       </div>
-                      <div className="flex items-center gap-2">
-                        {nextStep && (
-                          <Link href={nextStep.href}>
-                            <Button size="sm">
-                              {nextStep.label}
-                              <ArrowRight className="ml-2 h-4 w-4" />
-                            </Button>
-                          </Link>
-                        )}
-                        <DropdownMenu>
-                          <DropdownMenuTrigger asChild>
-                            <Button variant="ghost" size="icon" className="h-8 w-8">
-                              <MoreVertical className="h-4 w-4" />
-                            </Button>
-                          </DropdownMenuTrigger>
-                          <DropdownMenuContent align="end">
-                            <DropdownMenuItem asChild>
-                              <Link href={`/dashboard/projects/${project.id}`}>
-                                View Details
-                              </Link>
-                            </DropdownMenuItem>
-                            <DropdownMenuSeparator />
-                            <DropdownMenuItem className="text-red-600">
-                              Delete
-                            </DropdownMenuItem>
-                          </DropdownMenuContent>
-                        </DropdownMenu>
-                      </div>
+                      <ActiveProjectActions
+                        projectId={project.id}
+                        projectName={project.name}
+                        nextStep={nextStep}
+                      />
                     </div>
                   </CardHeader>
                   <CardContent>
@@ -241,29 +212,11 @@ export default async function ProjectsPage() {
                         {project.status}
                       </span>
                     </div>
-                    <DropdownMenu>
-                      <DropdownMenuTrigger asChild>
-                        <Button variant="ghost" size="icon" className="h-8 w-8">
-                          <MoreVertical className="h-4 w-4" />
-                        </Button>
-                      </DropdownMenuTrigger>
-                      <DropdownMenuContent align="end">
-                        <DropdownMenuItem asChild>
-                          <Link href={`/dashboard/projects/${project.id}`}>
-                            View Details
-                          </Link>
-                        </DropdownMenuItem>
-                        <DropdownMenuItem asChild>
-                          <Link href={`/dashboard/pipeline/docu?project=${project.id}`}>
-                            View Documentation
-                          </Link>
-                        </DropdownMenuItem>
-                        <DropdownMenuSeparator />
-                        <DropdownMenuItem className="text-red-600">
-                          Archive
-                        </DropdownMenuItem>
-                      </DropdownMenuContent>
-                    </DropdownMenu>
+                    <ProjectActions
+                      projectId={project.id}
+                      projectName={project.name}
+                      status={project.status}
+                    />
                   </div>
                 </CardHeader>
                 <CardContent>

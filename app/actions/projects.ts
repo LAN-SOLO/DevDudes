@@ -151,7 +151,7 @@ export async function deleteProject(id: string) {
   }
 
   revalidatePath('/dashboard/projects')
-  redirect('/dashboard/projects')
+  return { error: null }
 }
 
 export async function getProjectStats() {
