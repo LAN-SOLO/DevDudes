@@ -12,6 +12,7 @@ import {
 import Link from 'next/link'
 import { User } from '@supabase/supabase-js'
 import { Bell, CreditCard, HelpCircle } from 'lucide-react'
+import { CommandPaletteHint } from '@/components/dashboard/command-palette'
 
 interface DashboardHeaderProps {
   user: User
@@ -28,6 +29,8 @@ export function DashboardHeader({ user }: DashboardHeaderProps) {
         <p className="text-sm text-muted-foreground">{user.email}</p>
       </div>
       <div className="flex items-center gap-3">
+        {/* Search / Command Palette */}
+        <CommandPaletteHint />
         {/* Help Button */}
         <Button variant="ghost" size="icon" asChild className="text-muted-foreground hover:text-foreground">
           <Link href="/dashboard/help" title="Help Center">

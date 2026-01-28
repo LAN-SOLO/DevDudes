@@ -2,6 +2,7 @@ import { createClient } from '@/lib/supabase/server'
 import { redirect } from 'next/navigation'
 import { Sidebar } from '@/components/dashboard/sidebar'
 import { DashboardHeader } from '@/components/dashboard/header'
+import { CommandPalette } from '@/components/dashboard/command-palette'
 
 export default async function ProtectedLayout({
   children,
@@ -24,6 +25,7 @@ export default async function ProtectedLayout({
           {children}
         </main>
       </div>
+      <CommandPalette />
     </div>
   )
 }
