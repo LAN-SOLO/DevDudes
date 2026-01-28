@@ -23,6 +23,7 @@ import {
   Plug,
   Gift,
   Users,
+  BarChart3,
 } from 'lucide-react'
 
 interface CommandItem {
@@ -46,6 +47,7 @@ const navigationCommands: CommandItem[] = [
   { id: 'deploy', title: 'Deploy', description: 'View deployments', icon: Globe, href: '/dashboard/deploy', category: 'navigation' },
   { id: 'team', title: 'Team', description: 'Manage team members', icon: Users, href: '/dashboard/team', category: 'navigation' },
   { id: 'activity', title: 'Activity Log', description: 'View activity history', icon: Activity, href: '/dashboard/activity', category: 'navigation' },
+  { id: 'analytics', title: 'Analytics', description: 'View app analytics', icon: BarChart3, href: '/dashboard/analytics', category: 'navigation' },
   { id: 'notifications', title: 'Notifications', description: 'View notifications', icon: Bell, href: '/dashboard/notifications', category: 'navigation' },
   { id: 'whats-new', title: "What's New", description: 'See latest updates', icon: Gift, href: '/dashboard/whats-new', category: 'navigation' },
   { id: 'billing', title: 'Billing', description: 'Manage subscription', icon: CreditCard, href: '/dashboard/billing', category: 'navigation' },

@@ -22,6 +22,7 @@ import {
   Plug,
   Gift,
   Users,
+  BarChart3,
 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { useState } from 'react'
@@ -37,6 +38,7 @@ const navItems = [
   { href: '/dashboard/deploy', label: 'Deploy', icon: Globe },
   { href: '/dashboard/team', label: 'Team', icon: Users },
   { href: '/dashboard/activity', label: 'Activity', icon: Activity },
+  { href: '/dashboard/analytics', label: 'Analytics', icon: BarChart3 },
   { href: '/dashboard/notifications', label: 'Notifications', icon: Bell },
   { href: '/dashboard/whats-new', label: "What's New", icon: Gift },
   { href: '/dashboard/billing', label: 'Billing', icon: CreditCard },
