@@ -26,6 +26,21 @@ interface ChangelogEntry {
 
 const changelog: ChangelogEntry[] = [
   {
+    version: '1.7.0',
+    date: 'January 28, 2026',
+    title: 'Navigation & Polish',
+    description: 'Grouped sidebar navigation, deployment confirmations, and consistent dialogs across remaining pages.',
+    highlights: ['Sidebar Groups', 'Deploy Confirmations', 'Templates Dialog'],
+    changes: [
+      { type: 'improvement', text: 'Sidebar navigation organized into logical sections (Overview, Build, Infrastructure, Workspace, Account)' },
+      { type: 'feature', text: 'Delete confirmation required before removing deployments' },
+      { type: 'feature', text: 'Toast notifications for deploy, redeploy, and provider connect actions' },
+      { type: 'improvement', text: 'Templates page uses standard Dialog component for template preview' },
+      { type: 'feature', text: 'Toast notifications for analytics refresh and export' },
+      { type: 'feature', text: 'Toast feedback for template creation errors' },
+    ],
+  },
+  {
     version: '1.6.0',
     date: 'January 28, 2026',
     title: 'Team & Connections UX',

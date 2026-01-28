@@ -4,6 +4,8 @@ import { useState } from 'react'
 import Link from 'next/link'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
+import { DeleteConfirmDialog } from '@/components/ui/confirm-dialog'
+import { useToast } from '@/components/ui/toast'
 import {
   Globe,
   Cloud,
@@ -70,6 +72,8 @@ const providers: Provider[] = [
 ]
 
 export default function DeployPage() {
+  const { addToast } = useToast()
+  const [deploymentToDelete, setDeploymentToDelete] = useState<Deployment | null>(null)
   const [deployments, setDeployments] = useState<Deployment[]>([
     {
       id: '1',
@@ -85,25 +89,49 @@ export default function DeployPage() {
   const [connectedProviders, setConnectedProviders] = useState<string[]>(['vercel'])
 
   const handleConnect = async (providerId: string) => {
-    // Simulate connecting
+    const provider = providers.find(p => p.id === providerId)
     await new Promise(resolve => setTimeout(resolve, 1000))
     setConnectedProviders([...connectedProviders, providerId])
+    addToast({
+      type: 'success',
+      title: 'Provider connected',
+      description: `${provider?.name || 'Provider'} has been connected successfully`,
+    })
   }
 
   const handleRedeploy = async (deploymentId: string) => {
+    const deployment = deployments.find(d => d.id === deploymentId)
     setDeployments(deployments.map(d =>
       d.id === deploymentId ? { ...d, status: 'building' as const } : d
     ))
+
+    addToast({
+      type: 'info',
+      title: 'Redeploying',
+      description: `${deployment?.projectName || 'App'} is being redeployed...`,
+    })
 
     await new Promise(resolve => setTimeout(resolve, 3000))
 
     setDeployments(deployments.map(d =>
       d.id === deploymentId ? { ...d, status: 'live' as const, deployedAt: 'Just now' } : d
     ))
+
+    addToast({
+      type: 'success',
+      title: 'Deployed',
+      description: `${deployment?.projectName || 'App'} is now live`,
+    })
   }
 
-  const handleDelete = (deploymentId: string) => {
-    setDeployments(deployments.filter(d => d.id !== deploymentId))
+  const handleDelete = (deployment: Deployment) => {
+    setDeployments(deployments.filter(d => d.id !== deployment.id))
+    setDeploymentToDelete(null)
+    addToast({
+      type: 'success',
+      title: 'Deployment removed',
+      description: `${deployment.projectName} deployment has been removed`,
+    })
   }
 
   const getStatusIcon = (status: Deployment['status']) => {
@@ -230,7 +258,7 @@ export default function DeployPage() {
                         variant="ghost"
                         size="icon"
                         className="text-red-500 hover:text-red-600 hover:bg-red-50"
-                        onClick={() => handleDelete(deployment.id)}
+                        onClick={() => setDeploymentToDelete(deployment)}
                       >
                         <Trash2 className="h-4 w-4" />
                       </Button>
@@ -348,6 +376,16 @@ export default function DeployPage() {
           </ul>
         </CardContent>
       </Card>
+
+      {/* Delete Confirmation */}
+      {deploymentToDelete && (
+        <DeleteConfirmDialog
+          open={true}
+          onOpenChange={(open) => !open && setDeploymentToDelete(null)}
+          itemName={`deployment "${deploymentToDelete.projectName}"`}
+          onConfirm={() => handleDelete(deploymentToDelete)}
+        />
+      )}
     </div>
   )
 }

@@ -6,7 +6,16 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
-import { FileCode, ArrowRight, Sparkles, Eye, X, Check, Loader2 } from 'lucide-react'
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from '@/components/ui/dialog'
+import { useToast } from '@/components/ui/toast'
+import { FileCode, ArrowRight, Sparkles, Eye, Check, Loader2 } from 'lucide-react'
 import { savePresetConfig } from '@/app/actions/pipeline'
 import type { PresetConfig } from '@/app/actions/pipeline'
 
@@ -240,9 +249,15 @@ const categoryColors: Record<string, string> = {
 
 export default function TemplatesPage() {
   const router = useRouter()
+  const { addToast } = useToast()
   const [selectedTemplate, setSelectedTemplate] = useState<Template | null>(null)
   const [projectName, setProjectName] = useState('')
   const [isCreating, setIsCreating] = useState(false)
+
+  const handleCloseModal = () => {
+    setSelectedTemplate(null)
+    setProjectName('')
+  }
 
   const handleUseTemplate = async () => {
     if (!selectedTemplate || !projectName) return
@@ -260,8 +275,19 @@ export default function TemplatesPage() {
 
     if (result.error) {
       setIsCreating(false)
+      addToast({
+        type: 'error',
+        title: 'Failed to create project',
+        description: result.error,
+      })
       return
     }
+
+    addToast({
+      type: 'success',
+      title: 'Project created',
+      description: `${projectName} has been created from the ${selectedTemplate.name} template`,
+    })
 
     // Navigate to Combo Dude with the new project
     router.push(`/dashboard/pipeline/combo?project=${result.projectId}`)
@@ -331,29 +357,15 @@ export default function TemplatesPage() {
         ))}
       </div>
 
-      {/* Template Modal */}
-      {selectedTemplate && (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50">
-          <Card className="w-full max-w-lg max-h-[90vh] overflow-auto">
-            <CardHeader>
-              <div className="flex items-center justify-between">
-                <div>
-                  <CardTitle>{selectedTemplate.name}</CardTitle>
-                  <CardDescription>{selectedTemplate.description}</CardDescription>
-                </div>
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  onClick={() => {
-                    setSelectedTemplate(null)
-                    setProjectName('')
-                  }}
-                >
-                  <X className="h-4 w-4" />
-                </Button>
-              </div>
-            </CardHeader>
-            <CardContent className="space-y-4">
+      {/* Template Dialog */}
+      <Dialog open={!!selectedTemplate} onOpenChange={(open) => !open && handleCloseModal()}>
+        <DialogContent className="max-h-[90vh] overflow-auto">
+          <DialogHeader>
+            <DialogTitle>{selectedTemplate?.name}</DialogTitle>
+            <DialogDescription>{selectedTemplate?.description}</DialogDescription>
+          </DialogHeader>
+          {selectedTemplate && (
+            <div className="space-y-4 py-4">
               {/* Features */}
               <div>
                 <p className="text-sm font-medium mb-2">Included Features</p>
@@ -393,40 +405,31 @@ export default function TemplatesPage() {
                   className="mt-2"
                 />
               </div>
-
-              <div className="flex gap-3">
-                <Button
-                  variant="outline"
-                  className="flex-1"
-                  onClick={() => {
-                    setSelectedTemplate(null)
-                    setProjectName('')
-                  }}
-                >
-                  Cancel
-                </Button>
-                <Button
-                  className="flex-1"
-                  onClick={handleUseTemplate}
-                  disabled={!projectName || isCreating}
-                >
-                  {isCreating ? (
-                    <>
-                      <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                      Creating...
-                    </>
-                  ) : (
-                    <>
-                      Start with Template
-                      <ArrowRight className="ml-2 h-4 w-4" />
-                    </>
-                  )}
-                </Button>
-              </div>
-            </CardContent>
-          </Card>
-        </div>
-      )}
+            </div>
+          )}
+          <DialogFooter>
+            <Button variant="outline" onClick={handleCloseModal}>
+              Cancel
+            </Button>
+            <Button
+              onClick={handleUseTemplate}
+              disabled={!projectName || isCreating}
+            >
+              {isCreating ? (
+                <>
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                  Creating...
+                </>
+              ) : (
+                <>
+                  Start with Template
+                  <ArrowRight className="ml-2 h-4 w-4" />
+                </>
+              )}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   )
 }

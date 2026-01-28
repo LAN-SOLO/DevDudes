@@ -4,6 +4,7 @@ import { useState } from 'react'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
+import { useToast } from '@/components/ui/toast'
 import {
   BarChart3,
   TrendingUp,
@@ -98,6 +99,7 @@ const topLocations = [
 ]
 
 export default function AnalyticsPage() {
+  const { addToast } = useToast()
   const [timeRange, setTimeRange] = useState<'7d' | '30d' | '90d'>('30d')
   const [isRefreshing, setIsRefreshing] = useState(false)
 
@@ -105,6 +107,19 @@ export default function AnalyticsPage() {
     setIsRefreshing(true)
     await new Promise(resolve => setTimeout(resolve, 1000))
     setIsRefreshing(false)
+    addToast({
+      type: 'success',
+      title: 'Data refreshed',
+      description: 'Analytics data has been updated',
+    })
+  }
+
+  const handleExport = () => {
+    addToast({
+      type: 'info',
+      title: 'Exporting data',
+      description: 'Your analytics report is being prepared for download',
+    })
   }
 
   const maxViews = Math.max(...chartData.map(d => d.views))
@@ -137,7 +152,7 @@ export default function AnalyticsPage() {
           <Button variant="outline" size="icon" onClick={handleRefresh} disabled={isRefreshing}>
             <RefreshCw className={`h-4 w-4 ${isRefreshing ? 'animate-spin' : ''}`} />
           </Button>
-          <Button variant="outline">
+          <Button variant="outline" onClick={handleExport}>
             <Download className="mr-2 h-4 w-4" />
             Export
           </Button>
