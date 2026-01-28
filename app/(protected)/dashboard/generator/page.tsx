@@ -1,228 +1,191 @@
-'use client'
-
-import { useState } from 'react'
+import Link from 'next/link'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
-import { Input } from '@/components/ui/input'
-import { Label } from '@/components/ui/label'
-import { Sparkles, ArrowRight, ArrowLeft, Check, Loader2 } from 'lucide-react'
-import { createProject } from '@/app/actions/projects'
+import {
+  Sparkles,
+  ArrowRight,
+  Workflow,
+  FileCode,
+  Database,
+  Zap,
+  Check,
+} from 'lucide-react'
 
-const appTypes = [
-  { id: 'crm', label: 'CRM', description: 'Customer relationship management' },
-  { id: 'inventory', label: 'Inventory', description: 'Stock and warehouse management' },
-  { id: 'invoicing', label: 'Invoicing', description: 'Billing and payments' },
-  { id: 'hrm', label: 'HR Management', description: 'Employee and payroll' },
-  { id: 'project', label: 'Project Manager', description: 'Tasks and timelines' },
-  { id: 'custom', label: 'Custom', description: 'Describe your own app' },
+const features = [
+  {
+    title: '8-Step Configuration',
+    description: 'Define your app requirements with our guided wizard',
+    icon: Workflow,
+  },
+  {
+    title: 'AI Architecture',
+    description: 'Automatically design optimal app structure',
+    icon: Sparkles,
+  },
+  {
+    title: 'Code Generation',
+    description: 'Generate production-ready Next.js code',
+    icon: FileCode,
+  },
+  {
+    title: 'Database Setup',
+    description: 'Auto-configure Supabase with RLS policies',
+    icon: Database,
+  },
+]
+
+const startOptions = [
+  {
+    id: 'scratch',
+    title: 'Start from Scratch',
+    description: 'Configure every aspect of your app with our 8-step wizard',
+    href: '/dashboard/pipeline/preset',
+    icon: Workflow,
+    primary: true,
+  },
+  {
+    id: 'template',
+    title: 'Use a Template',
+    description: 'Start with a pre-built template and customize it',
+    href: '/dashboard/templates',
+    icon: FileCode,
+    primary: false,
+  },
+  {
+    id: 'database',
+    title: 'From Existing Database',
+    description: 'Connect your database and generate an app from your schema',
+    href: '/dashboard/connections',
+    icon: Database,
+    primary: false,
+  },
 ]
 
 export default function GeneratorPage() {
-  const [step, setStep] = useState(1)
-  const [selectedType, setSelectedType] = useState<string | null>(null)
-  const [appName, setAppName] = useState('')
-  const [description, setDescription] = useState('')
-  const [isCreating, setIsCreating] = useState(false)
-  const [error, setError] = useState<string | null>(null)
-
-  const handleCreate = async () => {
-    setIsCreating(true)
-    setError(null)
-
-    const formData = new FormData()
-    formData.set('name', appName)
-    formData.set('description', description)
-    formData.set('app_type', selectedType || '')
-
-    try {
-      const result = await createProject(formData)
-      if (result?.error) {
-        setError(result.error)
-        setIsCreating(false)
-      }
-      // If successful, createProject redirects to the project page
-    } catch {
-      setError('Failed to create project. Make sure database is set up.')
-      setIsCreating(false)
-    }
-  }
-
   return (
-    <div className="space-y-6">
-      <div>
-        <h2 className="text-2xl font-bold tracking-tight">App Generator</h2>
-        <p className="text-muted-foreground">
-          Create a production-ready business application in minutes
+    <div className="space-y-8">
+      {/* Hero Section */}
+      <div className="text-center space-y-4">
+        <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary/10 text-primary text-sm font-medium">
+          <Zap className="h-4 w-4" />
+          AI-Powered App Generation
+        </div>
+        <h2 className="text-3xl font-bold tracking-tight">
+          Create Production-Ready Apps
+        </h2>
+        <p className="text-muted-foreground max-w-2xl mx-auto">
+          Transform your ideas into fully functional business applications in minutes.
+          Our AI handles the architecture, code generation, and deployment.
         </p>
       </div>
 
-      {/* Progress Steps */}
-      <div className="flex items-center gap-2">
-        {[1, 2, 3].map((s) => (
-          <div key={s} className="flex items-center">
-            <div
-              className={`flex h-8 w-8 items-center justify-center rounded-full text-sm font-medium ${
-                step >= s
-                  ? 'bg-primary text-primary-foreground'
-                  : 'bg-muted text-muted-foreground'
-              }`}
-            >
-              {step > s ? <Check className="h-4 w-4" /> : s}
-            </div>
-            {s < 3 && (
-              <div
-                className={`h-1 w-12 ${
-                  step > s ? 'bg-primary' : 'bg-muted'
-                }`}
-              />
-            )}
-          </div>
+      {/* Start Options */}
+      <div className="grid gap-4 md:grid-cols-3">
+        {startOptions.map((option) => (
+          <Card
+            key={option.id}
+            className={`flex flex-col hover:shadow-md transition-shadow ${
+              option.primary ? 'border-primary shadow-sm' : ''
+            }`}
+          >
+            <CardHeader>
+              <div className={`p-3 w-fit rounded-lg ${
+                option.primary ? 'bg-primary text-primary-foreground' : 'bg-muted'
+              }`}>
+                <option.icon className="h-6 w-6" />
+              </div>
+              <CardTitle className="text-lg">{option.title}</CardTitle>
+              <CardDescription>{option.description}</CardDescription>
+            </CardHeader>
+            <CardContent className="flex-1 flex items-end">
+              <Link href={option.href} className="w-full">
+                <Button
+                  className="w-full"
+                  variant={option.primary ? 'default' : 'outline'}
+                >
+                  {option.primary ? 'Get Started' : 'Choose'}
+                  <ArrowRight className="ml-2 h-4 w-4" />
+                </Button>
+              </Link>
+            </CardContent>
+          </Card>
         ))}
       </div>
 
-      {error && (
-        <div className="p-3 text-sm text-red-500 bg-red-50 border border-red-200 rounded-md">
-          {error}
-        </div>
-      )}
-
-      {/* Step 1: Choose App Type */}
-      {step === 1 && (
-        <Card>
-          <CardHeader>
-            <CardTitle>Choose App Type</CardTitle>
-            <CardDescription>
-              Select the type of application you want to build
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
-            <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
-              {appTypes.map((type) => (
-                <button
-                  key={type.id}
-                  onClick={() => setSelectedType(type.id)}
-                  className={`flex flex-col items-start rounded-lg border p-4 text-left transition-colors ${
-                    selectedType === type.id
-                      ? 'border-primary bg-primary/5'
-                      : 'border-border hover:border-primary/50'
-                  }`}
-                >
-                  <span className="font-medium">{type.label}</span>
-                  <span className="text-sm text-muted-foreground">
-                    {type.description}
-                  </span>
-                </button>
-              ))}
-            </div>
-            <div className="mt-6 flex justify-end">
-              <Button
-                onClick={() => setStep(2)}
-                disabled={!selectedType}
-              >
-                Continue
-                <ArrowRight className="ml-2 h-4 w-4" />
-              </Button>
-            </div>
-          </CardContent>
-        </Card>
-      )}
-
-      {/* Step 2: App Details */}
-      {step === 2 && (
-        <Card>
-          <CardHeader>
-            <CardTitle>App Details</CardTitle>
-            <CardDescription>
-              Provide basic information about your application
-            </CardDescription>
-          </CardHeader>
-          <CardContent className="space-y-4">
-            <div className="space-y-2">
-              <Label htmlFor="appName">App Name</Label>
-              <Input
-                id="appName"
-                placeholder="My Business App"
-                value={appName}
-                onChange={(e) => setAppName(e.target.value)}
-              />
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="description">Description</Label>
-              <textarea
-                id="description"
-                className="flex min-h-[120px] w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
-                placeholder="Describe what your app should do, what features it needs, and any specific requirements..."
-                value={description}
-                onChange={(e) => setDescription(e.target.value)}
-              />
-            </div>
-            <div className="flex justify-between">
-              <Button variant="outline" onClick={() => setStep(1)}>
-                <ArrowLeft className="mr-2 h-4 w-4" />
-                Back
-              </Button>
-              <Button
-                onClick={() => setStep(3)}
-                disabled={!appName}
-              >
-                Continue
-                <ArrowRight className="ml-2 h-4 w-4" />
-              </Button>
-            </div>
-          </CardContent>
-        </Card>
-      )}
-
-      {/* Step 3: Generate */}
-      {step === 3 && (
-        <Card>
-          <CardHeader>
-            <CardTitle>Ready to Generate</CardTitle>
-            <CardDescription>
-              Review your choices and create your project
-            </CardDescription>
-          </CardHeader>
-          <CardContent className="space-y-4">
-            <div className="rounded-lg bg-muted p-4 space-y-2">
-              <div className="flex justify-between">
-                <span className="text-sm text-muted-foreground">App Type</span>
-                <span className="font-medium">
-                  {appTypes.find((t) => t.id === selectedType)?.label}
-                </span>
-              </div>
-              <div className="flex justify-between">
-                <span className="text-sm text-muted-foreground">App Name</span>
-                <span className="font-medium">{appName}</span>
-              </div>
-              {description && (
-                <div className="pt-2 border-t">
-                  <span className="text-sm text-muted-foreground">Description</span>
-                  <p className="text-sm mt-1">{description}</p>
+      {/* Features Grid */}
+      <Card>
+        <CardHeader>
+          <CardTitle>What You Get</CardTitle>
+          <CardDescription>
+            Every app includes enterprise-grade features out of the box
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+            {features.map((feature) => (
+              <div key={feature.title} className="flex gap-3">
+                <div className="p-2 h-fit rounded-lg bg-primary/10">
+                  <feature.icon className="h-5 w-5 text-primary" />
                 </div>
-              )}
+                <div>
+                  <p className="font-medium">{feature.title}</p>
+                  <p className="text-sm text-muted-foreground">{feature.description}</p>
+                </div>
+              </div>
+            ))}
+          </div>
+        </CardContent>
+      </Card>
+
+      {/* Tech Stack */}
+      <Card>
+        <CardHeader>
+          <CardTitle>Modern Tech Stack</CardTitle>
+          <CardDescription>
+            Built with the latest technologies for performance and scalability
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+            {[
+              { name: 'Next.js 15', desc: 'React framework with App Router' },
+              { name: 'React 19', desc: 'Latest React with Server Components' },
+              { name: 'TypeScript', desc: 'Type-safe code generation' },
+              { name: 'Tailwind CSS', desc: 'Utility-first styling' },
+              { name: 'Supabase', desc: 'Auth, database, and storage' },
+              { name: 'shadcn/ui', desc: 'Beautiful component library' },
+            ].map((tech) => (
+              <div key={tech.name} className="flex items-center gap-3 rounded-lg border p-3">
+                <Check className="h-5 w-5 text-green-500 flex-shrink-0" />
+                <div>
+                  <p className="font-medium text-sm">{tech.name}</p>
+                  <p className="text-xs text-muted-foreground">{tech.desc}</p>
+                </div>
+              </div>
+            ))}
+          </div>
+        </CardContent>
+      </Card>
+
+      {/* CTA */}
+      <Card className="bg-gradient-to-r from-primary/10 to-primary/5 border-primary/20">
+        <CardContent className="pt-6">
+          <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
+            <div>
+              <h3 className="text-lg font-semibold">Ready to build your app?</h3>
+              <p className="text-sm text-muted-foreground">
+                Start with the pipeline wizard for full customization
+              </p>
             </div>
-            <div className="flex justify-between">
-              <Button variant="outline" onClick={() => setStep(2)} disabled={isCreating}>
-                <ArrowLeft className="mr-2 h-4 w-4" />
-                Back
+            <Link href="/dashboard/pipeline/preset">
+              <Button size="lg">
+                <Sparkles className="mr-2 h-5 w-5" />
+                Start Building
               </Button>
-              <Button onClick={handleCreate} disabled={isCreating} className="gap-2">
-                {isCreating ? (
-                  <>
-                    <Loader2 className="h-4 w-4 animate-spin" />
-                    Creating...
-                  </>
-                ) : (
-                  <>
-                    <Sparkles className="h-4 w-4" />
-                    Create Project
-                  </>
-                )}
-              </Button>
-            </div>
-          </CardContent>
-        </Card>
-      )}
+            </Link>
+          </div>
+        </CardContent>
+      </Card>
     </div>
   )
 }

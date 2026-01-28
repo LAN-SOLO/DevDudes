@@ -1,15 +1,87 @@
-import { createClient } from '@/lib/supabase/server'
+'use client'
+
+import { useEffect, useState } from 'react'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
-import { Avatar, AvatarFallback } from '@/components/ui/avatar'
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
+import { createClient } from '@/lib/supabase/client'
+import { Loader2, Check, Camera, AlertTriangle } from 'lucide-react'
+import type { User } from '@supabase/supabase-js'
 
-export default async function ProfilePage() {
-  const supabase = await createClient()
-  const { data: { user } } = await supabase.auth.getUser()
+export default function ProfilePage() {
+  const [user, setUser] = useState<User | null>(null)
+  const [isLoading, setIsLoading] = useState(true)
+  const [isSaving, setIsSaving] = useState(false)
+  const [saveSuccess, setSaveSuccess] = useState(false)
+  const [showDeleteConfirm, setShowDeleteConfirm] = useState(false)
+  const [profileForm, setProfileForm] = useState({
+    fullName: '',
+    company: '',
+    role: '',
+    website: '',
+  })
 
-  const initials = user?.email?.slice(0, 2).toUpperCase() || 'U'
+  useEffect(() => {
+    async function loadUser() {
+      const supabase = createClient()
+      const { data: { user } } = await supabase.auth.getUser()
+      setUser(user)
+
+      // Load profile data from user metadata or database
+      if (user?.user_metadata) {
+        setProfileForm({
+          fullName: user.user_metadata.full_name || '',
+          company: user.user_metadata.company || '',
+          role: user.user_metadata.role || '',
+          website: user.user_metadata.website || '',
+        })
+      }
+
+      setIsLoading(false)
+    }
+    loadUser()
+  }, [])
+
+  const handleSave = async () => {
+    if (!user) return
+
+    setIsSaving(true)
+    const supabase = createClient()
+
+    await supabase.auth.updateUser({
+      data: {
+        full_name: profileForm.fullName,
+        company: profileForm.company,
+        role: profileForm.role,
+        website: profileForm.website,
+      },
+    })
+
+    setIsSaving(false)
+    setSaveSuccess(true)
+    setTimeout(() => setSaveSuccess(false), 3000)
+  }
+
+  const handleDeleteAccount = async () => {
+    // In a real app, this would call an API to delete the account
+    console.log('Delete account requested')
+    setShowDeleteConfirm(false)
+  }
+
+  if (isLoading) {
+    return (
+      <div className="flex items-center justify-center h-[50vh]">
+        <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
+      </div>
+    )
+  }
+
+  const initials = profileForm.fullName
+    ? profileForm.fullName.split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2)
+    : user?.email?.slice(0, 2).toUpperCase() || 'U'
+
   const createdAt = user?.created_at
     ? new Date(user.created_at).toLocaleDateString('en-US', {
         year: 'numeric',
@@ -27,31 +99,55 @@ export default async function ProfilePage() {
         </p>
       </div>
 
+      {saveSuccess && (
+        <div className="rounded-lg bg-green-50 border border-green-200 p-3 flex items-center gap-2 text-green-700">
+          <Check className="h-4 w-4" />
+          <span className="text-sm">Profile updated successfully!</span>
+        </div>
+      )}
+
       <div className="grid gap-6 lg:grid-cols-3">
+        {/* Avatar Card */}
         <Card className="lg:col-span-1">
           <CardHeader>
             <CardTitle>Your Avatar</CardTitle>
             <CardDescription>Click to upload a new photo</CardDescription>
           </CardHeader>
           <CardContent className="flex flex-col items-center">
-            <Avatar className="h-24 w-24 mb-4">
-              <AvatarFallback className="bg-primary text-primary-foreground text-2xl">
-                {initials}
-              </AvatarFallback>
-            </Avatar>
-            <Button variant="outline" size="sm">
-              Change Avatar
-            </Button>
+            <div className="relative mb-4">
+              <Avatar className="h-24 w-24">
+                <AvatarImage src={user?.user_metadata?.avatar_url} />
+                <AvatarFallback className="bg-primary text-primary-foreground text-2xl">
+                  {initials}
+                </AvatarFallback>
+              </Avatar>
+              <button className="absolute bottom-0 right-0 p-1.5 rounded-full bg-primary text-primary-foreground shadow-lg hover:bg-primary/90 transition-colors">
+                <Camera className="h-4 w-4" />
+              </button>
+            </div>
+            <p className="text-sm font-medium">{profileForm.fullName || user?.email}</p>
+            <p className="text-xs text-muted-foreground">{user?.email}</p>
+            <p className="text-xs text-muted-foreground mt-2">Member since {createdAt}</p>
           </CardContent>
         </Card>
 
+        {/* Profile Form */}
         <Card className="lg:col-span-2">
           <CardHeader>
-            <CardTitle>Account Information</CardTitle>
-            <CardDescription>Your personal details</CardDescription>
+            <CardTitle>Profile Information</CardTitle>
+            <CardDescription>Update your personal details</CardDescription>
           </CardHeader>
           <CardContent className="space-y-4">
             <div className="grid gap-4 sm:grid-cols-2">
+              <div className="space-y-2">
+                <Label htmlFor="fullName">Full Name</Label>
+                <Input
+                  id="fullName"
+                  placeholder="John Doe"
+                  value={profileForm.fullName}
+                  onChange={(e) => setProfileForm({ ...profileForm, fullName: e.target.value })}
+                />
+              </div>
               <div className="space-y-2">
                 <Label htmlFor="email">Email</Label>
                 <Input
@@ -59,35 +155,150 @@ export default async function ProfilePage() {
                   type="email"
                   value={user?.email || ''}
                   disabled
+                  className="bg-muted"
+                />
+              </div>
+            </div>
+            <div className="grid gap-4 sm:grid-cols-2">
+              <div className="space-y-2">
+                <Label htmlFor="company">Company</Label>
+                <Input
+                  id="company"
+                  placeholder="Acme Inc."
+                  value={profileForm.company}
+                  onChange={(e) => setProfileForm({ ...profileForm, company: e.target.value })}
                 />
               </div>
               <div className="space-y-2">
-                <Label htmlFor="id">User ID</Label>
+                <Label htmlFor="role">Role</Label>
                 <Input
-                  id="id"
-                  value={user?.id || ''}
-                  disabled
-                  className="font-mono text-xs"
+                  id="role"
+                  placeholder="Software Engineer"
+                  value={profileForm.role}
+                  onChange={(e) => setProfileForm({ ...profileForm, role: e.target.value })}
                 />
               </div>
             </div>
             <div className="space-y-2">
-              <Label>Member Since</Label>
-              <p className="text-sm text-muted-foreground">{createdAt}</p>
+              <Label htmlFor="website">Website</Label>
+              <Input
+                id="website"
+                placeholder="https://example.com"
+                value={profileForm.website}
+                onChange={(e) => setProfileForm({ ...profileForm, website: e.target.value })}
+              />
             </div>
+            <Button onClick={handleSave} disabled={isSaving}>
+              {isSaving ? (
+                <>
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                  Saving...
+                </>
+              ) : (
+                'Save Changes'
+              )}
+            </Button>
           </CardContent>
         </Card>
       </div>
 
+      {/* Account Stats */}
       <Card>
         <CardHeader>
-          <CardTitle>Danger Zone</CardTitle>
+          <CardTitle>Account Statistics</CardTitle>
+          <CardDescription>Your activity on DevDudes</CardDescription>
+        </CardHeader>
+        <CardContent>
+          <div className="grid gap-4 sm:grid-cols-4">
+            <div className="rounded-lg border p-4 text-center">
+              <p className="text-2xl font-bold">0</p>
+              <p className="text-sm text-muted-foreground">Projects Created</p>
+            </div>
+            <div className="rounded-lg border p-4 text-center">
+              <p className="text-2xl font-bold">0</p>
+              <p className="text-sm text-muted-foreground">Apps Deployed</p>
+            </div>
+            <div className="rounded-lg border p-4 text-center">
+              <p className="text-2xl font-bold">0</p>
+              <p className="text-sm text-muted-foreground">Templates Used</p>
+            </div>
+            <div className="rounded-lg border p-4 text-center">
+              <p className="text-2xl font-bold">Free</p>
+              <p className="text-sm text-muted-foreground">Current Plan</p>
+            </div>
+          </div>
+        </CardContent>
+      </Card>
+
+      {/* Danger Zone */}
+      <Card className="border-red-200">
+        <CardHeader>
+          <CardTitle className="text-red-600">Danger Zone</CardTitle>
           <CardDescription>Irreversible account actions</CardDescription>
         </CardHeader>
         <CardContent>
-          <Button variant="destructive">Delete Account</Button>
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="font-medium">Delete Account</p>
+              <p className="text-sm text-muted-foreground">
+                Permanently delete your account and all associated data
+              </p>
+            </div>
+            <Button
+              variant="destructive"
+              onClick={() => setShowDeleteConfirm(true)}
+            >
+              Delete Account
+            </Button>
+          </div>
         </CardContent>
       </Card>
+
+      {/* Delete Confirmation Modal */}
+      {showDeleteConfirm && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50">
+          <Card className="w-full max-w-md">
+            <CardHeader>
+              <div className="flex items-center gap-3">
+                <div className="p-3 rounded-full bg-red-100">
+                  <AlertTriangle className="h-6 w-6 text-red-600" />
+                </div>
+                <div>
+                  <CardTitle>Delete Account</CardTitle>
+                  <CardDescription>This action cannot be undone</CardDescription>
+                </div>
+              </div>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <p className="text-sm text-muted-foreground">
+                Are you sure you want to delete your account? This will permanently remove:
+              </p>
+              <ul className="text-sm text-muted-foreground list-disc list-inside space-y-1">
+                <li>All your projects and generated apps</li>
+                <li>Your profile and account settings</li>
+                <li>All connected databases</li>
+                <li>API keys and integrations</li>
+              </ul>
+              <div className="flex gap-3">
+                <Button
+                  variant="outline"
+                  className="flex-1"
+                  onClick={() => setShowDeleteConfirm(false)}
+                >
+                  Cancel
+                </Button>
+                <Button
+                  variant="destructive"
+                  className="flex-1"
+                  onClick={handleDeleteAccount}
+                >
+                  Yes, Delete My Account
+                </Button>
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+      )}
     </div>
   )
 }
