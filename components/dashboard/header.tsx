@@ -13,6 +13,7 @@ import Link from 'next/link'
 import { User } from '@supabase/supabase-js'
 import { Bell, CreditCard, HelpCircle } from 'lucide-react'
 import { CommandPaletteHint } from '@/components/dashboard/command-palette'
+import { MobileNav } from '@/components/dashboard/mobile-nav'
 
 interface DashboardHeaderProps {
   user: User
@@ -23,10 +24,13 @@ export function DashboardHeader({ user }: DashboardHeaderProps) {
   const unreadNotifications = 2 // In a real app, this would come from the database
 
   return (
-    <header className="flex h-16 items-center justify-between border-b bg-background px-6">
-      <div>
-        <h1 className="text-lg font-semibold">Welcome back</h1>
-        <p className="text-sm text-muted-foreground">{user.email}</p>
+    <header className="flex h-16 items-center justify-between border-b bg-background px-4 lg:px-6">
+      <div className="flex items-center gap-4">
+        <MobileNav />
+        <div className="hidden sm:block">
+          <h1 className="text-lg font-semibold">Welcome back</h1>
+          <p className="text-sm text-muted-foreground">{user.email}</p>
+        </div>
       </div>
       <div className="flex items-center gap-3">
         {/* Search / Command Palette */}
