@@ -3,6 +3,7 @@ import { redirect } from 'next/navigation'
 import { Sidebar } from '@/components/dashboard/sidebar'
 import { DashboardHeader } from '@/components/dashboard/header'
 import { CommandPalette } from '@/components/dashboard/command-palette'
+import { KeyboardShortcuts } from '@/components/dashboard/keyboard-shortcuts'
 
 export default async function ProtectedLayout({
   children,
@@ -26,6 +27,7 @@ export default async function ProtectedLayout({
         </main>
       </div>
       <CommandPalette />
+      <KeyboardShortcuts />
     </div>
   )
 }
