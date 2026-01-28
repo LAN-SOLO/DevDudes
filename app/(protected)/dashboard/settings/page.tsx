@@ -6,6 +6,16 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Switch } from '@/components/ui/switch'
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from '@/components/ui/dialog'
+import { DeleteConfirmDialog } from '@/components/ui/confirm-dialog'
+import { useToast } from '@/components/ui/toast'
 import { Sun, Moon, Monitor, Check, Loader2, Eye, EyeOff, Copy, Key, Trash2 } from 'lucide-react'
 import { useTheme } from '@/components/theme-provider'
 
@@ -21,6 +31,7 @@ interface ApiKey {
 
 export default function SettingsPage() {
   const { theme, setTheme } = useTheme()
+  const { addToast } = useToast()
   const [notifications, setNotifications] = useState({
     email: true,
     marketing: false,
@@ -38,7 +49,6 @@ export default function SettingsPage() {
     confirm: false,
   })
   const [isUpdatingPassword, setIsUpdatingPassword] = useState(false)
-  const [passwordSuccess, setPasswordSuccess] = useState(false)
   const [apiKeys, setApiKeys] = useState<ApiKey[]>([
     {
       id: '1',
@@ -51,6 +61,7 @@ export default function SettingsPage() {
   const [isGeneratingKey, setIsGeneratingKey] = useState(false)
   const [newKeyName, setNewKeyName] = useState('')
   const [showNewKeyModal, setShowNewKeyModal] = useState(false)
+  const [keyToDelete, setKeyToDelete] = useState<ApiKey | null>(null)
 
   const handlePasswordUpdate = async () => {
     if (passwordForm.new !== passwordForm.confirm) return
@@ -59,10 +70,13 @@ export default function SettingsPage() {
     // Simulate API call
     await new Promise(resolve => setTimeout(resolve, 1500))
     setIsUpdatingPassword(false)
-    setPasswordSuccess(true)
     setPasswordForm({ current: '', new: '', confirm: '' })
 
-    setTimeout(() => setPasswordSuccess(false), 3000)
+    addToast({
+      type: 'success',
+      title: 'Password updated',
+      description: 'Your password has been changed successfully.',
+    })
   }
 
   const generateApiKey = async () => {
@@ -82,14 +96,31 @@ export default function SettingsPage() {
     setIsGeneratingKey(false)
     setShowNewKeyModal(false)
     setNewKeyName('')
+
+    addToast({
+      type: 'success',
+      title: 'API key created',
+      description: `"${newKey.name}" has been generated.`,
+    })
   }
 
-  const deleteApiKey = (id: string) => {
-    setApiKeys(apiKeys.filter(k => k.id !== id))
+  const deleteApiKey = (key: ApiKey) => {
+    setApiKeys(apiKeys.filter(k => k.id !== key.id))
+    setKeyToDelete(null)
+    addToast({
+      type: 'success',
+      title: 'API key deleted',
+      description: `"${key.name}" has been removed.`,
+    })
   }
 
   const copyToClipboard = (text: string) => {
     navigator.clipboard.writeText(text)
+    addToast({
+      type: 'info',
+      title: 'Copied',
+      description: 'API key copied to clipboard.',
+    })
   }
 
   return (
@@ -201,12 +232,6 @@ export default function SettingsPage() {
           <CardDescription>Update your password</CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
-          {passwordSuccess && (
-            <div className="rounded-lg bg-green-50 border border-green-200 p-3 flex items-center gap-2 text-green-700">
-              <Check className="h-4 w-4" />
-              <span className="text-sm">Password updated successfully!</span>
-            </div>
-          )}
           <div className="space-y-2">
             <Label htmlFor="current">Current Password</Label>
             <div className="relative">
@@ -332,7 +357,7 @@ export default function SettingsPage() {
                     variant="ghost"
                     size="icon"
                     className="text-red-500 hover:text-red-600 hover:bg-red-50"
-                    onClick={() => deleteApiKey(key.id)}
+                    onClick={() => setKeyToDelete(key)}
                   >
                     <Trash2 className="h-4 w-4" />
                   </Button>
@@ -343,53 +368,59 @@ export default function SettingsPage() {
         </CardContent>
       </Card>
 
-      {/* Generate Key Modal */}
-      {showNewKeyModal && (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50">
-          <Card className="w-full max-w-md">
-            <CardHeader>
-              <CardTitle>Generate API Key</CardTitle>
-              <CardDescription>Create a new API key for integrations</CardDescription>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              <div className="space-y-2">
-                <Label htmlFor="keyName">Key Name</Label>
-                <Input
-                  id="keyName"
-                  placeholder="e.g., Production, Development"
-                  value={newKeyName}
-                  onChange={(e) => setNewKeyName(e.target.value)}
-                />
-              </div>
-              <div className="flex gap-3">
-                <Button
-                  variant="outline"
-                  className="flex-1"
-                  onClick={() => {
-                    setShowNewKeyModal(false)
-                    setNewKeyName('')
-                  }}
-                >
-                  Cancel
-                </Button>
-                <Button
-                  className="flex-1"
-                  onClick={generateApiKey}
-                  disabled={!newKeyName || isGeneratingKey}
-                >
-                  {isGeneratingKey ? (
-                    <>
-                      <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                      Generating...
-                    </>
-                  ) : (
-                    'Generate'
-                  )}
-                </Button>
-              </div>
-            </CardContent>
-          </Card>
-        </div>
+      {/* Generate Key Dialog */}
+      <Dialog open={showNewKeyModal} onOpenChange={setShowNewKeyModal}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Generate API Key</DialogTitle>
+            <DialogDescription>Create a new API key for integrations</DialogDescription>
+          </DialogHeader>
+          <div className="space-y-4 py-4">
+            <div className="space-y-2">
+              <Label htmlFor="keyName">Key Name</Label>
+              <Input
+                id="keyName"
+                placeholder="e.g., Production, Development"
+                value={newKeyName}
+                onChange={(e) => setNewKeyName(e.target.value)}
+              />
+            </div>
+          </div>
+          <DialogFooter>
+            <Button
+              variant="outline"
+              onClick={() => {
+                setShowNewKeyModal(false)
+                setNewKeyName('')
+              }}
+            >
+              Cancel
+            </Button>
+            <Button
+              onClick={generateApiKey}
+              disabled={!newKeyName || isGeneratingKey}
+            >
+              {isGeneratingKey ? (
+                <>
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                  Generating...
+                </>
+              ) : (
+                'Generate'
+              )}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* Delete API Key Confirmation */}
+      {keyToDelete && (
+        <DeleteConfirmDialog
+          open={true}
+          onOpenChange={(open) => !open && setKeyToDelete(null)}
+          itemName={`API key "${keyToDelete.name}"`}
+          onConfirm={() => deleteApiKey(keyToDelete)}
+        />
       )}
     </div>
   )

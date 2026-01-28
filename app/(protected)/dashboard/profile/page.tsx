@@ -6,16 +6,19 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
+import { ConfirmDialog } from '@/components/ui/confirm-dialog'
+import { useToast } from '@/components/ui/toast'
 import { createClient } from '@/lib/supabase/client'
-import { Loader2, Check, Camera, AlertTriangle } from 'lucide-react'
+import { Loader2, Camera } from 'lucide-react'
 import type { User } from '@supabase/supabase-js'
 
 export default function ProfilePage() {
   const [user, setUser] = useState<User | null>(null)
   const [isLoading, setIsLoading] = useState(true)
   const [isSaving, setIsSaving] = useState(false)
-  const [saveSuccess, setSaveSuccess] = useState(false)
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false)
+  const [isDeleting, setIsDeleting] = useState(false)
+  const { addToast } = useToast()
   const [profileForm, setProfileForm] = useState({
     fullName: '',
     company: '',
@@ -50,7 +53,7 @@ export default function ProfilePage() {
     setIsSaving(true)
     const supabase = createClient()
 
-    await supabase.auth.updateUser({
+    const { error } = await supabase.auth.updateUser({
       data: {
         full_name: profileForm.fullName,
         company: profileForm.company,
@@ -60,14 +63,33 @@ export default function ProfilePage() {
     })
 
     setIsSaving(false)
-    setSaveSuccess(true)
-    setTimeout(() => setSaveSuccess(false), 3000)
+
+    if (error) {
+      addToast({
+        type: 'error',
+        title: 'Error',
+        description: error.message,
+      })
+    } else {
+      addToast({
+        type: 'success',
+        title: 'Profile updated',
+        description: 'Your profile has been saved successfully.',
+      })
+    }
   }
 
   const handleDeleteAccount = async () => {
+    setIsDeleting(true)
     // In a real app, this would call an API to delete the account
-    console.log('Delete account requested')
+    await new Promise(resolve => setTimeout(resolve, 1000))
+    setIsDeleting(false)
     setShowDeleteConfirm(false)
+    addToast({
+      type: 'info',
+      title: 'Account deletion requested',
+      description: 'Your request has been submitted. Check your email for confirmation.',
+    })
   }
 
   if (isLoading) {
@@ -98,13 +120,6 @@ export default function ProfilePage() {
           Manage your account information
         </p>
       </div>
-
-      {saveSuccess && (
-        <div className="rounded-lg bg-green-50 border border-green-200 p-3 flex items-center gap-2 text-green-700">
-          <Check className="h-4 w-4" />
-          <span className="text-sm">Profile updated successfully!</span>
-        </div>
-      )}
 
       <div className="grid gap-6 lg:grid-cols-3">
         {/* Avatar Card */}
@@ -254,51 +269,17 @@ export default function ProfilePage() {
         </CardContent>
       </Card>
 
-      {/* Delete Confirmation Modal */}
-      {showDeleteConfirm && (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50">
-          <Card className="w-full max-w-md">
-            <CardHeader>
-              <div className="flex items-center gap-3">
-                <div className="p-3 rounded-full bg-red-100">
-                  <AlertTriangle className="h-6 w-6 text-red-600" />
-                </div>
-                <div>
-                  <CardTitle>Delete Account</CardTitle>
-                  <CardDescription>This action cannot be undone</CardDescription>
-                </div>
-              </div>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              <p className="text-sm text-muted-foreground">
-                Are you sure you want to delete your account? This will permanently remove:
-              </p>
-              <ul className="text-sm text-muted-foreground list-disc list-inside space-y-1">
-                <li>All your projects and generated apps</li>
-                <li>Your profile and account settings</li>
-                <li>All connected databases</li>
-                <li>API keys and integrations</li>
-              </ul>
-              <div className="flex gap-3">
-                <Button
-                  variant="outline"
-                  className="flex-1"
-                  onClick={() => setShowDeleteConfirm(false)}
-                >
-                  Cancel
-                </Button>
-                <Button
-                  variant="destructive"
-                  className="flex-1"
-                  onClick={handleDeleteAccount}
-                >
-                  Yes, Delete My Account
-                </Button>
-              </div>
-            </CardContent>
-          </Card>
-        </div>
-      )}
+      {/* Delete Account Confirmation */}
+      <ConfirmDialog
+        open={showDeleteConfirm}
+        onOpenChange={setShowDeleteConfirm}
+        title="Delete your account?"
+        description="This action cannot be undone. This will permanently delete your account, all your projects and generated apps, profile settings, connected databases, and API keys."
+        confirmLabel="Delete Account"
+        variant="destructive"
+        loading={isDeleting}
+        onConfirm={handleDeleteAccount}
+      />
     </div>
   )
 }
