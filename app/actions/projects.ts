@@ -15,7 +15,7 @@ const updateProjectSchema = z.object({
   name: z.string().min(1).max(100).optional(),
   description: z.string().max(500).optional(),
   status: z.enum(['draft', 'configuring', 'generating', 'ready', 'deployed', 'archived']).optional(),
-  preset_config: z.record(z.unknown()).optional(),
+  preset_config: z.record(z.string(), z.unknown()).optional(),
 })
 
 export async function getProjects() {
@@ -75,7 +75,7 @@ export async function createProject(formData: FormData) {
 
   const result = createProjectSchema.safeParse(rawData)
   if (!result.success) {
-    return { error: result.error.errors[0]?.message || 'Invalid input' }
+    return { error: result.error.issues[0]?.message || 'Invalid input' }
   }
 
   const { data, error } = await supabase
@@ -116,7 +116,7 @@ export async function updateProject(id: string, formData: FormData) {
 
   const result = updateProjectSchema.safeParse(rawData)
   if (!result.success) {
-    return { error: result.error.errors[0]?.message || 'Invalid input' }
+    return { error: result.error.issues[0]?.message || 'Invalid input' }
   }
 
   const { error } = await supabase

@@ -75,7 +75,7 @@ export async function savePresetConfig(projectId: string | null, config: PresetC
 
   const result = presetConfigSchema.safeParse(config)
   if (!result.success) {
-    return { error: result.error.errors[0]?.message || 'Invalid configuration', projectId: null }
+    return { error: result.error.issues[0]?.message || 'Invalid configuration', projectId: null }
   }
 
   // If no project ID, create a new project

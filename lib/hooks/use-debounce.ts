@@ -22,7 +22,7 @@ export function useDebouncedCallback<T extends (...args: Parameters<T>) => Retur
   callback: T,
   delay: number
 ): (...args: Parameters<T>) => void {
-  const timeoutRef = useRef<NodeJS.Timeout>()
+  const timeoutRef = useRef<NodeJS.Timeout | null>(null)
 
   const debouncedCallback = useCallback(
     (...args: Parameters<T>) => {

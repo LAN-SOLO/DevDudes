@@ -59,7 +59,7 @@ export async function updateProfile(formData: FormData) {
 
   const result = updateProfileSchema.safeParse(rawData)
   if (!result.success) {
-    return { error: result.error.errors[0]?.message || 'Invalid input' }
+    return { error: result.error.issues[0]?.message || 'Invalid input' }
   }
 
   const { error } = await supabase

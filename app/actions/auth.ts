@@ -21,7 +21,7 @@ export async function login(formData: FormData) {
   // Validate input
   const result = loginSchema.safeParse(rawData)
   if (!result.success) {
-    const error = result.error.errors[0]?.message || 'Invalid input'
+    const error = result.error.issues[0]?.message || 'Invalid input'
     redirect('/login?error=' + encodeURIComponent(error))
   }
 
@@ -45,7 +45,7 @@ export async function signup(formData: FormData) {
   // Validate input
   const result = signupSchema.safeParse(rawData)
   if (!result.success) {
-    const error = result.error.errors[0]?.message || 'Invalid input'
+    const error = result.error.issues[0]?.message || 'Invalid input'
     redirect('/signup?error=' + encodeURIComponent(error))
   }
 
@@ -68,7 +68,7 @@ export async function resetPassword(formData: FormData) {
   // Validate input
   const result = resetPasswordSchema.safeParse(rawData)
   if (!result.success) {
-    const error = result.error.errors[0]?.message || 'Invalid input'
+    const error = result.error.issues[0]?.message || 'Invalid input'
     redirect('/reset-password?error=' + encodeURIComponent(error))
   }
 
@@ -97,7 +97,7 @@ export async function updatePassword(formData: FormData) {
   // Validate input
   const result = updatePasswordSchema.safeParse(rawData)
   if (!result.success) {
-    const error = result.error.errors[0]?.message || 'Invalid input'
+    const error = result.error.issues[0]?.message || 'Invalid input'
     redirect('/update-password?error=' + encodeURIComponent(error))
   }
 

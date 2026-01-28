@@ -60,7 +60,7 @@ export default function TeamPage() {
   ])
   const [invitations, setInvitations] = useState<Invitation[]>([])
   const [showInviteModal, setShowInviteModal] = useState(false)
-  const [inviteForm, setInviteForm] = useState({ email: '', role: 'member' as const })
+  const [inviteForm, setInviteForm] = useState<{ email: string; role: 'admin' | 'member' }>({ email: '', role: 'member' })
   const [isSending, setIsSending] = useState(false)
   const [showUpgradeModal, setShowUpgradeModal] = useState(false)
   const currentPlan = 'free' // In a real app, this would come from the user's subscription

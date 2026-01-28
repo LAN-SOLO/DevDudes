@@ -1,7 +1,7 @@
 'use client'
 
 import * as React from 'react'
-import { Upload, X, File, Image, FileText, FileArchive, AlertCircle } from 'lucide-react'
+import { Upload, X, File, Image as ImageIcon, FileText, FileArchive, AlertCircle } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { Button } from '@/components/ui/button'
 import { Progress } from '@/components/ui/progress'
@@ -230,6 +230,7 @@ export function FileUpload({
               className="flex items-center gap-3 p-3 rounded-lg border bg-muted/30"
             >
               {file.preview ? (
+                // eslint-disable-next-line @next/next/no-img-element
                 <img
                   src={file.preview}
                   alt={file.name}
@@ -287,7 +288,7 @@ export function FileUpload({
 // Helper component for file type icons
 function FileIcon({ type }: { type: string }) {
   if (type.startsWith('image/')) {
-    return <Image className="h-5 w-5 text-muted-foreground" />
+    return <ImageIcon className="h-5 w-5 text-muted-foreground" />
   }
   if (type.startsWith('text/') || type.includes('document')) {
     return <FileText className="h-5 w-5 text-muted-foreground" />
@@ -373,7 +374,8 @@ export function AvatarUpload({
           className="sr-only"
         />
         {preview ? (
-          <img src={preview} alt="Avatar" className="h-full w-full object-cover" />
+          // eslint-disable-next-line @next/next/no-img-element
+          <img src={preview} alt="Avatar preview" className="h-full w-full object-cover" />
         ) : (
           <Upload className="h-6 w-6 text-muted-foreground" />
         )}

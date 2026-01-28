@@ -73,8 +73,8 @@ export default async function ProjectPage({
 
   const progress = getPipelineProgress(project.status)
   const nextStep = getNextStep(project.status)
-  const presetConfig = project.preset_config as Record<string, unknown> | null
-  const generatedConcept = project.generated_concept as Record<string, unknown> | null
+  const presetConfig = (project.preset_config ?? {}) as Record<string, unknown>
+  const generatedConcept = (project.generated_concept ?? {}) as Record<string, unknown>
 
   // Mock activity data - in a real app this would come from a database
   const activities = [
@@ -249,34 +249,34 @@ export default async function ProjectPage({
               </CardHeader>
               <CardContent>
                 <div className="grid gap-3 sm:grid-cols-2">
-                  {presetConfig.appName && (
+                  {Boolean(presetConfig.appName) && (
                     <div className="rounded-lg border p-3">
                       <p className="text-xs text-muted-foreground">App Name</p>
                       <p className="text-sm font-medium">{String(presetConfig.appName)}</p>
                     </div>
                   )}
-                  {presetConfig.industry && (
+                  {Boolean(presetConfig.industry) && (
                     <div className="rounded-lg border p-3">
                       <p className="text-xs text-muted-foreground">Industry</p>
                       <p className="text-sm font-medium">{String(presetConfig.industry)}</p>
                     </div>
                   )}
-                  {presetConfig.authMethods && (
+                  {Boolean(presetConfig.authMethods) && (
                     <div className="rounded-lg border p-3">
                       <p className="text-xs text-muted-foreground">Auth Methods</p>
                       <p className="text-sm font-medium">
                         {Array.isArray(presetConfig.authMethods)
-                          ? presetConfig.authMethods.join(', ')
+                          ? (presetConfig.authMethods as string[]).join(', ')
                           : String(presetConfig.authMethods)}
                       </p>
                     </div>
                   )}
-                  {presetConfig.features && (
+                  {Boolean(presetConfig.features) && (
                     <div className="rounded-lg border p-3">
                       <p className="text-xs text-muted-foreground">Features</p>
                       <p className="text-sm font-medium">
                         {Array.isArray(presetConfig.features)
-                          ? `${presetConfig.features.length} selected`
+                          ? `${(presetConfig.features as unknown[]).length} selected`
                           : String(presetConfig.features)}
                       </p>
                     </div>
@@ -287,7 +287,7 @@ export default async function ProjectPage({
           )}
 
           {/* Generated Concept Preview */}
-          {generatedConcept && Object.keys(generatedConcept).length > 0 && (
+          {Object.keys(generatedConcept).length > 0 && (
             <Card>
               <CardHeader>
                 <CardTitle>Generated Concept</CardTitle>
@@ -295,7 +295,7 @@ export default async function ProjectPage({
               </CardHeader>
               <CardContent>
                 <div className="space-y-4">
-                  {generatedConcept.architecture && (
+                  {Boolean(generatedConcept.architecture) && (
                     <div>
                       <p className="text-sm font-medium mb-2">Architecture</p>
                       <p className="text-sm text-muted-foreground">
@@ -305,11 +305,11 @@ export default async function ProjectPage({
                       </p>
                     </div>
                   )}
-                  {generatedConcept.pages && Array.isArray(generatedConcept.pages) && (
+                  {Array.isArray(generatedConcept.pages) && (generatedConcept.pages as unknown[]).length > 0 && (
                     <div>
-                      <p className="text-sm font-medium mb-2">Pages ({generatedConcept.pages.length})</p>
+                      <p className="text-sm font-medium mb-2">Pages ({(generatedConcept.pages as unknown[]).length})</p>
                       <div className="flex flex-wrap gap-2">
-                        {generatedConcept.pages.slice(0, 8).map((page, i) => (
+                        {(generatedConcept.pages as unknown[]).slice(0, 8).map((page, i) => (
                           <span
                             key={i}
                             className="px-2 py-1 text-xs rounded-md bg-muted"
@@ -317,9 +317,9 @@ export default async function ProjectPage({
                             {typeof page === 'string' ? page : (page as { name?: string }).name || `Page ${i + 1}`}
                           </span>
                         ))}
-                        {generatedConcept.pages.length > 8 && (
+                        {(generatedConcept.pages as unknown[]).length > 8 && (
                           <span className="px-2 py-1 text-xs rounded-md bg-muted text-muted-foreground">
-                            +{generatedConcept.pages.length - 8} more
+                            +{(generatedConcept.pages as unknown[]).length - 8} more
                           </span>
                         )}
                       </div>
