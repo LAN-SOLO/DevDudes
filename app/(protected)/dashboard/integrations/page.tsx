@@ -4,6 +4,8 @@ import { useState } from 'react'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
+import { ConfirmDialog } from '@/components/ui/confirm-dialog'
+import { useToast } from '@/components/ui/toast'
 import {
   Github,
   Slack,
@@ -131,9 +133,11 @@ const categories = [
 ]
 
 export default function IntegrationsPage() {
+  const { addToast } = useToast()
   const [selectedCategory, setSelectedCategory] = useState('all')
   const [connectingId, setConnectingId] = useState<string | null>(null)
   const [connectedIntegrations, setConnectedIntegrations] = useState<string[]>(['vercel'])
+  const [disconnectTarget, setDisconnectTarget] = useState<Integration | null>(null)
 
   const filteredIntegrations = integrations.filter(
     (integration) =>
@@ -141,18 +145,29 @@ export default function IntegrationsPage() {
   )
 
   const handleConnect = async (integrationId: string) => {
+    const integration = integrations.find(i => i.id === integrationId)
     setConnectingId(integrationId)
-    // Simulate API call
     await new Promise((resolve) => setTimeout(resolve, 1500))
     setConnectedIntegrations([...connectedIntegrations, integrationId])
     setConnectingId(null)
+    addToast({
+      type: 'success',
+      title: 'Connected',
+      description: `${integration?.name || 'Integration'} has been connected successfully`,
+    })
   }
 
-  const handleDisconnect = async (integrationId: string) => {
-    setConnectingId(integrationId)
+  const handleDisconnect = async (integration: Integration) => {
+    setConnectingId(integration.id)
     await new Promise((resolve) => setTimeout(resolve, 1000))
-    setConnectedIntegrations(connectedIntegrations.filter((id) => id !== integrationId))
+    setConnectedIntegrations(connectedIntegrations.filter((id) => id !== integration.id))
     setConnectingId(null)
+    setDisconnectTarget(null)
+    addToast({
+      type: 'info',
+      title: 'Disconnected',
+      description: `${integration.name} has been disconnected`,
+    })
   }
 
   const connectedCount = connectedIntegrations.length
@@ -292,7 +307,7 @@ export default function IntegrationsPage() {
                         variant="outline"
                         size="sm"
                         className="flex-1"
-                        onClick={() => handleDisconnect(integration.id)}
+                        onClick={() => setDisconnectTarget(integration)}
                         disabled={isConnecting}
                       >
                         {isConnecting ? (
@@ -352,6 +367,20 @@ export default function IntegrationsPage() {
           </div>
         </CardContent>
       </Card>
+
+      {/* Disconnect Confirmation */}
+      {disconnectTarget && (
+        <ConfirmDialog
+          open={true}
+          onOpenChange={(open) => !open && setDisconnectTarget(null)}
+          title={`Disconnect ${disconnectTarget.name}?`}
+          description={`This will remove the ${disconnectTarget.name} integration. You can reconnect it at any time.`}
+          confirmLabel="Disconnect"
+          variant="destructive"
+          loading={connectingId === disconnectTarget.id}
+          onConfirm={() => handleDisconnect(disconnectTarget)}
+        />
+      )}
     </div>
   )
 }
