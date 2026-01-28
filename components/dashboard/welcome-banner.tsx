@@ -1,6 +1,6 @@
 'use client'
 
-import { useMemo, useSyncExternalStore } from 'react'
+import { useMemo, useSyncExternalStore, useCallback, useRef } from 'react'
 import Link from 'next/link'
 import { Card, CardContent } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
@@ -25,29 +25,44 @@ interface Step {
 
 // Custom hook to sync with localStorage
 function useLocalStorage<T>(key: string, initialValue: T): [T, (value: T) => void] {
-  const subscribe = (callback: () => void) => {
+  // Cache the last known value to ensure stable references
+  const cachedValue = useRef<{ key: string; value: T } | null>(null)
+
+  const subscribe = useCallback((callback: () => void) => {
     window.addEventListener('storage', callback)
     return () => window.removeEventListener('storage', callback)
-  }
+  }, [])
 
-  const getSnapshot = () => {
+  const getSnapshot = useCallback(() => {
     try {
       const item = localStorage.getItem(key)
-      return item ? JSON.parse(item) : initialValue
+      const parsed = item ? JSON.parse(item) : initialValue
+
+      // Return cached value if it's the same to maintain referential equality
+      if (
+        cachedValue.current?.key === key &&
+        JSON.stringify(cachedValue.current.value) === JSON.stringify(parsed)
+      ) {
+        return cachedValue.current.value
+      }
+
+      cachedValue.current = { key, value: parsed }
+      return parsed
     } catch {
       return initialValue
     }
-  }
+  }, [key, initialValue])
 
-  const getServerSnapshot = () => initialValue
+  const getServerSnapshot = useCallback(() => initialValue, [initialValue])
 
   const value = useSyncExternalStore(subscribe, getSnapshot, getServerSnapshot)
 
-  const setValue = (newValue: T) => {
+  const setValue = useCallback((newValue: T) => {
     localStorage.setItem(key, JSON.stringify(newValue))
+    cachedValue.current = { key, value: newValue }
     // Dispatch storage event to trigger re-render
     window.dispatchEvent(new Event('storage'))
-  }
+  }, [key])
 
   return [value, setValue]
 }

@@ -89,28 +89,34 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
   // Calculate resolved theme
   const resolvedTheme = theme === 'system' ? getSystemTheme() : theme
 
-  // Apply theme on mount and when theme changes
-  useSyncExternalStore(
-    useCallback((callback: () => void) => {
-      // Apply theme immediately
-      applyTheme(theme)
+  // Apply theme on mount and when theme changes using useEffect instead
+  // This avoids the useSyncExternalStore infinite loop issue
+  const subscribeToSystemTheme = useCallback((callback: () => void) => {
+    // Apply theme immediately
+    applyTheme(theme)
 
-      // Listen for system theme changes
-      if (typeof window !== 'undefined') {
-        const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)')
-        const handleChange = () => {
-          if (currentTheme === 'system') {
-            applyTheme('system')
-            callback()
-          }
+    // Listen for system theme changes
+    if (typeof window !== 'undefined') {
+      const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)')
+      const handleChange = () => {
+        if (currentTheme === 'system') {
+          applyTheme('system')
+          callback()
         }
-        mediaQuery.addEventListener('change', handleChange)
-        return () => mediaQuery.removeEventListener('change', handleChange)
       }
-      return () => {}
-    }, [theme]),
-    () => resolvedTheme,
-    () => 'light' as const
+      mediaQuery.addEventListener('change', handleChange)
+      return () => mediaQuery.removeEventListener('change', handleChange)
+    }
+    return () => {}
+  }, [theme])
+
+  const getResolvedSnapshot = useCallback(() => resolvedTheme, [resolvedTheme])
+  const getResolvedServerSnapshot = useCallback(() => 'light' as const, [])
+
+  useSyncExternalStore(
+    subscribeToSystemTheme,
+    getResolvedSnapshot,
+    getResolvedServerSnapshot
   )
 
   return (
