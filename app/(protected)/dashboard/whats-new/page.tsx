@@ -26,6 +26,22 @@ interface ChangelogEntry {
 
 const changelog: ChangelogEntry[] = [
   {
+    version: '1.5.0',
+    date: 'January 28, 2026',
+    title: 'Keyboard Shortcuts & UX Polish',
+    description: 'Navigate faster with keyboard shortcuts and enjoy consistent dialog patterns across the app.',
+    highlights: ['Keyboard Navigation', 'Loading States', 'Consistent Dialogs'],
+    changes: [
+      { type: 'feature', text: 'Global keyboard shortcuts: G+D (Dashboard), G+P (Projects), G+S (Settings)' },
+      { type: 'feature', text: 'Press N to create new project from anywhere' },
+      { type: 'feature', text: 'Press ? to view all keyboard shortcuts' },
+      { type: 'feature', text: 'Cmd+Shift+T to toggle dark/light theme' },
+      { type: 'feature', text: 'Loading skeletons for projects, notifications, and activity pages' },
+      { type: 'improvement', text: 'Profile and settings pages use standard dialog components' },
+      { type: 'improvement', text: 'API key deletion requires confirmation' },
+    ],
+  },
+  {
     version: '1.4.0',
     date: 'January 28, 2026',
     title: 'Project Management & Confirmations',
