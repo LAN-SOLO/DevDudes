@@ -11,21 +11,29 @@ interface Shortcut {
 }
 
 const shortcuts: Shortcut[] = [
+  // General
+  { keys: ['⌘', 'K'], description: 'Open command palette', category: 'General' },
+  { keys: ['?'], description: 'Show keyboard shortcuts', category: 'General' },
+  { keys: ['Esc'], description: 'Close modal / Cancel', category: 'General' },
+  { keys: ['⌘', '⇧', 'T'], description: 'Toggle dark/light theme', category: 'General' },
+
   // Navigation
-  { keys: ['⌘', 'K'], description: 'Open command palette', category: 'Navigation' },
   { keys: ['G', 'D'], description: 'Go to Dashboard', category: 'Navigation' },
   { keys: ['G', 'P'], description: 'Go to Projects', category: 'Navigation' },
   { keys: ['G', 'T'], description: 'Go to Templates', category: 'Navigation' },
   { keys: ['G', 'S'], description: 'Go to Settings', category: 'Navigation' },
+  { keys: ['G', 'N'], description: 'Go to Notifications', category: 'Navigation' },
+  { keys: ['G', 'A'], description: 'Go to Activity', category: 'Navigation' },
+  { keys: ['G', 'H'], description: 'Go to Help', category: 'Navigation' },
 
   // Actions
   { keys: ['N'], description: 'New project', category: 'Actions' },
   { keys: ['⌘', 'S'], description: 'Save changes', category: 'Actions' },
   { keys: ['⌘', 'Enter'], description: 'Submit form', category: 'Actions' },
 
-  // General
-  { keys: ['?'], description: 'Show keyboard shortcuts', category: 'General' },
-  { keys: ['Esc'], description: 'Close modal / Cancel', category: 'General' },
+  // Command Palette
+  { keys: ['↑', '↓'], description: 'Navigate items', category: 'Command Palette' },
+  { keys: ['Enter'], description: 'Select item', category: 'Command Palette' },
 ]
 
 export function KeyboardShortcuts() {
@@ -128,4 +136,74 @@ export function KeyboardShortcuts() {
       </div>
     </>
   )
+}
+
+// Global keyboard navigation handler
+export function GlobalKeyboardNav() {
+  useEffect(() => {
+    let keySequence = ''
+    let sequenceTimeout: NodeJS.Timeout
+
+    const handleKeyDown = (e: KeyboardEvent) => {
+      // Don't trigger if user is typing in an input
+      const target = e.target as HTMLElement
+      if (target.tagName === 'INPUT' || target.tagName === 'TEXTAREA') {
+        return
+      }
+
+      // Handle G + letter navigation sequences
+      if (e.key.toLowerCase() === 'g' && !e.metaKey && !e.ctrlKey) {
+        keySequence = 'g'
+        clearTimeout(sequenceTimeout)
+        sequenceTimeout = setTimeout(() => {
+          keySequence = ''
+        }, 500)
+        return
+      }
+
+      if (keySequence === 'g') {
+        const key = e.key.toLowerCase()
+        const routes: Record<string, string> = {
+          d: '/dashboard',
+          p: '/dashboard/projects',
+          s: '/dashboard/settings',
+          n: '/dashboard/notifications',
+          a: '/dashboard/activity',
+          t: '/dashboard/templates',
+          h: '/dashboard/help',
+        }
+
+        if (routes[key]) {
+          e.preventDefault()
+          window.location.href = routes[key]
+        }
+        keySequence = ''
+        return
+      }
+
+      // Handle single key shortcuts (only when not in sequence)
+      if (!keySequence) {
+        // New project with N
+        if (e.key === 'n' && !e.metaKey && !e.ctrlKey && !e.shiftKey) {
+          e.preventDefault()
+          window.location.href = '/dashboard/pipeline/preset'
+          return
+        }
+      }
+
+      // Toggle theme with Cmd+Shift+T
+      if ((e.metaKey || e.ctrlKey) && e.shiftKey && e.key.toLowerCase() === 't') {
+        e.preventDefault()
+        document.dispatchEvent(new CustomEvent('toggle-theme'))
+      }
+    }
+
+    document.addEventListener('keydown', handleKeyDown)
+    return () => {
+      document.removeEventListener('keydown', handleKeyDown)
+      clearTimeout(sequenceTimeout)
+    }
+  }, [])
+
+  return null
 }

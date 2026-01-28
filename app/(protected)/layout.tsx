@@ -3,7 +3,7 @@ import { redirect } from 'next/navigation'
 import { Sidebar } from '@/components/dashboard/sidebar'
 import { DashboardHeader } from '@/components/dashboard/header'
 import { CommandPalette } from '@/components/dashboard/command-palette'
-import { KeyboardShortcuts } from '@/components/dashboard/keyboard-shortcuts'
+import { KeyboardShortcuts, GlobalKeyboardNav } from '@/components/dashboard/keyboard-shortcuts'
 import { ToastProvider } from '@/components/ui/toast'
 
 export default async function ProtectedLayout({
@@ -30,6 +30,7 @@ export default async function ProtectedLayout({
         </div>
         <CommandPalette />
         <KeyboardShortcuts />
+        <GlobalKeyboardNav />
       </div>
     </ToastProvider>
   )

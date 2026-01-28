@@ -1,6 +1,6 @@
 'use client'
 
-import { createContext, useContext, useCallback, useSyncExternalStore } from 'react'
+import { createContext, useContext, useCallback, useSyncExternalStore, useEffect } from 'react'
 
 type Theme = 'light' | 'dark' | 'system'
 
@@ -118,6 +118,17 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
     getResolvedSnapshot,
     getResolvedServerSnapshot
   )
+
+  // Listen for toggle-theme custom event (from keyboard shortcuts)
+  useEffect(() => {
+    const handleToggleTheme = () => {
+      const newTheme = resolvedTheme === 'dark' ? 'light' : 'dark'
+      setTheme(newTheme)
+    }
+
+    document.addEventListener('toggle-theme', handleToggleTheme)
+    return () => document.removeEventListener('toggle-theme', handleToggleTheme)
+  }, [resolvedTheme, setTheme])
 
   return (
     <ThemeContext.Provider value={{ theme, setTheme, resolvedTheme }}>
