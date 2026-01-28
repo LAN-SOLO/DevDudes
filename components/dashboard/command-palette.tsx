@@ -20,6 +20,8 @@ import {
   Plus,
   ArrowRight,
   Command,
+  Plug,
+  Gift,
 } from 'lucide-react'
 
 interface CommandItem {
@@ -39,9 +41,11 @@ const navigationCommands: CommandItem[] = [
   { id: 'projects', title: 'Projects', description: 'View all projects', icon: FolderOpen, href: '/dashboard/projects', category: 'navigation' },
   { id: 'templates', title: 'Templates', description: 'Browse templates', icon: FileCode, href: '/dashboard/templates', category: 'navigation' },
   { id: 'connections', title: 'Connections', description: 'Manage database connections', icon: Database, href: '/dashboard/connections', category: 'navigation' },
+  { id: 'integrations', title: 'Integrations', description: 'Connect third-party tools', icon: Plug, href: '/dashboard/integrations', category: 'navigation' },
   { id: 'deploy', title: 'Deploy', description: 'View deployments', icon: Globe, href: '/dashboard/deploy', category: 'navigation' },
   { id: 'activity', title: 'Activity Log', description: 'View activity history', icon: Activity, href: '/dashboard/activity', category: 'navigation' },
   { id: 'notifications', title: 'Notifications', description: 'View notifications', icon: Bell, href: '/dashboard/notifications', category: 'navigation' },
+  { id: 'whats-new', title: "What's New", description: 'See latest updates', icon: Gift, href: '/dashboard/whats-new', category: 'navigation' },
   { id: 'billing', title: 'Billing', description: 'Manage subscription', icon: CreditCard, href: '/dashboard/billing', category: 'navigation' },
   { id: 'profile', title: 'Profile', description: 'Edit your profile', icon: User, href: '/dashboard/profile', category: 'navigation' },
   { id: 'settings', title: 'Settings', description: 'App settings', icon: Settings, href: '/dashboard/settings', category: 'navigation' },

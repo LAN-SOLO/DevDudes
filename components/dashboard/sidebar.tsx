@@ -19,6 +19,8 @@ import {
   HelpCircle,
   Bell,
   Activity,
+  Plug,
+  Gift,
 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { useState } from 'react'
@@ -30,9 +32,11 @@ const navItems = [
   { href: '/dashboard/projects', label: 'Projects', icon: FolderOpen },
   { href: '/dashboard/templates', label: 'Templates', icon: FileCode },
   { href: '/dashboard/connections', label: 'Connections', icon: Database },
+  { href: '/dashboard/integrations', label: 'Integrations', icon: Plug },
   { href: '/dashboard/deploy', label: 'Deploy', icon: Globe },
   { href: '/dashboard/activity', label: 'Activity', icon: Activity },
   { href: '/dashboard/notifications', label: 'Notifications', icon: Bell },
+  { href: '/dashboard/whats-new', label: "What's New", icon: Gift },
   { href: '/dashboard/billing', label: 'Billing', icon: CreditCard },
   { href: '/dashboard/profile', label: 'Profile', icon: User },
   { href: '/dashboard/settings', label: 'Settings', icon: Settings },

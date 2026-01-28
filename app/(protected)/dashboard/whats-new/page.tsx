@@ -1,0 +1,185 @@
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
+import { Badge } from '@/components/ui/badge'
+import {
+  Sparkles,
+  Rocket,
+  Bug,
+  Wrench,
+  Star,
+  Calendar,
+  ArrowRight,
+} from 'lucide-react'
+import Link from 'next/link'
+import { Button } from '@/components/ui/button'
+
+interface ChangelogEntry {
+  version: string
+  date: string
+  title: string
+  description: string
+  changes: {
+    type: 'feature' | 'improvement' | 'fix' | 'breaking'
+    text: string
+  }[]
+  highlights?: string[]
+}
+
+const changelog: ChangelogEntry[] = [
+  {
+    version: '1.2.0',
+    date: 'January 28, 2025',
+    title: 'Command Palette & Activity Log',
+    description: 'Quickly navigate anywhere with Cmd+K and track all your actions.',
+    highlights: ['Command Palette', 'Activity Log', 'Enhanced Project Details'],
+    changes: [
+      { type: 'feature', text: 'Added command palette (Cmd+K) for quick navigation' },
+      { type: 'feature', text: 'New Activity Log page with searchable timeline' },
+      { type: 'improvement', text: 'Enhanced project detail page with pipeline progress' },
+      { type: 'improvement', text: 'Added activity timeline to project pages' },
+      { type: 'fix', text: 'Fixed navigation active state highlighting' },
+    ],
+  },
+  {
+    version: '1.1.0',
+    date: 'January 27, 2025',
+    title: 'Notifications & Billing',
+    description: 'Stay informed with notifications and manage your subscription.',
+    highlights: ['Notifications System', 'Billing Page', 'Help Center'],
+    changes: [
+      { type: 'feature', text: 'Added notifications page with read/unread filtering' },
+      { type: 'feature', text: 'New billing page with subscription plans' },
+      { type: 'feature', text: 'Help center with searchable FAQ' },
+      { type: 'improvement', text: 'Enhanced deploy page with provider management' },
+      { type: 'improvement', text: 'Added notification badge to header' },
+    ],
+  },
+  {
+    version: '1.0.0',
+    date: 'January 26, 2025',
+    title: 'Initial Release',
+    description: 'The first public release of DevDudes with the complete 7 Dudes pipeline.',
+    highlights: ['7 Dudes Pipeline', 'AI Generation', 'Templates'],
+    changes: [
+      { type: 'feature', text: 'Complete 7-step Dudes pipeline (Preset, Combo, Prepair, Dev, Test, Deploy, Docu)' },
+      { type: 'feature', text: 'AI-powered app architecture generation' },
+      { type: 'feature', text: '6 pre-built templates for common business apps' },
+      { type: 'feature', text: 'Database connection management' },
+      { type: 'feature', text: 'Project management with status tracking' },
+      { type: 'feature', text: 'User authentication with email and OAuth' },
+    ],
+  },
+]
+
+const typeConfig = {
+  feature: { label: 'New', color: 'bg-green-100 text-green-700', icon: Sparkles },
+  improvement: { label: 'Improved', color: 'bg-blue-100 text-blue-700', icon: Wrench },
+  fix: { label: 'Fixed', color: 'bg-yellow-100 text-yellow-700', icon: Bug },
+  breaking: { label: 'Breaking', color: 'bg-red-100 text-red-700', icon: Rocket },
+}
+
+export default function WhatsNewPage() {
+  const latestVersion = changelog[0]
+
+  return (
+    <div className="space-y-6">
+      <div>
+        <h2 className="text-2xl font-bold tracking-tight">What&apos;s New</h2>
+        <p className="text-muted-foreground">
+          Latest updates and improvements to DevDudes
+        </p>
+      </div>
+
+      {/* Latest Release Highlight */}
+      <Card className="bg-gradient-to-r from-primary/10 to-primary/5 border-primary/20">
+        <CardContent className="pt-6">
+          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+            <div className="flex items-center gap-4">
+              <div className="p-3 rounded-lg bg-primary/20">
+                <Star className="h-6 w-6 text-primary" />
+              </div>
+              <div>
+                <div className="flex items-center gap-2">
+                  <h3 className="font-semibold text-lg">{latestVersion.title}</h3>
+                  <Badge variant="secondary">v{latestVersion.version}</Badge>
+                </div>
+                <p className="text-sm text-muted-foreground">{latestVersion.description}</p>
+              </div>
+            </div>
+            <div className="flex flex-wrap gap-2">
+              {latestVersion.highlights?.map((highlight) => (
+                <Badge key={highlight} variant="outline" className="bg-background">
+                  {highlight}
+                </Badge>
+              ))}
+            </div>
+          </div>
+        </CardContent>
+      </Card>
+
+      {/* Version History */}
+      <div className="space-y-6">
+        {changelog.map((entry, index) => (
+          <Card key={entry.version}>
+            <CardHeader>
+              <div className="flex items-start justify-between">
+                <div>
+                  <div className="flex items-center gap-3 mb-1">
+                    <CardTitle className="text-lg">{entry.title}</CardTitle>
+                    <Badge variant="outline">v{entry.version}</Badge>
+                    {index === 0 && (
+                      <Badge className="bg-primary">Latest</Badge>
+                    )}
+                  </div>
+                  <CardDescription className="flex items-center gap-2">
+                    <Calendar className="h-3 w-3" />
+                    {entry.date}
+                  </CardDescription>
+                </div>
+              </div>
+              <p className="text-sm text-muted-foreground pt-2">
+                {entry.description}
+              </p>
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-3">
+                {entry.changes.map((change, i) => {
+                  const config = typeConfig[change.type]
+                  const Icon = config.icon
+                  return (
+                    <div key={i} className="flex items-start gap-3">
+                      <span className={`inline-flex items-center gap-1 px-2 py-0.5 rounded text-xs font-medium ${config.color}`}>
+                        <Icon className="h-3 w-3" />
+                        {config.label}
+                      </span>
+                      <span className="text-sm">{change.text}</span>
+                    </div>
+                  )
+                })}
+              </div>
+            </CardContent>
+          </Card>
+        ))}
+      </div>
+
+      {/* Subscribe for Updates */}
+      <Card>
+        <CardContent className="pt-6">
+          <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
+            <div>
+              <h3 className="font-medium">Stay Updated</h3>
+              <p className="text-sm text-muted-foreground">
+                Get notified about new features and updates
+              </p>
+            </div>
+            <Link href="/dashboard/settings">
+              <Button variant="outline">
+                Manage Notifications
+                <ArrowRight className="ml-2 h-4 w-4" />
+              </Button>
+            </Link>
+          </div>
+        </CardContent>
+      </Card>
+    </div>
+  )
+}
