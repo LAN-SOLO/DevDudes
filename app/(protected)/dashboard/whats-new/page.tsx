@@ -26,14 +26,30 @@ interface ChangelogEntry {
 
 const changelog: ChangelogEntry[] = [
   {
+    version: '1.3.0',
+    date: 'January 28, 2026',
+    title: 'Theme Toggle & REST API',
+    description: 'Quick theme switching and full REST API for project management.',
+    highlights: ['Dark Mode Toggle', 'REST API', 'Component Library'],
+    changes: [
+      { type: 'feature', text: 'Added theme toggle button in header for quick dark/light mode switching' },
+      { type: 'feature', text: 'New REST API endpoints for projects (GET, POST, PATCH, DELETE)' },
+      { type: 'feature', text: 'SearchInput and FileUpload components added' },
+      { type: 'feature', text: 'Component index for convenient imports' },
+      { type: 'improvement', text: 'Enhanced command palette with theme toggle and sign out' },
+      { type: 'fix', text: 'Fixed useSyncExternalStore infinite loop in localStorage hooks' },
+    ],
+  },
+  {
     version: '1.2.0',
-    date: 'January 28, 2025',
+    date: 'January 27, 2026',
     title: 'Command Palette & Activity Log',
     description: 'Quickly navigate anywhere with Cmd+K and track all your actions.',
-    highlights: ['Command Palette', 'Activity Log', 'Enhanced Project Details'],
+    highlights: ['Command Palette', 'Activity Log', 'Mobile Navigation'],
     changes: [
       { type: 'feature', text: 'Added command palette (Cmd+K) for quick navigation' },
       { type: 'feature', text: 'New Activity Log page with searchable timeline' },
+      { type: 'feature', text: 'Mobile navigation with slide-out menu' },
       { type: 'improvement', text: 'Enhanced project detail page with pipeline progress' },
       { type: 'improvement', text: 'Added activity timeline to project pages' },
       { type: 'fix', text: 'Fixed navigation active state highlighting' },
@@ -41,7 +57,7 @@ const changelog: ChangelogEntry[] = [
   },
   {
     version: '1.1.0',
-    date: 'January 27, 2025',
+    date: 'January 26, 2026',
     title: 'Notifications & Billing',
     description: 'Stay informed with notifications and manage your subscription.',
     highlights: ['Notifications System', 'Billing Page', 'Help Center'],
@@ -55,7 +71,7 @@ const changelog: ChangelogEntry[] = [
   },
   {
     version: '1.0.0',
-    date: 'January 26, 2025',
+    date: 'January 25, 2026',
     title: 'Initial Release',
     description: 'The first public release of DevDudes with the complete 7 Dudes pipeline.',
     highlights: ['7 Dudes Pipeline', 'AI Generation', 'Templates'],
