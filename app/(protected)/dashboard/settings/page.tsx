@@ -7,6 +7,7 @@ import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Switch } from '@/components/ui/switch'
 import { Sun, Moon, Monitor, Check, Loader2, Eye, EyeOff, Copy, Key, Trash2 } from 'lucide-react'
+import { useTheme } from '@/components/theme-provider'
 
 type Theme = 'light' | 'dark' | 'system'
 
@@ -19,7 +20,7 @@ interface ApiKey {
 }
 
 export default function SettingsPage() {
-  const [theme, setTheme] = useState<Theme>('system')
+  const { theme, setTheme } = useTheme()
   const [notifications, setNotifications] = useState({
     email: true,
     marketing: false,
@@ -50,14 +51,6 @@ export default function SettingsPage() {
   const [isGeneratingKey, setIsGeneratingKey] = useState(false)
   const [newKeyName, setNewKeyName] = useState('')
   const [showNewKeyModal, setShowNewKeyModal] = useState(false)
-
-  const handleThemeChange = (newTheme: Theme) => {
-    setTheme(newTheme)
-    // In a real app, this would update the document class and persist to storage
-    if (typeof window !== 'undefined') {
-      localStorage.setItem('theme', newTheme)
-    }
-  }
 
   const handlePasswordUpdate = async () => {
     if (passwordForm.new !== passwordForm.confirm) return
@@ -123,7 +116,7 @@ export default function SettingsPage() {
             ].map(({ value, label, icon: Icon }) => (
               <button
                 key={value}
-                onClick={() => handleThemeChange(value as Theme)}
+                onClick={() => setTheme(value as Theme)}
                 className={`flex flex-col items-center gap-2 rounded-lg border p-4 transition-colors ${
                   theme === value
                     ? 'border-primary bg-primary/5'
