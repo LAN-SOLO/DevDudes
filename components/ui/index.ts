@@ -3,6 +3,7 @@
 
 // Core UI
 export { Button, buttonVariants } from './button'
+export { LoadingButton } from './loading-button'
 export { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from './card'
 export { Input } from './input'
 export { Label } from './label'

@@ -24,7 +24,11 @@ import {
   Gift,
   Users,
   BarChart3,
+  Moon,
+  Sun,
+  LogOut,
 } from 'lucide-react'
+import { useTheme } from '@/components/theme-provider'
 
 interface CommandItem {
   id: string
@@ -67,8 +71,28 @@ export function CommandPalette() {
   const [search, setSearch] = useState('')
   const [selectedIndex, setSelectedIndex] = useState(0)
   const router = useRouter()
+  const { theme, setTheme } = useTheme()
 
-  const allCommands = [...actionCommands, ...navigationCommands]
+  const settingsCommands: CommandItem[] = [
+    {
+      id: 'toggle-theme',
+      title: theme === 'dark' ? 'Switch to Light Mode' : 'Switch to Dark Mode',
+      description: 'Toggle between light and dark theme',
+      icon: theme === 'dark' ? Sun : Moon,
+      action: () => setTheme(theme === 'dark' ? 'light' : 'dark'),
+      category: 'actions',
+    },
+    {
+      id: 'logout',
+      title: 'Sign Out',
+      description: 'Sign out of your account',
+      icon: LogOut,
+      href: '/login',
+      category: 'actions',
+    },
+  ]
+
+  const allCommands = [...actionCommands, ...settingsCommands, ...navigationCommands]
 
   const filteredCommands = allCommands.filter(
     (command) =>
