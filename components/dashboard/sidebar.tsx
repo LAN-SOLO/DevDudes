@@ -21,6 +21,7 @@ import {
   Activity,
   Plug,
   Gift,
+  Users,
 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { useState } from 'react'
@@ -34,6 +35,7 @@ const navItems = [
   { href: '/dashboard/connections', label: 'Connections', icon: Database },
   { href: '/dashboard/integrations', label: 'Integrations', icon: Plug },
   { href: '/dashboard/deploy', label: 'Deploy', icon: Globe },
+  { href: '/dashboard/team', label: 'Team', icon: Users },
   { href: '/dashboard/activity', label: 'Activity', icon: Activity },
   { href: '/dashboard/notifications', label: 'Notifications', icon: Bell },
   { href: '/dashboard/whats-new', label: "What's New", icon: Gift },

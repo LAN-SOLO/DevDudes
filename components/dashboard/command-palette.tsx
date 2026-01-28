@@ -22,6 +22,7 @@ import {
   Command,
   Plug,
   Gift,
+  Users,
 } from 'lucide-react'
 
 interface CommandItem {
@@ -43,6 +44,7 @@ const navigationCommands: CommandItem[] = [
   { id: 'connections', title: 'Connections', description: 'Manage database connections', icon: Database, href: '/dashboard/connections', category: 'navigation' },
   { id: 'integrations', title: 'Integrations', description: 'Connect third-party tools', icon: Plug, href: '/dashboard/integrations', category: 'navigation' },
   { id: 'deploy', title: 'Deploy', description: 'View deployments', icon: Globe, href: '/dashboard/deploy', category: 'navigation' },
+  { id: 'team', title: 'Team', description: 'Manage team members', icon: Users, href: '/dashboard/team', category: 'navigation' },
   { id: 'activity', title: 'Activity Log', description: 'View activity history', icon: Activity, href: '/dashboard/activity', category: 'navigation' },
   { id: 'notifications', title: 'Notifications', description: 'View notifications', icon: Bell, href: '/dashboard/notifications', category: 'navigation' },
   { id: 'whats-new', title: "What's New", description: 'See latest updates', icon: Gift, href: '/dashboard/whats-new', category: 'navigation' },
