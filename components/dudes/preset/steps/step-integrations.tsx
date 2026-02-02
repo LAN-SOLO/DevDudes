@@ -1,29 +1,31 @@
 'use client'
 
 import { useWizard } from '../wizard-context'
+import { useTranslation } from '@/lib/i18n/language-provider'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { ArrowLeft, ArrowRight, Check } from 'lucide-react'
 
-const integrations = [
-  { id: 'stripe', label: 'Stripe', description: 'Payment processing', category: 'Payments' },
-  { id: 'paypal', label: 'PayPal', description: 'Online payments', category: 'Payments' },
-  { id: 'sendgrid', label: 'SendGrid', description: 'Email delivery', category: 'Communication' },
-  { id: 'twilio', label: 'Twilio', description: 'SMS and voice', category: 'Communication' },
-  { id: 'slack', label: 'Slack', description: 'Team notifications', category: 'Communication' },
-  { id: 's3', label: 'AWS S3', description: 'File storage', category: 'Storage' },
-  { id: 'cloudinary', label: 'Cloudinary', description: 'Image management', category: 'Storage' },
-  { id: 'analytics', label: 'Google Analytics', description: 'Usage tracking', category: 'Analytics' },
-  { id: 'posthog', label: 'PostHog', description: 'Product analytics', category: 'Analytics' },
-  { id: 'sentry', label: 'Sentry', description: 'Error tracking', category: 'Monitoring' },
-  { id: 'openai', label: 'OpenAI', description: 'AI capabilities', category: 'AI' },
-  { id: 'zapier', label: 'Zapier', description: 'Workflow automation', category: 'Automation' },
-]
-
-const categories = [...new Set(integrations.map(i => i.category))]
-
 export function StepIntegrations() {
   const { config, updateConfig, setCurrentStep } = useWizard()
+  const { t } = useTranslation()
+
+  const integrations = [
+    { id: 'stripe', label: t('preset.integrations.items.stripe'), description: t('preset.integrations.items.stripeDesc'), category: t('preset.integrations.categories.payments') },
+    { id: 'paypal', label: t('preset.integrations.items.paypal'), description: t('preset.integrations.items.paypalDesc'), category: t('preset.integrations.categories.payments') },
+    { id: 'sendgrid', label: t('preset.integrations.items.sendgrid'), description: t('preset.integrations.items.sendgridDesc'), category: t('preset.integrations.categories.communication') },
+    { id: 'twilio', label: t('preset.integrations.items.twilio'), description: t('preset.integrations.items.twilioDesc'), category: t('preset.integrations.categories.communication') },
+    { id: 'slack', label: t('preset.integrations.items.slack'), description: t('preset.integrations.items.slackDesc'), category: t('preset.integrations.categories.communication') },
+    { id: 's3', label: t('preset.integrations.items.s3'), description: t('preset.integrations.items.s3Desc'), category: t('preset.integrations.categories.storage') },
+    { id: 'cloudinary', label: t('preset.integrations.items.cloudinary'), description: t('preset.integrations.items.cloudinaryDesc'), category: t('preset.integrations.categories.storage') },
+    { id: 'analytics', label: t('preset.integrations.items.analytics'), description: t('preset.integrations.items.analyticsDesc'), category: t('preset.integrations.categories.analytics') },
+    { id: 'posthog', label: t('preset.integrations.items.posthog'), description: t('preset.integrations.items.posthogDesc'), category: t('preset.integrations.categories.analytics') },
+    { id: 'sentry', label: t('preset.integrations.items.sentry'), description: t('preset.integrations.items.sentryDesc'), category: t('preset.integrations.categories.monitoring') },
+    { id: 'openai', label: t('preset.integrations.items.openai'), description: t('preset.integrations.items.openaiDesc'), category: t('preset.integrations.categories.ai') },
+    { id: 'zapier', label: t('preset.integrations.items.zapier'), description: t('preset.integrations.items.zapierDesc'), category: t('preset.integrations.categories.automation') },
+  ]
+
+  const categories = [...new Set(integrations.map(i => i.category))]
 
   const toggleIntegration = (id: string) => {
     const current = config.integrations
@@ -37,9 +39,9 @@ export function StepIntegrations() {
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Integrations</CardTitle>
+        <CardTitle>{t('preset.integrations.title')}</CardTitle>
         <CardDescription>
-          Select third-party services to integrate with your app
+          {t('preset.integrations.description')}
         </CardDescription>
       </CardHeader>
       <CardContent className="space-y-6">
@@ -81,16 +83,16 @@ export function StepIntegrations() {
         ))}
 
         <p className="text-sm text-muted-foreground">
-          {config.integrations.length} integration{config.integrations.length !== 1 && 's'} selected
+          {config.integrations.length} {t('preset.common.selected')}
         </p>
 
         <div className="flex justify-between">
           <Button variant="outline" onClick={() => setCurrentStep(6)}>
             <ArrowLeft className="mr-2 h-4 w-4" />
-            Back
+            {t('preset.common.back')}
           </Button>
           <Button onClick={() => setCurrentStep(8)}>
-            Continue
+            {t('preset.common.continue')}
             <ArrowRight className="ml-2 h-4 w-4" />
           </Button>
         </div>

@@ -1,6 +1,7 @@
 'use client'
 
 import { useState } from 'react'
+import { useTranslation } from '@/lib/i18n/language-provider'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
@@ -124,16 +125,17 @@ const integrations: Integration[] = [
   },
 ]
 
-const categories = [
-  { id: 'all', label: 'All' },
-  { id: 'development', label: 'Development' },
-  { id: 'communication', label: 'Communication' },
-  { id: 'productivity', label: 'Productivity' },
-  { id: 'analytics', label: 'Analytics' },
-]
-
 export default function IntegrationsPage() {
+  const { t } = useTranslation()
   const { addToast } = useToast()
+
+  const categories = [
+    { id: 'all', label: t('integrations.categories.all') },
+    { id: 'development', label: t('integrations.categories.development') },
+    { id: 'communication', label: t('integrations.categories.communication') },
+    { id: 'productivity', label: t('integrations.categories.productivity') },
+    { id: 'analytics', label: t('integrations.categories.analytics') },
+  ]
   const [selectedCategory, setSelectedCategory] = useState('all')
   const [connectingId, setConnectingId] = useState<string | null>(null)
   const [connectedIntegrations, setConnectedIntegrations] = useState<string[]>(['vercel'])
@@ -152,8 +154,8 @@ export default function IntegrationsPage() {
     setConnectingId(null)
     addToast({
       type: 'success',
-      title: 'Connected',
-      description: `${integration?.name || 'Integration'} has been connected successfully`,
+      title: t('integrations.toasts.connectedTitle'),
+      description: t('integrations.toasts.connectedDesc', { name: integration?.name || 'Integration' }),
     })
   }
 
@@ -165,8 +167,8 @@ export default function IntegrationsPage() {
     setDisconnectTarget(null)
     addToast({
       type: 'info',
-      title: 'Disconnected',
-      description: `${integration.name} has been disconnected`,
+      title: t('integrations.toasts.disconnectedTitle'),
+      description: t('integrations.toasts.disconnectedDesc', { name: integration.name }),
     })
   }
 
@@ -176,9 +178,9 @@ export default function IntegrationsPage() {
   return (
     <div className="space-y-6">
       <div>
-        <h2 className="text-2xl font-bold tracking-tight">Integrations</h2>
+        <h2 className="text-2xl font-bold tracking-tight">{t('integrations.title')}</h2>
         <p className="text-muted-foreground">
-          Connect your favorite tools to enhance your workflow
+          {t('integrations.subtitle')}
         </p>
       </div>
 
@@ -192,7 +194,7 @@ export default function IntegrationsPage() {
               </div>
               <div>
                 <p className="text-2xl font-bold">{connectedCount}</p>
-                <p className="text-sm text-muted-foreground">Connected</p>
+                <p className="text-sm text-muted-foreground">{t('common.connected')}</p>
               </div>
             </div>
           </CardContent>
@@ -205,7 +207,7 @@ export default function IntegrationsPage() {
               </div>
               <div>
                 <p className="text-2xl font-bold">{availableCount}</p>
-                <p className="text-sm text-muted-foreground">Available</p>
+                <p className="text-sm text-muted-foreground">{t('common.available')}</p>
               </div>
             </div>
           </CardContent>
@@ -220,7 +222,7 @@ export default function IntegrationsPage() {
                 <p className="text-2xl font-bold">
                   {integrations.filter((i) => i.premium).length}
                 </p>
-                <p className="text-sm text-muted-foreground">Premium Only</p>
+                <p className="text-sm text-muted-foreground">{t('common.premiumOnly')}</p>
               </div>
             </div>
           </CardContent>
@@ -258,14 +260,14 @@ export default function IntegrationsPage() {
                 <div className="absolute top-3 right-3">
                   <Badge variant="secondary" className="text-xs">
                     <Lock className="h-3 w-3 mr-1" />
-                    Pro
+                    {t('common.pro')}
                   </Badge>
                 </div>
               )}
               {integration.comingSoon && (
                 <div className="absolute top-3 right-3">
                   <Badge variant="outline" className="text-xs">
-                    Coming Soon
+                    {t('common.comingSoon')}
                   </Badge>
                 </div>
               )}
@@ -299,7 +301,7 @@ export default function IntegrationsPage() {
                 <div className="flex gap-2">
                   {integration.comingSoon ? (
                     <Button variant="outline" size="sm" disabled className="flex-1">
-                      Coming Soon
+                      {t('common.comingSoon')}
                     </Button>
                   ) : isConnected ? (
                     <>
@@ -313,7 +315,7 @@ export default function IntegrationsPage() {
                         {isConnecting ? (
                           <Loader2 className="h-4 w-4 animate-spin" />
                         ) : (
-                          'Disconnect'
+                          t('common.disconnect')
                         )}
                       </Button>
                       <Button variant="ghost" size="icon" className="h-8 w-8">
@@ -331,15 +333,15 @@ export default function IntegrationsPage() {
                       {isConnecting ? (
                         <>
                           <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                          Connecting...
+                          {t('common.connecting')}
                         </>
                       ) : integration.premium ? (
                         <>
                           <Lock className="mr-2 h-4 w-4" />
-                          Upgrade to Connect
+                          {t('integrations.upgradeToConnect')}
                         </>
                       ) : (
-                        'Connect'
+                        t('common.connect')
                       )}
                     </Button>
                   )}
@@ -355,14 +357,14 @@ export default function IntegrationsPage() {
         <CardContent className="pt-6">
           <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
             <div>
-              <h3 className="font-medium">Missing an integration?</h3>
+              <h3 className="font-medium">{t('integrations.missingIntegration')}</h3>
               <p className="text-sm text-muted-foreground">
-                Let us know what tools you&apos;d like to see integrated
+                {t('integrations.missingIntegrationDesc')}
               </p>
             </div>
             <Button variant="outline">
               <ExternalLink className="mr-2 h-4 w-4" />
-              Request Integration
+              {t('integrations.requestIntegration')}
             </Button>
           </div>
         </CardContent>

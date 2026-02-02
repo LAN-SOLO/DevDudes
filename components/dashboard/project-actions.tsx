@@ -14,6 +14,7 @@ import {
 import { ConfirmDialog, DeleteConfirmDialog } from '@/components/ui/confirm-dialog'
 import { deleteProject, updateProject } from '@/app/actions/projects'
 import { useToast } from '@/components/ui/toast'
+import { useTranslation } from '@/lib/i18n/language-provider'
 
 interface ProjectActionsProps {
   projectId: string
@@ -26,6 +27,7 @@ export function ProjectActions({ projectId, projectName, status }: ProjectAction
   const [archiveOpen, setArchiveOpen] = useState(false)
   const [loading, setLoading] = useState(false)
   const { addToast } = useToast()
+  const { t } = useTranslation()
 
   const handleDelete = async () => {
     setLoading(true)
@@ -34,21 +36,21 @@ export function ProjectActions({ projectId, projectName, status }: ProjectAction
       if (result?.error) {
         addToast({
           type: 'error',
-          title: 'Error',
+          title: t('common.error'),
           description: result.error,
         })
       } else {
         addToast({
           type: 'success',
-          title: 'Project deleted',
-          description: `"${projectName}" has been deleted.`,
+          title: t('projects.deleted'),
+          description: t('projects.deletedDesc', { name: projectName }),
         })
       }
     } catch {
       addToast({
         type: 'error',
-        title: 'Error',
-        description: 'Failed to delete project. Please try again.',
+        title: t('common.error'),
+        description: t('projects.deleteFailed'),
       })
     } finally {
       setLoading(false)
@@ -65,21 +67,21 @@ export function ProjectActions({ projectId, projectName, status }: ProjectAction
       if (result?.error) {
         addToast({
           type: 'error',
-          title: 'Error',
+          title: t('common.error'),
           description: result.error,
         })
       } else {
         addToast({
           type: 'success',
-          title: 'Project archived',
-          description: `"${projectName}" has been archived.`,
+          title: t('projects.archived'),
+          description: t('projects.archivedDesc', { name: projectName }),
         })
       }
     } catch {
       addToast({
         type: 'error',
-        title: 'Error',
-        description: 'Failed to archive project. Please try again.',
+        title: t('common.error'),
+        description: t('projects.archiveFailed'),
       })
     } finally {
       setLoading(false)
@@ -102,14 +104,14 @@ export function ProjectActions({ projectId, projectName, status }: ProjectAction
           <DropdownMenuItem asChild>
             <Link href={`/dashboard/projects/${projectId}`} className="flex items-center">
               <ExternalLink className="mr-2 h-4 w-4" />
-              View Details
+              {t('projects.viewDetails')}
             </Link>
           </DropdownMenuItem>
           {isDeployed && (
             <DropdownMenuItem asChild>
               <Link href={`/dashboard/pipeline/docu?project=${projectId}`} className="flex items-center">
                 <FileText className="mr-2 h-4 w-4" />
-                View Documentation
+                {t('projects.viewDocumentation')}
               </Link>
             </DropdownMenuItem>
           )}
@@ -120,7 +122,7 @@ export function ProjectActions({ projectId, projectName, status }: ProjectAction
               className="text-yellow-600 focus:text-yellow-600"
             >
               <Archive className="mr-2 h-4 w-4" />
-              Archive
+              {t('common.archive')}
             </DropdownMenuItem>
           )}
           <DropdownMenuItem
@@ -145,9 +147,9 @@ export function ProjectActions({ projectId, projectName, status }: ProjectAction
       <ConfirmDialog
         open={archiveOpen}
         onOpenChange={setArchiveOpen}
-        title={`Archive "${projectName}"?`}
-        description="Archived projects will be moved out of your active list. You can still view them in the completed projects section."
-        confirmLabel="Archive"
+        title={t('projects.archiveConfirmTitle', { name: projectName })}
+        description={t('projects.archiveConfirmDesc')}
+        confirmLabel={t('common.archive')}
         variant="default"
         loading={loading}
         onConfirm={handleArchive}
@@ -167,6 +169,7 @@ export function ActiveProjectActions({ projectId, projectName, nextStep }: Activ
   const [deleteOpen, setDeleteOpen] = useState(false)
   const [loading, setLoading] = useState(false)
   const { addToast } = useToast()
+  const { t } = useTranslation()
 
   const handleDelete = async () => {
     setLoading(true)
@@ -175,21 +178,21 @@ export function ActiveProjectActions({ projectId, projectName, nextStep }: Activ
       if (result?.error) {
         addToast({
           type: 'error',
-          title: 'Error',
+          title: t('common.error'),
           description: result.error,
         })
       } else {
         addToast({
           type: 'success',
-          title: 'Project deleted',
-          description: `"${projectName}" has been deleted.`,
+          title: t('projects.deleted'),
+          description: t('projects.deletedDesc', { name: projectName }),
         })
       }
     } catch {
       addToast({
         type: 'error',
-        title: 'Error',
-        description: 'Failed to delete project. Please try again.',
+        title: t('common.error'),
+        description: t('projects.deleteFailed'),
       })
     } finally {
       setLoading(false)
@@ -218,7 +221,7 @@ export function ActiveProjectActions({ projectId, projectName, nextStep }: Activ
             <DropdownMenuItem asChild>
               <Link href={`/dashboard/projects/${projectId}`} className="flex items-center">
                 <ExternalLink className="mr-2 h-4 w-4" />
-                View Details
+                {t('projects.viewDetails')}
               </Link>
             </DropdownMenuItem>
             <DropdownMenuSeparator />
@@ -227,7 +230,7 @@ export function ActiveProjectActions({ projectId, projectName, nextStep }: Activ
               className="text-red-600 focus:text-red-600"
             >
               <Trash2 className="mr-2 h-4 w-4" />
-              Delete
+              {t('common.delete')}
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>

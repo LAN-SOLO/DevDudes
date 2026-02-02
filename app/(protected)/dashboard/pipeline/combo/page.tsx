@@ -4,8 +4,9 @@ import { useEffect, useState } from 'react'
 import { useSearchParams } from 'next/navigation'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
-import { Wand2, ArrowLeft, ArrowRight, Sparkles, Loader2, Check, ChevronDown, ChevronUp } from 'lucide-react'
+import { Wand2, ArrowLeft, ArrowRight, Sparkles, Loader2, Check, ChevronDown, ChevronUp, AlertCircle } from 'lucide-react'
 import Link from 'next/link'
+import { useTranslation } from '@/lib/i18n/language-provider'
 import { getProjectConfig, saveGeneratedConcept, type GeneratedConcept } from '@/app/actions/pipeline'
 import type { PresetConfig } from '@/app/actions/pipeline'
 
@@ -18,6 +19,7 @@ interface ProjectData {
 }
 
 export default function ComboDudePage() {
+  const { t } = useTranslation()
   const searchParams = useSearchParams()
   const projectId = searchParams.get('project')
 
@@ -26,6 +28,7 @@ export default function ComboDudePage() {
   const [isGenerating, setIsGenerating] = useState(false)
   const [generationStep, setGenerationStep] = useState(0)
   const [concept, setConcept] = useState<GeneratedConcept | null>(null)
+  const [generationError, setGenerationError] = useState<string | null>(null)
   const [expandedSections, setExpandedSections] = useState<Record<string, boolean>>({
     architecture: true,
     pages: false,
@@ -71,95 +74,43 @@ export default function ComboDudePage() {
 
     setIsGenerating(true)
     setGenerationStep(0)
+    setGenerationError(null)
 
-    // Simulate AI generation with progressive steps
-    for (let i = 0; i < generationSteps.length; i++) {
-      setGenerationStep(i)
-      await new Promise(resolve => setTimeout(resolve, 800 + Math.random() * 400))
-    }
+    // Progress steps while waiting for API
+    const stepInterval = setInterval(() => {
+      setGenerationStep(prev => {
+        if (prev < generationSteps.length - 1) return prev + 1
+        return prev
+      })
+    }, 2000)
 
-    // Generate concept based on preset config
-    const config = project.preset_config
-    const generatedConcept: GeneratedConcept = {
-      summary: `${config.businessName} is a ${config.appType} application designed for ${config.industry}. It will serve ${config.targetUsers.join(', ')} with features including ${config.features.slice(0, 3).join(', ')}${config.features.length > 3 ? ` and ${config.features.length - 3} more` : ''}.`,
-      architecture: {
-        frontend: [
-          'Next.js 15 with App Router',
-          'React 19 with Server Components',
-          'Tailwind CSS for styling',
-          'shadcn/ui component library',
-          config.layout === 'sidebar' ? 'Collapsible sidebar navigation' : config.layout === 'topnav' ? 'Top navigation bar' : 'Minimal navigation',
-        ],
-        backend: [
-          'Next.js API routes',
-          'Server Actions for mutations',
-          config.features.includes('authentication') ? 'Supabase Auth' : 'Custom auth layer',
-          config.features.includes('payments') ? 'Stripe integration' : null,
-          config.features.includes('file-uploads') ? 'Supabase Storage' : null,
-        ].filter(Boolean) as string[],
-        database: [
-          'Supabase PostgreSQL',
-          'Row Level Security policies',
-          `${config.entities.length} data tables`,
-          'Automatic timestamps',
-          'UUID primary keys',
-        ],
-      },
-      pages: [
-        { name: 'Dashboard', route: '/dashboard', components: ['StatsCards', 'RecentActivity', 'QuickActions'], description: 'Main overview with key metrics and recent activity' },
-        ...(config.features.includes('authentication') ? [
-          { name: 'Login', route: '/login', components: ['LoginForm', 'OAuthButtons'], description: 'User authentication page' },
-          { name: 'Profile', route: '/dashboard/profile', components: ['ProfileForm', 'AvatarUpload'], description: 'User profile management' },
-        ] : []),
-        ...config.entities.map(entity => ({
-          name: `${entity.name} List`,
-          route: `/dashboard/${entity.name.toLowerCase()}s`,
-          components: [`${entity.name}Table`, `${entity.name}Filters`, 'Pagination'],
-          description: `List and manage ${entity.name.toLowerCase()} records`,
-        })),
-        ...config.entities.map(entity => ({
-          name: `${entity.name} Detail`,
-          route: `/dashboard/${entity.name.toLowerCase()}s/[id]`,
-          components: [`${entity.name}Form`, `${entity.name}Actions`, 'ActivityLog'],
-          description: `View and edit individual ${entity.name.toLowerCase()}`,
-        })),
-      ],
-      apiEndpoints: config.entities.flatMap(entity => [
-        { method: 'GET', path: `/api/${entity.name.toLowerCase()}s`, description: `List all ${entity.name.toLowerCase()} records` },
-        { method: 'POST', path: `/api/${entity.name.toLowerCase()}s`, description: `Create a new ${entity.name.toLowerCase()}` },
-        { method: 'GET', path: `/api/${entity.name.toLowerCase()}s/[id]`, description: `Get ${entity.name.toLowerCase()} by ID` },
-        { method: 'PUT', path: `/api/${entity.name.toLowerCase()}s/[id]`, description: `Update ${entity.name.toLowerCase()}` },
-        { method: 'DELETE', path: `/api/${entity.name.toLowerCase()}s/[id]`, description: `Delete ${entity.name.toLowerCase()}` },
-      ]),
-      dataModels: config.entities.map(entity => ({
-        name: entity.name,
-        fields: [
-          { name: 'id', type: 'uuid', required: true },
-          { name: 'user_id', type: 'uuid', required: true, relation: 'profiles' },
-          ...entity.fields.map(f => ({ name: f.name, type: f.type, required: f.required })),
-          { name: 'created_at', type: 'timestamp', required: true },
-          { name: 'updated_at', type: 'timestamp', required: true },
-        ],
-      })),
-      implementationSteps: [
-        'Set up project structure and dependencies',
-        'Configure Supabase and create database tables',
-        'Implement authentication flow',
-        ...config.entities.map(e => `Build ${e.name} CRUD operations`),
-        'Create dashboard and analytics',
-        'Add UI components and styling',
-        'Implement real-time features',
-        'Set up testing and deployment',
-      ],
-      estimatedComplexity: config.entities.length > 3 || config.features.length > 5 ? 'complex' : config.entities.length > 1 || config.features.length > 2 ? 'moderate' : 'simple',
-    }
+    try {
+      const response = await fetch('/api/generate', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(project.preset_config),
+      })
 
-    setConcept(generatedConcept)
-    setIsGenerating(false)
+      clearInterval(stepInterval)
 
-    // Save to database
-    if (projectId) {
-      await saveGeneratedConcept(projectId, generatedConcept)
+      if (!response.ok) {
+        const data = await response.json()
+        throw new Error(data.error || 'Generation failed')
+      }
+
+      const generatedConcept: GeneratedConcept = await response.json()
+
+      setConcept(generatedConcept)
+      setIsGenerating(false)
+
+      // Save to database
+      if (projectId) {
+        await saveGeneratedConcept(projectId, generatedConcept)
+      }
+    } catch (error) {
+      clearInterval(stepInterval)
+      setIsGenerating(false)
+      setGenerationError(error instanceof Error ? error.message : 'AI generation failed')
     }
   }
 
@@ -180,9 +131,9 @@ export default function ComboDudePage() {
           </Button>
         </Link>
         <div>
-          <h2 className="text-2xl font-bold tracking-tight">Combo Dude</h2>
+          <h2 className="text-2xl font-bold tracking-tight">{t('pipeline.dudes.combo.name')}</h2>
           <p className="text-muted-foreground">
-            AI-powered concept generation and architecture design
+            {t('pipeline.dudes.combo.description')}
           </p>
         </div>
       </div>
@@ -486,6 +437,13 @@ export default function ComboDudePage() {
                 <li>• Implementation roadmap</li>
               </ul>
             </div>
+
+            {generationError && (
+              <div className="flex items-center gap-2 rounded-lg border border-red-200 bg-red-50 p-3 text-sm text-red-700 dark:border-red-800 dark:bg-red-950 dark:text-red-400">
+                <AlertCircle className="h-4 w-4 shrink-0" />
+                {generationError}
+              </div>
+            )}
 
             <Button onClick={generateConcept} size="lg" className="w-full">
               <Sparkles className="mr-2 h-5 w-5" />

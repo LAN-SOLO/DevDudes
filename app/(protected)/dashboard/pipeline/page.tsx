@@ -1,3 +1,5 @@
+'use client'
+
 import Link from 'next/link'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
@@ -15,101 +17,104 @@ import {
   Clock,
   Play,
 } from 'lucide-react'
-
-const dudes = [
-  {
-    id: 'preset',
-    name: 'Preset Dude',
-    description: 'Configure your app requirements step by step',
-    longDescription: 'Define your app type, features, database requirements, and authentication needs through an intuitive wizard.',
-    icon: SlidersHorizontal,
-    status: 'available',
-    href: '/dashboard/pipeline/preset',
-    color: 'bg-blue-100 text-blue-600',
-    time: '5-10 min',
-  },
-  {
-    id: 'combo',
-    name: 'Combo Dude',
-    description: 'AI generates your app concept and architecture',
-    longDescription: 'Our AI analyzes your requirements and generates a complete application architecture with database schema and API design.',
-    icon: Wand2,
-    status: 'available',
-    href: '/dashboard/pipeline/combo',
-    color: 'bg-purple-100 text-purple-600',
-    time: '2-5 min',
-  },
-  {
-    id: 'prepair',
-    name: 'Prepair Dude',
-    description: 'Set up development environment and dependencies',
-    longDescription: 'Automatically configure your development environment, install dependencies, and set up project structure.',
-    icon: Wrench,
-    status: 'available',
-    href: '/dashboard/pipeline/prepair',
-    color: 'bg-orange-100 text-orange-600',
-    time: '1-2 min',
-  },
-  {
-    id: 'dev',
-    name: 'Dev Dude',
-    description: 'Interactive development with live preview',
-    longDescription: 'Build your application with AI assistance, real-time preview, and an integrated code editor.',
-    icon: Code2,
-    status: 'available',
-    href: '/dashboard/pipeline/dev',
-    color: 'bg-green-100 text-green-600',
-    time: '10-30 min',
-  },
-  {
-    id: 'test',
-    name: 'Test Dude',
-    description: 'Automated testing and quality assurance',
-    longDescription: 'Generate and run unit tests, integration tests, and perform security audits on your application.',
-    icon: TestTube,
-    status: 'available',
-    href: '/dashboard/pipeline/test',
-    color: 'bg-cyan-100 text-cyan-600',
-    time: '2-5 min',
-  },
-  {
-    id: 'deploy',
-    name: 'Deploy Dude',
-    description: 'One-click deployment to any platform',
-    longDescription: 'Deploy to Vercel, Netlify, AWS, or your own infrastructure with automatic CI/CD configuration.',
-    icon: Rocket,
-    status: 'available',
-    href: '/dashboard/pipeline/deploy',
-    color: 'bg-red-100 text-red-600',
-    time: '2-3 min',
-  },
-  {
-    id: 'docu',
-    name: 'Docu Dude',
-    description: 'Auto-generated documentation and guides',
-    longDescription: 'Generate API documentation, user guides, and developer documentation automatically.',
-    icon: FileText,
-    status: 'available',
-    href: '/dashboard/pipeline/docu',
-    color: 'bg-yellow-100 text-yellow-600',
-    time: '1-2 min',
-  },
-]
+import { useTranslation } from '@/lib/i18n/language-provider'
 
 export default function PipelinePage() {
+  const { t } = useTranslation()
+
+  const dudes = [
+    {
+      id: 'preset',
+      name: t('pipeline.dudes.preset.name'),
+      description: t('pipeline.dudes.preset.description'),
+      longDescription: t('pipeline.dudes.preset.longDescription'),
+      icon: SlidersHorizontal,
+      status: 'available',
+      href: '/dashboard/pipeline/preset',
+      color: 'bg-blue-100 text-blue-600',
+      time: '5-10 min',
+    },
+    {
+      id: 'combo',
+      name: t('pipeline.dudes.combo.name'),
+      description: t('pipeline.dudes.combo.description'),
+      longDescription: t('pipeline.dudes.combo.longDescription'),
+      icon: Wand2,
+      status: 'available',
+      href: '/dashboard/pipeline/combo',
+      color: 'bg-purple-100 text-purple-600',
+      time: '2-5 min',
+    },
+    {
+      id: 'prepair',
+      name: t('pipeline.dudes.prepair.name'),
+      description: t('pipeline.dudes.prepair.description'),
+      longDescription: t('pipeline.dudes.prepair.longDescription'),
+      icon: Wrench,
+      status: 'available',
+      href: '/dashboard/pipeline/prepair',
+      color: 'bg-orange-100 text-orange-600',
+      time: '1-2 min',
+    },
+    {
+      id: 'dev',
+      name: t('pipeline.dudes.dev.name'),
+      description: t('pipeline.dudes.dev.description'),
+      longDescription: t('pipeline.dudes.dev.longDescription'),
+      icon: Code2,
+      status: 'available',
+      href: '/dashboard/pipeline/dev',
+      color: 'bg-green-100 text-green-600',
+      time: '10-30 min',
+    },
+    {
+      id: 'test',
+      name: t('pipeline.dudes.test.name'),
+      description: t('pipeline.dudes.test.description'),
+      longDescription: t('pipeline.dudes.test.longDescription'),
+      icon: TestTube,
+      status: 'available',
+      href: '/dashboard/pipeline/test',
+      color: 'bg-cyan-100 text-cyan-600',
+      time: '2-5 min',
+    },
+    {
+      id: 'deploy',
+      name: t('pipeline.dudes.deploy.name'),
+      description: t('pipeline.dudes.deploy.description'),
+      longDescription: t('pipeline.dudes.deploy.longDescription'),
+      icon: Rocket,
+      status: 'available',
+      href: '/dashboard/pipeline/deploy',
+      color: 'bg-red-100 text-red-600',
+      time: '2-3 min',
+    },
+    {
+      id: 'docu',
+      name: t('pipeline.dudes.docu.name'),
+      description: t('pipeline.dudes.docu.description'),
+      longDescription: t('pipeline.dudes.docu.longDescription'),
+      icon: FileText,
+      status: 'available',
+      href: '/dashboard/pipeline/docu',
+      color: 'bg-yellow-100 text-yellow-600',
+      time: '1-2 min',
+    },
+  ]
+
   return (
     <div className="space-y-8">
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
-          <h2 className="text-2xl font-bold tracking-tight">The 7 Dudes Pipeline</h2>
+          <h2 className="text-2xl font-bold tracking-tight">{t('pipeline.title')}</h2>
           <p className="text-muted-foreground">
-            Build production-ready applications with our AI-powered workflow
+            {t('pipeline.subtitle')}
           </p>
         </div>
         <Link href="/dashboard/pipeline/preset">
           <Button>
             <Play className="mr-2 h-4 w-4" />
-            Start New Project
+            {t('pipeline.startNewProject')}
           </Button>
         </Link>
       </div>
@@ -120,10 +125,10 @@ export default function PipelinePage() {
           <div className="flex items-center justify-between mb-4">
             <div className="flex items-center gap-2">
               <Sparkles className="h-5 w-5 text-primary" />
-              <span className="font-medium">Pipeline Overview</span>
+              <span className="font-medium">{t('pipeline.overview')}</span>
             </div>
             <Badge variant="secondary" className="bg-background">
-              7 Steps
+              {t('pipeline.steps')}
             </Badge>
           </div>
 
@@ -147,7 +152,7 @@ export default function PipelinePage() {
                     <span className="text-sm font-medium group-hover:text-primary transition-colors">
                       {dude.name.split(' ')[0]}
                     </span>
-                    <span className="text-xs text-muted-foreground">Step {index + 1}</span>
+                    <span className="text-xs text-muted-foreground">{`${t('common.step')} ${index + 1}`}</span>
                   </Link>
                 ))}
               </div>
@@ -196,7 +201,7 @@ export default function PipelinePage() {
                   <dude.icon className="h-6 w-6" />
                 </div>
                 <Badge variant="outline" className="text-xs">
-                  Step {index + 1}
+                  {`${t('common.step')} ${index + 1}`}
                 </Badge>
               </div>
               <CardTitle className="text-lg">{dude.name}</CardTitle>
@@ -215,7 +220,7 @@ export default function PipelinePage() {
                 </div>
                 <Link href={dude.href}>
                   <Button variant="ghost" size="sm" className="group-hover:bg-primary group-hover:text-primary-foreground">
-                    Open
+                    {t('common.open')}
                     <ArrowRight className="ml-1 h-3 w-3" />
                   </Button>
                 </Link>
@@ -234,13 +239,13 @@ export default function PipelinePage() {
                 <Sparkles className="h-6 w-6 text-primary" />
               </div>
               <div className="flex-1">
-                <h3 className="font-semibold mb-1">Start from Scratch</h3>
+                <h3 className="font-semibold mb-1">{t('pipeline.startFromScratch')}</h3>
                 <p className="text-sm text-muted-foreground mb-4">
-                  Begin with Preset Dude to configure your app from the ground up
+                  {t('pipeline.startFromScratchDesc')}
                 </p>
                 <Link href="/dashboard/pipeline/preset">
                   <Button>
-                    Start Building
+                    {t('common.startBuilding')}
                     <ArrowRight className="ml-2 h-4 w-4" />
                   </Button>
                 </Link>
@@ -256,13 +261,13 @@ export default function PipelinePage() {
                 <FileText className="h-6 w-6 text-muted-foreground" />
               </div>
               <div className="flex-1">
-                <h3 className="font-semibold mb-1">Use a Template</h3>
+                <h3 className="font-semibold mb-1">{t('pipeline.useTemplate')}</h3>
                 <p className="text-sm text-muted-foreground mb-4">
-                  Choose from pre-built templates to speed up development
+                  {t('pipeline.useTemplateDesc')}
                 </p>
                 <Link href="/dashboard/templates">
                   <Button variant="outline">
-                    Browse Templates
+                    {t('pipeline.browseTemplates')}
                     <ArrowRight className="ml-2 h-4 w-4" />
                   </Button>
                 </Link>

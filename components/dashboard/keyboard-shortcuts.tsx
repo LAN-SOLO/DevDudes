@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react'
 import { Command, X } from 'lucide-react'
 import { Button } from '@/components/ui/button'
+import { useTranslation } from '@/lib/i18n/language-provider'
 
 interface Shortcut {
   keys: string[]
@@ -10,34 +11,35 @@ interface Shortcut {
   category: string
 }
 
-const shortcuts: Shortcut[] = [
-  // General
-  { keys: ['⌘', 'K'], description: 'Open command palette', category: 'General' },
-  { keys: ['?'], description: 'Show keyboard shortcuts', category: 'General' },
-  { keys: ['Esc'], description: 'Close modal / Cancel', category: 'General' },
-  { keys: ['⌘', '⇧', 'T'], description: 'Toggle dark/light theme', category: 'General' },
-
-  // Navigation
-  { keys: ['G', 'D'], description: 'Go to Dashboard', category: 'Navigation' },
-  { keys: ['G', 'P'], description: 'Go to Projects', category: 'Navigation' },
-  { keys: ['G', 'T'], description: 'Go to Templates', category: 'Navigation' },
-  { keys: ['G', 'S'], description: 'Go to Settings', category: 'Navigation' },
-  { keys: ['G', 'N'], description: 'Go to Notifications', category: 'Navigation' },
-  { keys: ['G', 'A'], description: 'Go to Activity', category: 'Navigation' },
-  { keys: ['G', 'H'], description: 'Go to Help', category: 'Navigation' },
-
-  // Actions
-  { keys: ['N'], description: 'New project', category: 'Actions' },
-  { keys: ['⌘', 'S'], description: 'Save changes', category: 'Actions' },
-  { keys: ['⌘', 'Enter'], description: 'Submit form', category: 'Actions' },
-
-  // Command Palette
-  { keys: ['↑', '↓'], description: 'Navigate items', category: 'Command Palette' },
-  { keys: ['Enter'], description: 'Select item', category: 'Command Palette' },
-]
-
 export function KeyboardShortcuts() {
+  const { t } = useTranslation()
   const [isOpen, setIsOpen] = useState(false)
+
+  const shortcuts: Shortcut[] = [
+    // General
+    { keys: ['⌘', 'K'], description: t('shortcuts.openCommandPalette'), category: t('shortcuts.general') },
+    { keys: ['?'], description: t('shortcuts.showKeyboardShortcuts'), category: t('shortcuts.general') },
+    { keys: ['Esc'], description: t('shortcuts.closeModal'), category: t('shortcuts.general') },
+    { keys: ['⌘', '⇧', 'T'], description: t('shortcuts.toggleTheme'), category: t('shortcuts.general') },
+
+    // Navigation
+    { keys: ['G', 'D'], description: t('shortcuts.goToDashboard'), category: t('shortcuts.navigation') },
+    { keys: ['G', 'P'], description: t('shortcuts.goToProjects'), category: t('shortcuts.navigation') },
+    { keys: ['G', 'T'], description: t('shortcuts.goToTemplates'), category: t('shortcuts.navigation') },
+    { keys: ['G', 'S'], description: t('shortcuts.goToSettings'), category: t('shortcuts.navigation') },
+    { keys: ['G', 'N'], description: t('shortcuts.goToNotifications'), category: t('shortcuts.navigation') },
+    { keys: ['G', 'A'], description: t('shortcuts.goToActivity'), category: t('shortcuts.navigation') },
+    { keys: ['G', 'H'], description: t('shortcuts.goToHelp'), category: t('shortcuts.navigation') },
+
+    // Actions
+    { keys: ['N'], description: t('shortcuts.newProject'), category: t('shortcuts.actions') },
+    { keys: ['⌘', 'S'], description: t('shortcuts.saveChanges'), category: t('shortcuts.actions') },
+    { keys: ['⌘', 'Enter'], description: t('shortcuts.submitForm'), category: t('shortcuts.actions') },
+
+    // Command Palette
+    { keys: ['↑', '↓'], description: t('shortcuts.navigateItems'), category: t('shortcuts.commandPalette') },
+    { keys: ['Enter'], description: t('shortcuts.selectItem'), category: t('shortcuts.commandPalette') },
+  ]
 
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
@@ -79,7 +81,7 @@ export function KeyboardShortcuts() {
           <div className="flex items-center justify-between px-4 py-3 border-b">
             <div className="flex items-center gap-2">
               <Command className="h-4 w-4" />
-              <span className="font-medium">Keyboard Shortcuts</span>
+              <span className="font-medium">{t('shortcuts.title')}</span>
             </div>
             <Button
               variant="ghost"

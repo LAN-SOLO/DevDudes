@@ -1,3 +1,5 @@
+'use client'
+
 import { LogoutButton } from '@/components/auth/logout-button'
 import { Avatar, AvatarFallback } from '@/components/ui/avatar'
 import { Button } from '@/components/ui/button'
@@ -15,13 +17,16 @@ import { CreditCard, HelpCircle } from 'lucide-react'
 import { CommandPaletteHint } from '@/components/dashboard/command-palette'
 import { MobileNav } from '@/components/dashboard/mobile-nav'
 import { ThemeToggle } from '@/components/dashboard/theme-toggle'
+import { LanguageSwitcher } from '@/components/dashboard/language-switcher'
 import { NotificationsDropdown } from '@/components/dashboard/notifications-dropdown'
+import { useTranslation } from '@/lib/i18n/language-provider'
 
 interface DashboardHeaderProps {
   user: User
 }
 
 export function DashboardHeader({ user }: DashboardHeaderProps) {
+  const { t } = useTranslation()
   const initials = user.email?.slice(0, 2).toUpperCase() || 'U'
 
   return (
@@ -29,7 +34,7 @@ export function DashboardHeader({ user }: DashboardHeaderProps) {
       <div className="flex items-center gap-4">
         <MobileNav />
         <div className="hidden sm:block">
-          <h1 className="text-lg font-semibold">Welcome back</h1>
+          <h1 className="text-lg font-semibold">{t('header.welcomeBack')}</h1>
           <p className="text-sm text-muted-foreground">{user.email}</p>
         </div>
       </div>
@@ -38,10 +43,12 @@ export function DashboardHeader({ user }: DashboardHeaderProps) {
         <CommandPaletteHint />
         {/* Theme Toggle */}
         <ThemeToggle />
+        {/* Language Switcher */}
+        <LanguageSwitcher />
 
         {/* Help Button */}
         <Button variant="ghost" size="icon" asChild className="text-muted-foreground hover:text-foreground">
-          <Link href="/dashboard/help" title="Help Center">
+          <Link href="/dashboard/help" title={t('header.helpCenter')}>
             <HelpCircle className="h-5 w-5" />
           </Link>
         </Button>
@@ -61,18 +68,18 @@ export function DashboardHeader({ user }: DashboardHeaderProps) {
             </button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end" className="w-56">
-            <DropdownMenuLabel>My Account</DropdownMenuLabel>
+            <DropdownMenuLabel>{t('header.myAccount')}</DropdownMenuLabel>
             <DropdownMenuSeparator />
             <DropdownMenuItem asChild>
-              <Link href="/dashboard/profile">Profile</Link>
+              <Link href="/dashboard/profile">{t('sidebar.nav.profile')}</Link>
             </DropdownMenuItem>
             <DropdownMenuItem asChild>
-              <Link href="/dashboard/settings">Settings</Link>
+              <Link href="/dashboard/settings">{t('sidebar.nav.settings')}</Link>
             </DropdownMenuItem>
             <DropdownMenuItem asChild>
               <Link href="/dashboard/billing" className="flex items-center">
                 <CreditCard className="mr-2 h-4 w-4" />
-                Billing
+                {t('sidebar.nav.billing')}
               </Link>
             </DropdownMenuItem>
             <DropdownMenuSeparator />

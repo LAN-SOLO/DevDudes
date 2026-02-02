@@ -18,6 +18,7 @@ import { DeleteConfirmDialog } from '@/components/ui/confirm-dialog'
 import { useToast } from '@/components/ui/toast'
 import { Sun, Moon, Monitor, Check, Loader2, Eye, EyeOff, Copy, Key, Trash2 } from 'lucide-react'
 import { useTheme } from '@/components/theme-provider'
+import { useTranslation } from '@/lib/i18n/language-provider'
 
 type Theme = 'light' | 'dark' | 'system'
 
@@ -32,6 +33,7 @@ interface ApiKey {
 export default function SettingsPage() {
   const { theme, setTheme } = useTheme()
   const { addToast } = useToast()
+  const { t } = useTranslation()
   const [notifications, setNotifications] = useState({
     email: true,
     marketing: false,
@@ -74,8 +76,8 @@ export default function SettingsPage() {
 
     addToast({
       type: 'success',
-      title: 'Password updated',
-      description: 'Your password has been changed successfully.',
+      title: t('settings.toasts.passwordUpdatedTitle'),
+      description: t('settings.toasts.passwordUpdatedDesc'),
     })
   }
 
@@ -99,8 +101,8 @@ export default function SettingsPage() {
 
     addToast({
       type: 'success',
-      title: 'API key created',
-      description: `"${newKey.name}" has been generated.`,
+      title: t('settings.toasts.apiKeyCreatedTitle'),
+      description: t('settings.toasts.apiKeyCreatedDesc', { name: newKey.name }),
     })
   }
 
@@ -109,8 +111,8 @@ export default function SettingsPage() {
     setKeyToDelete(null)
     addToast({
       type: 'success',
-      title: 'API key deleted',
-      description: `"${key.name}" has been removed.`,
+      title: t('settings.toasts.apiKeyDeletedTitle'),
+      description: t('settings.toasts.apiKeyDeletedDesc', { name: key.name }),
     })
   }
 
@@ -118,32 +120,32 @@ export default function SettingsPage() {
     navigator.clipboard.writeText(text)
     addToast({
       type: 'info',
-      title: 'Copied',
-      description: 'API key copied to clipboard.',
+      title: t('settings.toasts.copiedTitle'),
+      description: t('settings.toasts.copiedDesc'),
     })
   }
 
   return (
     <div className="space-y-6">
       <div>
-        <h2 className="text-2xl font-bold tracking-tight">Settings</h2>
+        <h2 className="text-2xl font-bold tracking-tight">{t('settings.title')}</h2>
         <p className="text-muted-foreground">
-          Manage your account preferences
+          {t('settings.subtitle')}
         </p>
       </div>
 
       {/* Appearance */}
       <Card>
         <CardHeader>
-          <CardTitle>Appearance</CardTitle>
-          <CardDescription>Customize how DevDudes looks on your device</CardDescription>
+          <CardTitle>{t('settings.appearance')}</CardTitle>
+          <CardDescription>{t('settings.appearanceDesc')}</CardDescription>
         </CardHeader>
         <CardContent>
           <div className="grid gap-4 sm:grid-cols-3">
             {[
-              { value: 'light', label: 'Light', icon: Sun },
-              { value: 'dark', label: 'Dark', icon: Moon },
-              { value: 'system', label: 'System', icon: Monitor },
+              { value: 'light', label: t('settings.light'), icon: Sun },
+              { value: 'dark', label: t('settings.dark'), icon: Moon },
+              { value: 'system', label: t('settings.system'), icon: Monitor },
             ].map(({ value, label, icon: Icon }) => (
               <button
                 key={value}
@@ -170,15 +172,15 @@ export default function SettingsPage() {
       {/* Notifications */}
       <Card>
         <CardHeader>
-          <CardTitle>Notifications</CardTitle>
-          <CardDescription>Configure how you receive updates</CardDescription>
+          <CardTitle>{t('settings.notifications')}</CardTitle>
+          <CardDescription>{t('settings.notificationsDesc')}</CardDescription>
         </CardHeader>
         <CardContent className="space-y-6">
           <div className="flex items-center justify-between">
             <div>
-              <p className="font-medium">Email Notifications</p>
+              <p className="font-medium">{t('settings.emailNotifications')}</p>
               <p className="text-sm text-muted-foreground">
-                Receive updates about your apps via email
+                {t('settings.emailNotificationsDesc')}
               </p>
             </div>
             <Switch
@@ -188,9 +190,9 @@ export default function SettingsPage() {
           </div>
           <div className="flex items-center justify-between">
             <div>
-              <p className="font-medium">Deployment Alerts</p>
+              <p className="font-medium">{t('settings.deploymentAlerts')}</p>
               <p className="text-sm text-muted-foreground">
-                Get notified when deployments complete or fail
+                {t('settings.deploymentAlertsDesc')}
               </p>
             </div>
             <Switch
@@ -200,9 +202,9 @@ export default function SettingsPage() {
           </div>
           <div className="flex items-center justify-between">
             <div>
-              <p className="font-medium">Weekly Digest</p>
+              <p className="font-medium">{t('settings.weeklyDigest')}</p>
               <p className="text-sm text-muted-foreground">
-                Summary of your weekly activity
+                {t('settings.weeklyDigestDesc')}
               </p>
             </div>
             <Switch
@@ -212,9 +214,9 @@ export default function SettingsPage() {
           </div>
           <div className="flex items-center justify-between">
             <div>
-              <p className="font-medium">Marketing Emails</p>
+              <p className="font-medium">{t('settings.marketingEmails')}</p>
               <p className="text-sm text-muted-foreground">
-                News, tips, and feature announcements
+                {t('settings.marketingEmailsDesc')}
               </p>
             </div>
             <Switch
@@ -228,12 +230,12 @@ export default function SettingsPage() {
       {/* Password */}
       <Card>
         <CardHeader>
-          <CardTitle>Password</CardTitle>
-          <CardDescription>Update your password</CardDescription>
+          <CardTitle>{t('settings.password')}</CardTitle>
+          <CardDescription>{t('settings.passwordDesc')}</CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
           <div className="space-y-2">
-            <Label htmlFor="current">Current Password</Label>
+            <Label htmlFor="current">{t('settings.currentPassword')}</Label>
             <div className="relative">
               <Input
                 id="current"
@@ -251,7 +253,7 @@ export default function SettingsPage() {
             </div>
           </div>
           <div className="space-y-2">
-            <Label htmlFor="new">New Password</Label>
+            <Label htmlFor="new">{t('settings.newPassword')}</Label>
             <div className="relative">
               <Input
                 id="new"
@@ -269,7 +271,7 @@ export default function SettingsPage() {
             </div>
           </div>
           <div className="space-y-2">
-            <Label htmlFor="confirm">Confirm New Password</Label>
+            <Label htmlFor="confirm">{t('settings.confirmPassword')}</Label>
             <div className="relative">
               <Input
                 id="confirm"
@@ -286,7 +288,7 @@ export default function SettingsPage() {
               </button>
             </div>
             {passwordForm.new && passwordForm.confirm && passwordForm.new !== passwordForm.confirm && (
-              <p className="text-xs text-red-500">Passwords do not match</p>
+              <p className="text-xs text-red-500">{t('settings.passwordsDoNotMatch')}</p>
             )}
           </div>
           <Button
@@ -304,7 +306,7 @@ export default function SettingsPage() {
                 Updating...
               </>
             ) : (
-              'Update Password'
+              t('settings.updatePassword')
             )}
           </Button>
         </CardContent>
@@ -315,12 +317,12 @@ export default function SettingsPage() {
         <CardHeader>
           <div className="flex items-center justify-between">
             <div>
-              <CardTitle>API Access</CardTitle>
-              <CardDescription>Manage your API keys for integrations</CardDescription>
+              <CardTitle>{t('settings.apiAccess')}</CardTitle>
+              <CardDescription>{t('settings.apiAccessDesc')}</CardDescription>
             </div>
             <Button onClick={() => setShowNewKeyModal(true)}>
               <Key className="mr-2 h-4 w-4" />
-              Generate Key
+              {t('settings.generateKey')}
             </Button>
           </div>
         </CardHeader>
@@ -329,7 +331,7 @@ export default function SettingsPage() {
             <div className="text-center py-6">
               <Key className="h-8 w-8 mx-auto mb-2 text-muted-foreground" />
               <p className="text-sm text-muted-foreground">
-                No API keys yet. Generate one to integrate with your workflows.
+                {t('settings.noApiKeys')}
               </p>
             </div>
           ) : (
@@ -372,8 +374,8 @@ export default function SettingsPage() {
       <Dialog open={showNewKeyModal} onOpenChange={setShowNewKeyModal}>
         <DialogContent>
           <DialogHeader>
-            <DialogTitle>Generate API Key</DialogTitle>
-            <DialogDescription>Create a new API key for integrations</DialogDescription>
+            <DialogTitle>{t('settings.generateKey')}</DialogTitle>
+            <DialogDescription>{t('settings.apiAccessDesc')}</DialogDescription>
           </DialogHeader>
           <div className="space-y-4 py-4">
             <div className="space-y-2">
@@ -406,7 +408,7 @@ export default function SettingsPage() {
                   Generating...
                 </>
               ) : (
-                'Generate'
+                t('settings.generateKey')
               )}
             </Button>
           </DialogFooter>

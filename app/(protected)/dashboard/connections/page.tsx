@@ -15,6 +15,7 @@ import {
 } from '@/components/ui/dialog'
 import { DeleteConfirmDialog } from '@/components/ui/confirm-dialog'
 import { useToast } from '@/components/ui/toast'
+import { useTranslation } from '@/lib/i18n/language-provider'
 import { Database, Plus, Check, Loader2, AlertCircle, ExternalLink, Trash2, RefreshCw } from 'lucide-react'
 
 interface Connection {
@@ -44,6 +45,7 @@ const databaseTypes: DatabaseType[] = [
 
 export default function ConnectionsPage() {
   const { addToast } = useToast()
+  const { t } = useTranslation()
   const [connections, setConnections] = useState<Connection[]>([
     {
       id: '1',
@@ -101,8 +103,8 @@ export default function ConnectionsPage() {
 
     addToast({
       type: 'success',
-      title: 'Connection established',
-      description: `Successfully connected to ${newConnection.name}`,
+      title: t('connections.toasts.connectionEstablishedTitle'),
+      description: t('connections.toasts.connectionEstablishedDesc', { name: newConnection.name }),
     })
   }
 
@@ -111,8 +113,8 @@ export default function ConnectionsPage() {
     setConnectionToDelete(null)
     addToast({
       type: 'success',
-      title: 'Connection removed',
-      description: `"${connection.name}" has been disconnected`,
+      title: t('connections.toasts.connectionRemovedTitle'),
+      description: t('connections.toasts.connectionRemovedDesc', { name: connection.name }),
     })
   }
 
@@ -130,8 +132,8 @@ export default function ConnectionsPage() {
 
     addToast({
       type: 'success',
-      title: 'Connection refreshed',
-      description: connection ? `"${connection.name}" is now synced` : 'Connection synced',
+      title: t('connections.toasts.connectionRefreshedTitle'),
+      description: connection ? t('connections.toasts.connectionRefreshedDesc', { name: connection.name }) : t('connections.toasts.connectionSynced'),
     })
   }
 
@@ -141,14 +143,14 @@ export default function ConnectionsPage() {
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h2 className="text-2xl font-bold tracking-tight">Database Connections</h2>
+          <h2 className="text-2xl font-bold tracking-tight">{t('connections.title')}</h2>
           <p className="text-muted-foreground">
-            Connect your existing databases to generate apps
+            {t('connections.subtitle')}
           </p>
         </div>
         <Button onClick={() => setShowAddModal(true)}>
           <Plus className="mr-2 h-4 w-4" />
-          Add Connection
+          {t('connections.addConnection')}
         </Button>
       </div>
 
@@ -201,7 +203,7 @@ export default function ConnectionsPage() {
                       onClick={() => handleRefresh(connection.id)}
                     >
                       <RefreshCw className="mr-1 h-4 w-4" />
-                      Refresh
+                      {t('common.refresh')}
                     </Button>
                     <Button
                       variant="outline"
@@ -209,7 +211,7 @@ export default function ConnectionsPage() {
                       className="flex-1"
                     >
                       <ExternalLink className="mr-1 h-4 w-4" />
-                      Browse
+                      {t('common.browse')}
                     </Button>
                     <Button
                       variant="ghost"
@@ -231,13 +233,13 @@ export default function ConnectionsPage() {
             <div className="rounded-full bg-muted p-4 mb-4">
               <Database className="h-8 w-8 text-muted-foreground" />
             </div>
-            <h3 className="font-medium mb-1">No connections yet</h3>
+            <h3 className="font-medium mb-1">{t('connections.noConnections')}</h3>
             <p className="text-sm text-muted-foreground text-center max-w-xs mb-4">
-              Connect a database to start generating apps from your existing data.
+              {t('connections.noConnectionsDesc')}
             </p>
             <Button onClick={() => setShowAddModal(true)}>
               <Plus className="mr-2 h-4 w-4" />
-              Add Your First Connection
+              {t('connections.addFirstConnection')}
             </Button>
           </CardContent>
         </Card>
@@ -251,12 +253,12 @@ export default function ConnectionsPage() {
         <DialogContent className="max-w-lg">
           <DialogHeader>
             <DialogTitle>
-              {selectedType ? `Connect to ${selectedType.name}` : 'Add Database Connection'}
+              {selectedType ? `Connect to ${selectedType.name}` : t('connections.addDbConnection')}
             </DialogTitle>
             <DialogDescription>
               {selectedType
-                ? 'Enter your connection details'
-                : 'Choose a database type to connect'}
+                ? t('connections.enterDetails')
+                : t('connections.chooseDbType')}
             </DialogDescription>
           </DialogHeader>
           <div className="py-4">
@@ -282,7 +284,7 @@ export default function ConnectionsPage() {
             ) : (
               <div className="space-y-4">
                 <div className="space-y-2">
-                  <Label htmlFor="name">Connection Name</Label>
+                  <Label htmlFor="name">{t('connections.connectionName')}</Label>
                   <Input
                     id="name"
                     placeholder="My Database"
@@ -293,7 +295,7 @@ export default function ConnectionsPage() {
 
                 <div className="grid gap-4 sm:grid-cols-2">
                   <div className="space-y-2">
-                    <Label htmlFor="host">Host</Label>
+                    <Label htmlFor="host">{t('connections.host')}</Label>
                     <Input
                       id="host"
                       placeholder="localhost"
@@ -302,7 +304,7 @@ export default function ConnectionsPage() {
                     />
                   </div>
                   <div className="space-y-2">
-                    <Label htmlFor="port">Port</Label>
+                    <Label htmlFor="port">{t('connections.port')}</Label>
                     <Input
                       id="port"
                       placeholder={selectedType.defaultPort.toString()}
@@ -313,7 +315,7 @@ export default function ConnectionsPage() {
                 </div>
 
                 <div className="space-y-2">
-                  <Label htmlFor="database">Database Name</Label>
+                  <Label htmlFor="database">{t('connections.databaseName')}</Label>
                   <Input
                     id="database"
                     placeholder="myapp_db"
@@ -324,7 +326,7 @@ export default function ConnectionsPage() {
 
                 <div className="grid gap-4 sm:grid-cols-2">
                   <div className="space-y-2">
-                    <Label htmlFor="username">Username</Label>
+                    <Label htmlFor="username">{t('connections.username')}</Label>
                     <Input
                       id="username"
                       placeholder="postgres"
@@ -333,7 +335,7 @@ export default function ConnectionsPage() {
                     />
                   </div>
                   <div className="space-y-2">
-                    <Label htmlFor="password">Password</Label>
+                    <Label htmlFor="password">{t('connections.password')}</Label>
                     <Input
                       id="password"
                       type="password"
@@ -347,7 +349,7 @@ export default function ConnectionsPage() {
                 <div className="rounded-lg bg-yellow-50 border border-yellow-200 p-3 flex items-start gap-2 dark:bg-yellow-950/50 dark:border-yellow-900">
                   <AlertCircle className="h-4 w-4 text-yellow-600 dark:text-yellow-500 mt-0.5 flex-shrink-0" />
                   <p className="text-xs text-yellow-700 dark:text-yellow-400">
-                    Your credentials are encrypted and securely stored. We only read your database schema, never your data.
+                    {t('connections.credentialsWarning')}
                   </p>
                 </div>
               </div>
@@ -356,7 +358,7 @@ export default function ConnectionsPage() {
           {selectedType && (
             <DialogFooter>
               <Button variant="outline" onClick={() => setSelectedType(null)}>
-                Back
+                {t('common.back')}
               </Button>
               <Button
                 onClick={handleConnect}
@@ -365,12 +367,12 @@ export default function ConnectionsPage() {
                 {isConnecting ? (
                   <>
                     <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                    Connecting...
+                    {t('common.connecting')}
                   </>
                 ) : (
                   <>
                     <Check className="mr-2 h-4 w-4" />
-                    Connect
+                    {t('common.connect')}
                   </>
                 )}
               </Button>

@@ -1,50 +1,55 @@
+'use client'
+
 import Link from 'next/link'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Sparkles, FileCode, Database, Globe } from 'lucide-react'
-
-const actions = [
-  {
-    title: 'Generate New App',
-    description: 'Create a business application from scratch',
-    icon: Sparkles,
-    href: '/dashboard/generator',
-    variant: 'default' as const,
-  },
-  {
-    title: 'Import Template',
-    description: 'Start from a pre-built template',
-    icon: FileCode,
-    href: '/dashboard/templates',
-    variant: 'outline' as const,
-  },
-  {
-    title: 'Connect Database',
-    description: 'Link your existing database',
-    icon: Database,
-    href: '/dashboard/connections',
-    variant: 'outline' as const,
-  },
-  {
-    title: 'Deploy App',
-    description: 'Push to production',
-    icon: Globe,
-    href: '/dashboard/deploy',
-    variant: 'outline' as const,
-  },
-]
+import { useTranslation } from '@/lib/i18n/language-provider'
 
 export function QuickActions() {
+  const { t } = useTranslation()
+
+  const actions = [
+    {
+      title: t('dashboard.quickActions.generateApp'),
+      description: t('dashboard.quickActions.generateAppDesc'),
+      icon: Sparkles,
+      href: '/dashboard/generator',
+      variant: 'default' as const,
+    },
+    {
+      title: t('dashboard.quickActions.importTemplate'),
+      description: t('dashboard.quickActions.importTemplateDesc'),
+      icon: FileCode,
+      href: '/dashboard/templates',
+      variant: 'outline' as const,
+    },
+    {
+      title: t('dashboard.quickActions.connectDb'),
+      description: t('dashboard.quickActions.connectDbDesc'),
+      icon: Database,
+      href: '/dashboard/connections',
+      variant: 'outline' as const,
+    },
+    {
+      title: t('dashboard.quickActions.deployApp'),
+      description: t('dashboard.quickActions.deployAppDesc'),
+      icon: Globe,
+      href: '/dashboard/deploy',
+      variant: 'outline' as const,
+    },
+  ]
+
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Quick Actions</CardTitle>
-        <CardDescription>Get started with common tasks</CardDescription>
+        <CardTitle>{t('dashboard.quickActions.title')}</CardTitle>
+        <CardDescription>{t('dashboard.quickActions.subtitle')}</CardDescription>
       </CardHeader>
       <CardContent>
         <div className="grid gap-3 sm:grid-cols-2">
           {actions.map((action) => (
-            <Link key={action.title} href={action.href}>
+            <Link key={action.href} href={action.href}>
               <Button
                 variant={action.variant}
                 className="h-auto w-full justify-start gap-3 p-4"

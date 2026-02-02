@@ -1,6 +1,7 @@
 'use client'
 
-import { WizardProvider, useWizard } from './wizard-context'
+import { forwardRef, useImperativeHandle, useRef } from 'react'
+import { WizardProvider, useWizard, PresetConfig } from './wizard-context'
 import { WizardNav } from './wizard-nav'
 import { StepBusiness } from './steps/step-business'
 import { StepAppType } from './steps/step-app-type'
@@ -12,8 +13,14 @@ import { StepIntegrations } from './steps/step-integrations'
 import { StepDeploy } from './steps/step-deploy'
 import { WizardComplete } from './wizard-complete'
 
-function WizardContent() {
-  const { currentStep, isComplete } = useWizard()
+export interface PresetWizardHandle {
+  importConfig: (config: Partial<PresetConfig>) => void
+}
+
+const WizardContentInner = forwardRef<PresetWizardHandle>(function WizardContentInner(_, ref) {
+  const { currentStep, isComplete, importConfig } = useWizard()
+
+  useImperativeHandle(ref, () => ({ importConfig }), [importConfig])
 
   if (isComplete) {
     return <WizardComplete />
@@ -32,12 +39,20 @@ function WizardContent() {
       {currentStep === 8 && <StepDeploy />}
     </div>
   )
-}
+})
 
-export function PresetWizard() {
+export const PresetWizard = forwardRef<PresetWizardHandle>(function PresetWizard(_, ref) {
+  const innerRef = useRef<PresetWizardHandle>(null)
+
+  useImperativeHandle(ref, () => ({
+    importConfig: (config: Partial<PresetConfig>) => {
+      innerRef.current?.importConfig(config)
+    },
+  }), [])
+
   return (
     <WizardProvider>
-      <WizardContent />
+      <WizardContentInner ref={innerRef} />
     </WizardProvider>
   )
-}
+})

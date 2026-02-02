@@ -1,3 +1,5 @@
+'use client'
+
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import {
@@ -11,6 +13,7 @@ import {
 } from 'lucide-react'
 import Link from 'next/link'
 import { Button } from '@/components/ui/button'
+import { useTranslation } from '@/lib/i18n/language-provider'
 
 interface ChangelogEntry {
   version: string
@@ -161,22 +164,23 @@ const changelog: ChangelogEntry[] = [
   },
 ]
 
-const typeConfig = {
-  feature: { label: 'New', color: 'bg-green-100 text-green-700', icon: Sparkles },
-  improvement: { label: 'Improved', color: 'bg-blue-100 text-blue-700', icon: Wrench },
-  fix: { label: 'Fixed', color: 'bg-yellow-100 text-yellow-700', icon: Bug },
-  breaking: { label: 'Breaking', color: 'bg-red-100 text-red-700', icon: Rocket },
-}
-
 export default function WhatsNewPage() {
+  const { t } = useTranslation()
   const latestVersion = changelog[0]
+
+  const typeConfig = {
+    feature: { label: t('common.new'), color: 'bg-green-100 text-green-700', icon: Sparkles },
+    improvement: { label: t('common.improved'), color: 'bg-blue-100 text-blue-700', icon: Wrench },
+    fix: { label: t('common.fixed'), color: 'bg-yellow-100 text-yellow-700', icon: Bug },
+    breaking: { label: t('common.breaking'), color: 'bg-red-100 text-red-700', icon: Rocket },
+  }
 
   return (
     <div className="space-y-6">
       <div>
-        <h2 className="text-2xl font-bold tracking-tight">What&apos;s New</h2>
+        <h2 className="text-2xl font-bold tracking-tight">{t('whatsNew.title')}</h2>
         <p className="text-muted-foreground">
-          Latest updates and improvements to DevDudes
+          {t('whatsNew.subtitle')}
         </p>
       </div>
 
@@ -218,7 +222,7 @@ export default function WhatsNewPage() {
                     <CardTitle className="text-lg">{entry.title}</CardTitle>
                     <Badge variant="outline">v{entry.version}</Badge>
                     {index === 0 && (
-                      <Badge className="bg-primary">Latest</Badge>
+                      <Badge className="bg-primary">{t('common.latest')}</Badge>
                     )}
                   </div>
                   <CardDescription className="flex items-center gap-2">
@@ -257,14 +261,14 @@ export default function WhatsNewPage() {
         <CardContent className="pt-6">
           <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
             <div>
-              <h3 className="font-medium">Stay Updated</h3>
+              <h3 className="font-medium">{t('whatsNew.stayUpdated')}</h3>
               <p className="text-sm text-muted-foreground">
-                Get notified about new features and updates
+                {t('whatsNew.stayUpdatedDesc')}
               </p>
             </div>
             <Link href="/dashboard/settings">
               <Button variant="outline">
-                Manage Notifications
+                {t('whatsNew.manageNotifications')}
                 <ArrowRight className="ml-2 h-4 w-4" />
               </Button>
             </Link>

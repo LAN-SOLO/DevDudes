@@ -1,47 +1,49 @@
 'use client'
 
 import { useWizard } from '../wizard-context'
+import { useTranslation } from '@/lib/i18n/language-provider'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { ArrowLeft, ArrowRight, Check } from 'lucide-react'
 
-const featuresByType: Record<string, Array<{ id: string; label: string; description: string }>> = {
-  crm: [
-    { id: 'contacts', label: 'Contact Management', description: 'Store and manage customer contacts' },
-    { id: 'deals', label: 'Deal Pipeline', description: 'Track sales opportunities' },
-    { id: 'activities', label: 'Activity Tracking', description: 'Log calls, emails, meetings' },
-    { id: 'reports', label: 'Sales Reports', description: 'Analytics and forecasting' },
-    { id: 'email', label: 'Email Integration', description: 'Send emails from the app' },
-    { id: 'tasks', label: 'Task Management', description: 'Assign and track tasks' },
-  ],
-  inventory: [
-    { id: 'products', label: 'Product Catalog', description: 'Manage product information' },
-    { id: 'stock', label: 'Stock Tracking', description: 'Real-time inventory levels' },
-    { id: 'orders', label: 'Order Management', description: 'Process purchase orders' },
-    { id: 'suppliers', label: 'Supplier Management', description: 'Manage vendor relationships' },
-    { id: 'locations', label: 'Multi-location', description: 'Track across warehouses' },
-    { id: 'alerts', label: 'Low Stock Alerts', description: 'Automatic notifications' },
-  ],
-  invoicing: [
-    { id: 'invoices', label: 'Invoice Creation', description: 'Generate professional invoices' },
-    { id: 'payments', label: 'Payment Tracking', description: 'Track payment status' },
-    { id: 'recurring', label: 'Recurring Invoices', description: 'Automate billing cycles' },
-    { id: 'expenses', label: 'Expense Tracking', description: 'Record business expenses' },
-    { id: 'reports', label: 'Financial Reports', description: 'Revenue and profit analysis' },
-    { id: 'clients', label: 'Client Portal', description: 'Customer self-service' },
-  ],
-  default: [
-    { id: 'dashboard', label: 'Dashboard', description: 'Overview and analytics' },
-    { id: 'search', label: 'Global Search', description: 'Find anything quickly' },
-    { id: 'notifications', label: 'Notifications', description: 'In-app alerts' },
-    { id: 'export', label: 'Data Export', description: 'CSV and PDF exports' },
-    { id: 'audit', label: 'Audit Log', description: 'Track all changes' },
-    { id: 'api', label: 'API Access', description: 'REST API for integrations' },
-  ],
-}
-
 export function StepFeatures() {
   const { config, updateConfig, setCurrentStep } = useWizard()
+  const { t } = useTranslation()
+
+  const featuresByType: Record<string, Array<{ id: string; label: string; description: string }>> = {
+    crm: [
+      { id: 'contacts', label: t('preset.features.crm.contacts'), description: t('preset.features.crm.contactsDesc') },
+      { id: 'deals', label: t('preset.features.crm.deals'), description: t('preset.features.crm.dealsDesc') },
+      { id: 'activities', label: t('preset.features.crm.activities'), description: t('preset.features.crm.activitiesDesc') },
+      { id: 'reports', label: t('preset.features.crm.reports'), description: t('preset.features.crm.reportsDesc') },
+      { id: 'email', label: t('preset.features.crm.email'), description: t('preset.features.crm.emailDesc') },
+      { id: 'tasks', label: t('preset.features.crm.tasks'), description: t('preset.features.crm.tasksDesc') },
+    ],
+    inventory: [
+      { id: 'products', label: t('preset.features.inventory.products'), description: t('preset.features.inventory.productsDesc') },
+      { id: 'stock', label: t('preset.features.inventory.stock'), description: t('preset.features.inventory.stockDesc') },
+      { id: 'orders', label: t('preset.features.inventory.orders'), description: t('preset.features.inventory.ordersDesc') },
+      { id: 'suppliers', label: t('preset.features.inventory.suppliers'), description: t('preset.features.inventory.suppliersDesc') },
+      { id: 'locations', label: t('preset.features.inventory.locations'), description: t('preset.features.inventory.locationsDesc') },
+      { id: 'alerts', label: t('preset.features.inventory.alerts'), description: t('preset.features.inventory.alertsDesc') },
+    ],
+    invoicing: [
+      { id: 'invoices', label: t('preset.features.invoicing.invoices'), description: t('preset.features.invoicing.invoicesDesc') },
+      { id: 'payments', label: t('preset.features.invoicing.payments'), description: t('preset.features.invoicing.paymentsDesc') },
+      { id: 'recurring', label: t('preset.features.invoicing.recurring'), description: t('preset.features.invoicing.recurringDesc') },
+      { id: 'expenses', label: t('preset.features.invoicing.expenses'), description: t('preset.features.invoicing.expensesDesc') },
+      { id: 'reports', label: t('preset.features.invoicing.reports'), description: t('preset.features.invoicing.reportsDesc') },
+      { id: 'clients', label: t('preset.features.invoicing.clients'), description: t('preset.features.invoicing.clientsDesc') },
+    ],
+    default: [
+      { id: 'dashboard', label: t('preset.features.default.dashboard'), description: t('preset.features.default.dashboardDesc') },
+      { id: 'search', label: t('preset.features.default.search'), description: t('preset.features.default.searchDesc') },
+      { id: 'notifications', label: t('preset.features.default.notifications'), description: t('preset.features.default.notificationsDesc') },
+      { id: 'export', label: t('preset.features.default.export'), description: t('preset.features.default.exportDesc') },
+      { id: 'audit', label: t('preset.features.default.audit'), description: t('preset.features.default.auditDesc') },
+      { id: 'api', label: t('preset.features.default.api'), description: t('preset.features.default.apiDesc') },
+    ],
+  }
 
   const features = featuresByType[config.appType] || featuresByType.default
 
@@ -57,9 +59,9 @@ export function StepFeatures() {
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Select features</CardTitle>
+        <CardTitle>{t('preset.features.title')}</CardTitle>
         <CardDescription>
-          Choose the features you want in your application
+          {t('preset.features.description')}
         </CardDescription>
       </CardHeader>
       <CardContent className="space-y-6">
@@ -94,10 +96,10 @@ export function StepFeatures() {
         </div>
 
         <div className="space-y-2">
-          <p className="text-sm font-medium">Custom features (optional)</p>
+          <p className="text-sm font-medium">{t('preset.features.customFeatures')}</p>
           <textarea
             className="flex min-h-[80px] w-full rounded-md border border-input bg-background px-3 py-2 text-sm placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
-            placeholder="Describe any additional features you need..."
+            placeholder={t('preset.features.customFeaturesPlaceholder')}
             value={config.customFeatures}
             onChange={(e) => updateConfig({ customFeatures: e.target.value })}
           />
@@ -106,10 +108,10 @@ export function StepFeatures() {
         <div className="flex justify-between">
           <Button variant="outline" onClick={() => setCurrentStep(2)}>
             <ArrowLeft className="mr-2 h-4 w-4" />
-            Back
+            {t('preset.common.back')}
           </Button>
           <Button onClick={() => setCurrentStep(4)}>
-            Continue
+            {t('preset.common.continue')}
             <ArrowRight className="ml-2 h-4 w-4" />
           </Button>
         </div>

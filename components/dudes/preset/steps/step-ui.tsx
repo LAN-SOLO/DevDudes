@@ -1,48 +1,50 @@
 'use client'
 
 import { useWizard } from '../wizard-context'
+import { useTranslation } from '@/lib/i18n/language-provider'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { ArrowLeft, ArrowRight, Sun, Moon, Monitor, Sidebar, PanelTop, Minus } from 'lucide-react'
 
-const themes = [
-  { id: 'light', label: 'Light', icon: Sun },
-  { id: 'dark', label: 'Dark', icon: Moon },
-  { id: 'system', label: 'System', icon: Monitor },
-] as const
-
-const layouts = [
-  { id: 'sidebar', label: 'Sidebar', icon: Sidebar, description: 'Navigation on the left' },
-  { id: 'topnav', label: 'Top Navigation', icon: PanelTop, description: 'Navigation at top' },
-  { id: 'minimal', label: 'Minimal', icon: Minus, description: 'Clean, simple layout' },
-] as const
-
-const colors = [
-  { id: '#0066FF', label: 'Blue' },
-  { id: '#10B981', label: 'Green' },
-  { id: '#8B5CF6', label: 'Purple' },
-  { id: '#F59E0B', label: 'Amber' },
-  { id: '#EF4444', label: 'Red' },
-  { id: '#EC4899', label: 'Pink' },
-  { id: '#06B6D4', label: 'Cyan' },
-  { id: '#6366F1', label: 'Indigo' },
-]
-
 export function StepUI() {
   const { config, updateConfig, setCurrentStep } = useWizard()
+  const { t } = useTranslation()
+
+  const themes = [
+    { id: 'light', label: t('preset.ui.themes.light'), icon: Sun },
+    { id: 'dark', label: t('preset.ui.themes.dark'), icon: Moon },
+    { id: 'system', label: t('preset.ui.themes.system'), icon: Monitor },
+  ] as const
+
+  const layouts = [
+    { id: 'sidebar', label: t('preset.ui.layouts.sidebar'), icon: Sidebar, description: t('preset.ui.layouts.sidebarDesc') },
+    { id: 'topnav', label: t('preset.ui.layouts.topnav'), icon: PanelTop, description: t('preset.ui.layouts.topnavDesc') },
+    { id: 'minimal', label: t('preset.ui.layouts.minimal'), icon: Minus, description: t('preset.ui.layouts.minimalDesc') },
+  ] as const
+
+  const colors = [
+    { id: '#0066FF', label: t('preset.ui.colors.blue') },
+    { id: '#10B981', label: t('preset.ui.colors.green') },
+    { id: '#8B5CF6', label: t('preset.ui.colors.purple') },
+    { id: '#F59E0B', label: t('preset.ui.colors.amber') },
+    { id: '#EF4444', label: t('preset.ui.colors.red') },
+    { id: '#EC4899', label: t('preset.ui.colors.pink') },
+    { id: '#06B6D4', label: t('preset.ui.colors.cyan') },
+    { id: '#6366F1', label: t('preset.ui.colors.indigo') },
+  ]
 
   return (
     <Card>
       <CardHeader>
-        <CardTitle>UI Preferences</CardTitle>
+        <CardTitle>{t('preset.ui.title')}</CardTitle>
         <CardDescription>
-          Customize the look and feel of your application
+          {t('preset.ui.description')}
         </CardDescription>
       </CardHeader>
       <CardContent className="space-y-6">
         {/* Theme */}
         <div className="space-y-2">
-          <p className="text-sm font-medium">Default theme</p>
+          <p className="text-sm font-medium">{t('preset.ui.defaultTheme')}</p>
           <div className="flex gap-2">
             {themes.map((theme) => (
               <button
@@ -63,7 +65,7 @@ export function StepUI() {
 
         {/* Primary Color */}
         <div className="space-y-2">
-          <p className="text-sm font-medium">Primary color</p>
+          <p className="text-sm font-medium">{t('preset.ui.primaryColor')}</p>
           <div className="flex flex-wrap gap-2">
             {colors.map((color) => (
               <button
@@ -87,7 +89,7 @@ export function StepUI() {
 
         {/* Layout */}
         <div className="space-y-2">
-          <p className="text-sm font-medium">Layout style</p>
+          <p className="text-sm font-medium">{t('preset.ui.layoutStyle')}</p>
           <div className="grid gap-3 sm:grid-cols-3">
             {layouts.map((layout) => (
               <button
@@ -110,10 +112,10 @@ export function StepUI() {
         <div className="flex justify-between">
           <Button variant="outline" onClick={() => setCurrentStep(5)}>
             <ArrowLeft className="mr-2 h-4 w-4" />
-            Back
+            {t('preset.common.back')}
           </Button>
           <Button onClick={() => setCurrentStep(7)}>
-            Continue
+            {t('preset.common.continue')}
             <ArrowRight className="ml-2 h-4 w-4" />
           </Button>
         </div>

@@ -4,6 +4,7 @@ import { useState } from 'react'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { useToast } from '@/components/ui/toast'
+import { useTranslation } from '@/lib/i18n/language-provider'
 import {
   Check,
   Zap,
@@ -18,11 +19,11 @@ import {
 
 interface Plan {
   id: string
-  name: string
+  nameKey: string
   price: number
-  period: string
-  description: string
-  features: string[]
+  periodKey: string
+  descriptionKey: string
+  featureKeys: string[]
   popular?: boolean
   icon: typeof Zap
 }
@@ -37,54 +38,54 @@ interface Invoice {
 const plans: Plan[] = [
   {
     id: 'free',
-    name: 'Free',
+    nameKey: 'billing.plans.free.name',
     price: 0,
-    period: 'forever',
-    description: 'Perfect for trying out DevDudes',
+    periodKey: 'billing.plans.free.period',
+    descriptionKey: 'billing.plans.free.description',
     icon: Zap,
-    features: [
-      '3 projects',
-      'Basic templates',
-      'Community support',
-      '1 database connection',
-      'Manual deployment',
+    featureKeys: [
+      'billing.planFeatures.threeProjects',
+      'billing.planFeatures.basicTemplates',
+      'billing.planFeatures.communitySupport',
+      'billing.planFeatures.oneDatabase',
+      'billing.planFeatures.manualDeployment',
     ],
   },
   {
     id: 'pro',
-    name: 'Pro',
+    nameKey: 'billing.plans.pro.name',
     price: 29,
-    period: 'month',
-    description: 'For professional developers',
+    periodKey: 'billing.plans.pro.period',
+    descriptionKey: 'billing.plans.pro.description',
     icon: Rocket,
     popular: true,
-    features: [
-      'Unlimited projects',
-      'All templates',
-      'Priority support',
-      '5 database connections',
-      'Auto deployment',
-      'Custom domains',
-      'Team collaboration (3 members)',
-      'API access',
+    featureKeys: [
+      'billing.planFeatures.unlimitedProjects',
+      'billing.planFeatures.allTemplates',
+      'billing.planFeatures.prioritySupport',
+      'billing.planFeatures.fiveDatabases',
+      'billing.planFeatures.autoDeployment',
+      'billing.planFeatures.customDomains',
+      'billing.planFeatures.teamCollab',
+      'billing.planFeatures.apiAccess',
     ],
   },
   {
     id: 'enterprise',
-    name: 'Enterprise',
+    nameKey: 'billing.plans.enterprise.name',
     price: 99,
-    period: 'month',
-    description: 'For teams and organizations',
+    periodKey: 'billing.plans.enterprise.period',
+    descriptionKey: 'billing.plans.enterprise.description',
     icon: Building2,
-    features: [
-      'Everything in Pro',
-      'Unlimited team members',
-      'Unlimited connections',
-      'Custom integrations',
-      'Dedicated support',
-      'SLA guarantee',
-      'On-premise option',
-      'SSO & SAML',
+    featureKeys: [
+      'billing.planFeatures.everythingInPro',
+      'billing.planFeatures.unlimitedTeam',
+      'billing.planFeatures.unlimitedConnections',
+      'billing.planFeatures.customIntegrations',
+      'billing.planFeatures.dedicatedSupport',
+      'billing.planFeatures.slaGuarantee',
+      'billing.planFeatures.onPremise',
+      'billing.planFeatures.ssoSaml',
     ],
   },
 ]
@@ -95,6 +96,7 @@ const invoices: Invoice[] = [
 
 export default function BillingPage() {
   const { addToast } = useToast()
+  const { t } = useTranslation()
   const [currentPlan] = useState('free')
   const [isProcessing, setIsProcessing] = useState<string | null>(null)
 
@@ -108,16 +110,16 @@ export default function BillingPage() {
     const plan = plans.find(p => p.id === planId)
     addToast({
       type: 'info',
-      title: 'Payment integration coming soon',
-      description: `Upgrade to ${plan?.name || planId} plan will be available shortly`,
+      title: t('billing.toasts.comingSoonTitle'),
+      description: t('billing.toasts.comingSoonDesc', { plan: plan ? t(plan.nameKey) : planId }),
     })
   }
 
   const handleDownloadInvoice = (invoice: Invoice) => {
     addToast({
       type: 'info',
-      title: 'Downloading invoice',
-      description: `${invoice.id} is being downloaded`,
+      title: t('billing.toasts.downloadingTitle'),
+      description: t('billing.toasts.downloadingDesc', { id: invoice.id }),
     })
   }
 
@@ -126,17 +128,17 @@ export default function BillingPage() {
   return (
     <div className="space-y-6">
       <div>
-        <h2 className="text-2xl font-bold tracking-tight">Billing</h2>
+        <h2 className="text-2xl font-bold tracking-tight">{t('billing.title')}</h2>
         <p className="text-muted-foreground">
-          Manage your subscription and billing details
+          {t('billing.subtitle')}
         </p>
       </div>
 
       {/* Current Plan */}
       <Card>
         <CardHeader>
-          <CardTitle>Current Plan</CardTitle>
-          <CardDescription>Your active subscription details</CardDescription>
+          <CardTitle>{t('billing.currentPlan')}</CardTitle>
+          <CardDescription>{t('billing.currentPlanDesc')}</CardDescription>
         </CardHeader>
         <CardContent>
           <div className="flex items-center justify-between">
@@ -145,18 +147,18 @@ export default function BillingPage() {
                 {currentPlanData && <currentPlanData.icon className="h-6 w-6 text-primary" />}
               </div>
               <div>
-                <p className="font-semibold text-lg">{currentPlanData?.name} Plan</p>
+                <p className="font-semibold text-lg">{currentPlanData ? t(currentPlanData.nameKey) : ''} Plan</p>
                 <p className="text-sm text-muted-foreground">
                   {currentPlanData?.price === 0
-                    ? 'Free forever'
-                    : `$${currentPlanData?.price}/${currentPlanData?.period}`}
+                    ? t('billing.freeForever')
+                    : `$${currentPlanData?.price}/${currentPlanData ? t(currentPlanData.periodKey) : ''}`}
                 </p>
               </div>
             </div>
             <div className="text-right">
               <p className="text-sm font-medium text-green-600">Active</p>
               <p className="text-xs text-muted-foreground">
-                {currentPlan === 'free' ? 'No billing cycle' : 'Renews Jan 15, 2025'}
+                {currentPlan === 'free' ? t('billing.noBillingCycle') : 'Renews Jan 15, 2025'}
               </p>
             </div>
           </div>
@@ -166,8 +168,8 @@ export default function BillingPage() {
       {/* Usage Overview */}
       <Card>
         <CardHeader>
-          <CardTitle>Usage This Month</CardTitle>
-          <CardDescription>Track your resource consumption</CardDescription>
+          <CardTitle>{t('billing.usageThisMonth')}</CardTitle>
+          <CardDescription>{t('billing.usageDesc')}</CardDescription>
         </CardHeader>
         <CardContent>
           <div className="grid gap-4 sm:grid-cols-3">
@@ -203,7 +205,7 @@ export default function BillingPage() {
             <div className="mt-4 rounded-lg bg-yellow-50 dark:bg-yellow-950/50 border border-yellow-200 dark:border-yellow-900 p-3 flex items-start gap-2">
               <AlertCircle className="h-4 w-4 text-yellow-600 dark:text-yellow-500 mt-0.5 flex-shrink-0" />
               <p className="text-xs text-yellow-700 dark:text-yellow-400">
-                You&apos;ve used all your database connections. Upgrade to Pro for more connections and unlimited projects.
+                {t('billing.usageWarning')}
               </p>
             </div>
           )}
@@ -212,7 +214,7 @@ export default function BillingPage() {
 
       {/* Pricing Plans */}
       <div>
-        <h3 className="text-lg font-semibold mb-4">Available Plans</h3>
+        <h3 className="text-lg font-semibold mb-4">{t('billing.availablePlans')}</h3>
         <div className="grid gap-4 md:grid-cols-3">
           {plans.map((plan) => (
             <Card
@@ -224,31 +226,31 @@ export default function BillingPage() {
               {plan.popular && (
                 <div className="absolute -top-3 left-1/2 -translate-x-1/2">
                   <span className="px-3 py-1 rounded-full bg-primary text-primary-foreground text-xs font-medium">
-                    Most Popular
+                    {t('billing.mostPopular')}
                   </span>
                 </div>
               )}
               <CardHeader className="pb-2">
                 <div className="flex items-center gap-2 mb-2">
                   <plan.icon className="h-5 w-5 text-primary" />
-                  <CardTitle className="text-lg">{plan.name}</CardTitle>
+                  <CardTitle className="text-lg">{t(plan.nameKey)}</CardTitle>
                 </div>
                 <div className="flex items-baseline gap-1">
                   <span className="text-3xl font-bold">
-                    {plan.price === 0 ? 'Free' : `$${plan.price}`}
+                    {plan.price === 0 ? t('billing.plans.free.name') : `$${plan.price}`}
                   </span>
                   {plan.price > 0 && (
-                    <span className="text-muted-foreground">/{plan.period}</span>
+                    <span className="text-muted-foreground">/{t(plan.periodKey)}</span>
                   )}
                 </div>
-                <CardDescription>{plan.description}</CardDescription>
+                <CardDescription>{t(plan.descriptionKey)}</CardDescription>
               </CardHeader>
               <CardContent className="flex-1 flex flex-col">
                 <ul className="space-y-2 mb-6 flex-1">
-                  {plan.features.map((feature) => (
-                    <li key={feature} className="flex items-start gap-2 text-sm">
+                  {plan.featureKeys.map((featureKey) => (
+                    <li key={featureKey} className="flex items-start gap-2 text-sm">
                       <Check className="h-4 w-4 text-green-500 mt-0.5 flex-shrink-0" />
-                      <span>{feature}</span>
+                      <span>{t(featureKey)}</span>
                     </li>
                   ))}
                 </ul>
@@ -264,10 +266,10 @@ export default function BillingPage() {
                       Processing...
                     </>
                   ) : plan.id === currentPlan
-                      ? 'Current Plan'
+                      ? t('billing.currentPlanBtn')
                       : plan.price === 0
                         ? 'Downgrade'
-                        : 'Upgrade'}
+                        : t('common.upgrade')}
                 </Button>
               </CardContent>
             </Card>
@@ -280,12 +282,12 @@ export default function BillingPage() {
         <CardHeader>
           <div className="flex items-center justify-between">
             <div>
-              <CardTitle>Payment Method</CardTitle>
-              <CardDescription>Manage your payment details</CardDescription>
+              <CardTitle>{t('billing.paymentMethod')}</CardTitle>
+              <CardDescription>{t('billing.paymentMethodDesc')}</CardDescription>
             </div>
-            <Button variant="outline" onClick={() => addToast({ type: 'info', title: 'Coming soon', description: 'Payment method management will be available shortly' })}>
+            <Button variant="outline" onClick={() => addToast({ type: 'info', title: t('billing.toasts.comingSoonTitle'), description: t('billing.toasts.paymentMethodComingSoon') })}>
               <CreditCard className="mr-2 h-4 w-4" />
-              Add Card
+              {t('billing.addCard')}
             </Button>
           </div>
         </CardHeader>
@@ -294,7 +296,7 @@ export default function BillingPage() {
             <div className="text-center">
               <CreditCard className="h-8 w-8 mx-auto mb-2 text-muted-foreground" />
               <p className="text-sm text-muted-foreground">
-                No payment method on file
+                {t('billing.noPaymentMethod')}
               </p>
               <p className="text-xs text-muted-foreground mt-1">
                 Add a card to upgrade your plan
@@ -309,8 +311,8 @@ export default function BillingPage() {
         <CardHeader>
           <div className="flex items-center justify-between">
             <div>
-              <CardTitle>Billing History</CardTitle>
-              <CardDescription>Your past invoices and payments</CardDescription>
+              <CardTitle>{t('billing.billingHistory')}</CardTitle>
+              <CardDescription>{t('billing.billingHistoryDesc')}</CardDescription>
             </div>
           </div>
         </CardHeader>

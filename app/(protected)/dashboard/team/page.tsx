@@ -1,6 +1,7 @@
 'use client'
 
 import { useState } from 'react'
+import { useTranslation } from '@/lib/i18n/language-provider'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
@@ -51,18 +52,19 @@ interface Invitation {
   status: 'pending' | 'accepted' | 'expired'
 }
 
-const roleConfig = {
-  owner: { label: 'Owner', icon: Crown, color: 'bg-yellow-100 text-yellow-700' },
-  admin: { label: 'Admin', icon: Shield, color: 'bg-blue-100 text-blue-700' },
-  member: { label: 'Member', icon: User, color: 'bg-gray-100 text-gray-700' },
-}
-
 export default function TeamPage() {
+  const { t } = useTranslation()
   const { addToast } = useToast()
+
+  const roleConfig = {
+    owner: { label: t('team.owner'), icon: Crown, color: 'bg-yellow-100 text-yellow-700' },
+    admin: { label: t('team.admin'), icon: Shield, color: 'bg-blue-100 text-blue-700' },
+    member: { label: t('team.member'), icon: User, color: 'bg-gray-100 text-gray-700' },
+  }
   const [members, setMembers] = useState<TeamMember[]>([
     {
       id: '1',
-      name: 'You',
+      name: t('team.you'),
       email: 'you@example.com',
       role: 'owner',
       joinedAt: '2024-01-01',
@@ -149,16 +151,16 @@ export default function TeamPage() {
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h2 className="text-2xl font-bold tracking-tight">Team</h2>
+          <h2 className="text-2xl font-bold tracking-tight">{t('team.title')}</h2>
           <p className="text-muted-foreground">
-            Manage your team members and permissions
+            {t('team.subtitle')}
           </p>
         </div>
         <Button
           onClick={() => (canInvite ? setShowInviteModal(true) : setShowUpgradeModal(true))}
         >
           <UserPlus className="mr-2 h-4 w-4" />
-          Invite Member
+          {t('team.inviteMember')}
         </Button>
       </div>
 
@@ -172,14 +174,14 @@ export default function TeamPage() {
                   <Lock className="h-5 w-5 text-primary" />
                 </div>
                 <div>
-                  <p className="font-medium">Team collaboration is a Pro feature</p>
+                  <p className="font-medium">{t('team.upgradeRequired')}</p>
                   <p className="text-sm text-muted-foreground">
-                    Upgrade to invite team members and collaborate on projects
+                    {t('team.upgradeDesc')}
                   </p>
                 </div>
               </div>
               <Button onClick={() => setShowUpgradeModal(true)}>
-                Upgrade to Pro
+                {t('team.upgradeToPro')}
               </Button>
             </div>
           </CardContent>
@@ -197,7 +199,7 @@ export default function TeamPage() {
               <div>
                 <p className="text-2xl font-bold">{members.length}</p>
                 <p className="text-sm text-muted-foreground">
-                  {memberLimit === Infinity ? 'Team Members' : `of ${memberLimit} members`}
+                  {memberLimit === Infinity ? t('team.teamMembers') : `of ${memberLimit} members`}
                 </p>
               </div>
             </div>
@@ -213,7 +215,7 @@ export default function TeamPage() {
                 <p className="text-2xl font-bold">
                   {invitations.filter((i) => i.status === 'pending').length}
                 </p>
-                <p className="text-sm text-muted-foreground">Pending Invites</p>
+                <p className="text-sm text-muted-foreground">{t('team.pendingInvites')}</p>
               </div>
             </div>
           </CardContent>
@@ -238,7 +240,7 @@ export default function TeamPage() {
       {/* Team Members */}
       <Card>
         <CardHeader>
-          <CardTitle>Team Members</CardTitle>
+          <CardTitle>{t('team.teamMembers')}</CardTitle>
           <CardDescription>People with access to this workspace</CardDescription>
         </CardHeader>
         <CardContent>
@@ -295,7 +297,7 @@ export default function TeamPage() {
       {invitations.length > 0 && (
         <Card>
           <CardHeader>
-            <CardTitle>Pending Invitations</CardTitle>
+            <CardTitle>{t('team.pendingInvitations')}</CardTitle>
             <CardDescription>Invitations that haven&apos;t been accepted yet</CardDescription>
           </CardHeader>
           <CardContent>
@@ -343,7 +345,7 @@ export default function TeamPage() {
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
               <LinkIcon className="h-5 w-5" />
-              Invite Link
+              {t('team.inviteLink')}
             </CardTitle>
             <CardDescription>Share this link to invite people to your team</CardDescription>
           </CardHeader>
@@ -356,7 +358,7 @@ export default function TeamPage() {
               />
               <Button variant="outline" onClick={handleCopyInviteLink}>
                 <Copy className="mr-2 h-4 w-4" />
-                Copy
+                {t('team.copyLink')}
               </Button>
             </div>
           </CardContent>
@@ -372,7 +374,7 @@ export default function TeamPage() {
           </DialogHeader>
           <div className="space-y-4 py-4">
             <div className="space-y-2">
-              <Label htmlFor="email">Email Address</Label>
+              <Label htmlFor="email">{t('team.inviteEmail')}</Label>
               <Input
                 id="email"
                 type="email"
@@ -382,7 +384,7 @@ export default function TeamPage() {
               />
             </div>
             <div className="space-y-2">
-              <Label>Role</Label>
+              <Label>{t('team.inviteRole')}</Label>
               <div className="grid grid-cols-2 gap-2">
                 {(['member', 'admin'] as const).map((role) => {
                   const config = roleConfig[role]
@@ -418,7 +420,7 @@ export default function TeamPage() {
               ) : (
                 <>
                   <Mail className="mr-2 h-4 w-4" />
-                  Send Invite
+                  {t('team.sendInvite')}
                 </>
               )}
             </Button>
@@ -435,7 +437,7 @@ export default function TeamPage() {
                 <Users className="h-5 w-5 text-primary" />
               </div>
               <div>
-                <DialogTitle>Upgrade to Pro</DialogTitle>
+                <DialogTitle>{t('team.upgradeToPro')}</DialogTitle>
                 <DialogDescription>Unlock team collaboration</DialogDescription>
               </div>
             </div>

@@ -6,6 +6,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Button } from '@/components/ui/button'
 import { FileText, ArrowLeft, Download, BookOpen, Code, FileJson, Loader2, AlertCircle, ArrowRight, Check, Eye } from 'lucide-react'
 import Link from 'next/link'
+import { useTranslation } from '@/lib/i18n/language-provider'
 import { getProjectConfig } from '@/app/actions/pipeline'
 import type { GeneratedConcept } from '@/app/actions/pipeline'
 
@@ -19,6 +20,7 @@ interface DocType {
 }
 
 export default function DocuDudePage() {
+  const { t } = useTranslation()
   const searchParams = useSearchParams()
   const projectId = searchParams.get('project')
 
@@ -243,9 +245,9 @@ A: Email support@${name.toLowerCase().replace(/\s/g, '')}.com
           </Button>
         </Link>
         <div>
-          <h2 className="text-2xl font-bold tracking-tight">Docu Dude</h2>
+          <h2 className="text-2xl font-bold tracking-tight">{t('pipeline.dudes.docu.name')}</h2>
           <p className="text-muted-foreground">
-            Auto-generated documentation for your application
+            {t('pipeline.dudes.docu.description')}
           </p>
         </div>
       </div>

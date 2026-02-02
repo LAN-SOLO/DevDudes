@@ -7,8 +7,10 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card'
+import { useTranslation } from '@/lib/i18n/language-provider'
 
 export function ResetPasswordForm() {
+  const { t } = useTranslation()
   const searchParams = useSearchParams()
   const error = searchParams.get('error')
   const message = searchParams.get('message')
@@ -16,8 +18,8 @@ export function ResetPasswordForm() {
   return (
     <Card className="w-full max-w-md">
       <CardHeader className="space-y-1">
-        <CardTitle className="text-2xl font-bold">Reset password</CardTitle>
-        <CardDescription>Enter your email to receive a reset link</CardDescription>
+        <CardTitle className="text-2xl font-bold">{t('auth.resetPassword.title')}</CardTitle>
+        <CardDescription>{t('auth.resetPassword.subtitle')}</CardDescription>
       </CardHeader>
       <form action={resetPassword}>
         <CardContent className="space-y-4">
@@ -32,7 +34,7 @@ export function ResetPasswordForm() {
             </div>
           )}
           <div className="space-y-2">
-            <Label htmlFor="email">Email</Label>
+            <Label htmlFor="email">{t('auth.resetPassword.email')}</Label>
             <Input
               id="email"
               name="email"
@@ -44,12 +46,12 @@ export function ResetPasswordForm() {
         </CardContent>
         <CardFooter className="flex flex-col space-y-4">
           <Button type="submit" className="w-full">
-            Send reset link
+            {t('auth.resetPassword.sendResetLink')}
           </Button>
           <p className="text-sm text-center text-muted-foreground">
-            Remember your password?{' '}
+            {t('auth.resetPassword.rememberPassword')}{' '}
             <Link href="/login" className="text-primary hover:underline">
-              Sign in
+              {t('auth.resetPassword.signIn')}
             </Link>
           </p>
         </CardFooter>

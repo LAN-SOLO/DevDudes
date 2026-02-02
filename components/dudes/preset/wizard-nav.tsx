@@ -1,22 +1,24 @@
 'use client'
 
 import { useWizard } from './wizard-context'
+import { useTranslation } from '@/lib/i18n/language-provider'
 import { Check } from 'lucide-react'
 import { cn } from '@/lib/utils'
 
-const steps = [
-  { id: 1, name: 'Business' },
-  { id: 2, name: 'App Type' },
-  { id: 3, name: 'Features' },
-  { id: 4, name: 'Data' },
-  { id: 5, name: 'Auth' },
-  { id: 6, name: 'UI' },
-  { id: 7, name: 'Integrations' },
-  { id: 8, name: 'Deploy' },
-]
-
 export function WizardNav() {
   const { currentStep, setCurrentStep } = useWizard()
+  const { t } = useTranslation()
+
+  const steps = [
+    { id: 1, name: t('preset.nav.business') },
+    { id: 2, name: t('preset.nav.appType') },
+    { id: 3, name: t('preset.nav.features') },
+    { id: 4, name: t('preset.nav.data') },
+    { id: 5, name: t('preset.nav.auth') },
+    { id: 6, name: t('preset.nav.ui') },
+    { id: 7, name: t('preset.nav.integrations') },
+    { id: 8, name: t('preset.nav.deploy') },
+  ]
 
   return (
     <nav className="mb-8">

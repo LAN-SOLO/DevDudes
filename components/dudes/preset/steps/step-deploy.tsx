@@ -1,28 +1,30 @@
 'use client'
 
 import { useWizard } from '../wizard-context'
+import { useTranslation } from '@/lib/i18n/language-provider'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { ArrowLeft, Sparkles, Globe, Cloud, Server } from 'lucide-react'
 
-const deployTargets = [
-  { id: 'vercel', label: 'Vercel', description: 'Recommended for Next.js', icon: Globe },
-  { id: 'aws', label: 'AWS', description: 'Amazon Web Services', icon: Cloud },
-  { id: 'gcp', label: 'Google Cloud', description: 'Google Cloud Platform', icon: Cloud },
-  { id: 'docker', label: 'Docker', description: 'Container export', icon: Server },
-  { id: 'self-host', label: 'Self-hosted', description: 'Your own server', icon: Server },
-]
-
-const regions = [
-  { id: 'auto', label: 'Auto (Recommended)', description: 'Closest to your users' },
-  { id: 'us-east', label: 'US East', description: 'North Virginia' },
-  { id: 'us-west', label: 'US West', description: 'San Francisco' },
-  { id: 'eu-west', label: 'Europe', description: 'Frankfurt' },
-  { id: 'ap-south', label: 'Asia Pacific', description: 'Singapore' },
-]
-
 export function StepDeploy() {
   const { config, updateConfig, setCurrentStep, setIsComplete } = useWizard()
+  const { t } = useTranslation()
+
+  const deployTargets = [
+    { id: 'vercel', label: t('preset.deploy.targets.vercel'), description: t('preset.deploy.targets.vercelDesc'), icon: Globe },
+    { id: 'aws', label: t('preset.deploy.targets.aws'), description: t('preset.deploy.targets.awsDesc'), icon: Cloud },
+    { id: 'gcp', label: t('preset.deploy.targets.gcp'), description: t('preset.deploy.targets.gcpDesc'), icon: Cloud },
+    { id: 'docker', label: t('preset.deploy.targets.docker'), description: t('preset.deploy.targets.dockerDesc'), icon: Server },
+    { id: 'self-host', label: t('preset.deploy.targets.selfHost'), description: t('preset.deploy.targets.selfHostDesc'), icon: Server },
+  ]
+
+  const regions = [
+    { id: 'auto', label: t('preset.deploy.regions.auto'), description: t('preset.deploy.regions.autoDesc') },
+    { id: 'us-east', label: t('preset.deploy.regions.usEast'), description: t('preset.deploy.regions.usEastDesc') },
+    { id: 'us-west', label: t('preset.deploy.regions.usWest'), description: t('preset.deploy.regions.usWestDesc') },
+    { id: 'eu-west', label: t('preset.deploy.regions.euWest'), description: t('preset.deploy.regions.euWestDesc') },
+    { id: 'ap-south', label: t('preset.deploy.regions.apSouth'), description: t('preset.deploy.regions.apSouthDesc') },
+  ]
 
   const handleComplete = () => {
     setIsComplete(true)
@@ -31,15 +33,15 @@ export function StepDeploy() {
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Deployment</CardTitle>
+        <CardTitle>{t('preset.deploy.title')}</CardTitle>
         <CardDescription>
-          Choose where to deploy your application
+          {t('preset.deploy.description')}
         </CardDescription>
       </CardHeader>
       <CardContent className="space-y-6">
         {/* Deploy Target */}
         <div className="space-y-2">
-          <p className="text-sm font-medium">Deployment target</p>
+          <p className="text-sm font-medium">{t('preset.deploy.deploymentTarget')}</p>
           <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
             {deployTargets.map((target) => (
               <button
@@ -61,7 +63,7 @@ export function StepDeploy() {
 
         {/* Region */}
         <div className="space-y-2">
-          <p className="text-sm font-medium">Region</p>
+          <p className="text-sm font-medium">{t('preset.deploy.region')}</p>
           <div className="grid gap-2 sm:grid-cols-2">
             {regions.map((region) => (
               <button
@@ -82,25 +84,25 @@ export function StepDeploy() {
 
         {/* Summary */}
         <div className="rounded-lg bg-muted p-4 space-y-2">
-          <p className="font-medium">Configuration Summary</p>
+          <p className="font-medium">{t('preset.deploy.configSummary')}</p>
           <div className="text-sm space-y-1">
-            <p><span className="text-muted-foreground">Business:</span> {config.businessName || 'Not set'}</p>
-            <p><span className="text-muted-foreground">App Type:</span> {config.appType || 'Not set'}</p>
-            <p><span className="text-muted-foreground">Features:</span> {config.features.length} selected</p>
-            <p><span className="text-muted-foreground">Entities:</span> {config.entities.length} defined</p>
-            <p><span className="text-muted-foreground">Auth:</span> {config.authMethods.join(', ')}</p>
-            <p><span className="text-muted-foreground">Integrations:</span> {config.integrations.length} selected</p>
+            <p><span className="text-muted-foreground">{t('preset.deploy.summary.business')}:</span> {config.businessName || t('preset.deploy.notSet')}</p>
+            <p><span className="text-muted-foreground">{t('preset.deploy.summary.appType')}:</span> {config.appType || t('preset.deploy.notSet')}</p>
+            <p><span className="text-muted-foreground">{t('preset.deploy.summary.features')}:</span> {config.features.length} {t('preset.common.selected')}</p>
+            <p><span className="text-muted-foreground">{t('preset.deploy.summary.entities')}:</span> {config.entities.length} {t('preset.deploy.summary.defined')}</p>
+            <p><span className="text-muted-foreground">{t('preset.deploy.summary.auth')}:</span> {config.authMethods.join(', ')}</p>
+            <p><span className="text-muted-foreground">{t('preset.deploy.summary.integrations')}:</span> {config.integrations.length} {t('preset.common.selected')}</p>
           </div>
         </div>
 
         <div className="flex justify-between">
           <Button variant="outline" onClick={() => setCurrentStep(7)}>
             <ArrowLeft className="mr-2 h-4 w-4" />
-            Back
+            {t('preset.common.back')}
           </Button>
           <Button onClick={handleComplete} className="gap-2">
             <Sparkles className="h-4 w-4" />
-            Complete Configuration
+            {t('preset.deploy.completeConfig')}
           </Button>
         </div>
       </CardContent>

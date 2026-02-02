@@ -6,6 +6,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Button } from '@/components/ui/button'
 import { DeleteConfirmDialog } from '@/components/ui/confirm-dialog'
 import { useToast } from '@/components/ui/toast'
+import { useTranslation } from '@/lib/i18n/language-provider'
 import {
   Globe,
   Cloud,
@@ -40,39 +41,41 @@ interface Provider {
   connected: boolean
 }
 
-const providers: Provider[] = [
-  {
-    id: 'vercel',
-    name: 'Vercel',
-    description: 'Deploy with zero configuration',
-    icon: Globe,
-    connected: false,
-  },
-  {
-    id: 'netlify',
-    name: 'Netlify',
-    description: 'Build, deploy, and scale',
-    icon: Zap,
-    connected: false,
-  },
-  {
-    id: 'aws',
-    name: 'AWS',
-    description: 'Amazon Web Services',
-    icon: Cloud,
-    connected: false,
-  },
-  {
-    id: 'selfhost',
-    name: 'Self-Hosted',
-    description: 'Deploy to your own server',
-    icon: Server,
-    connected: false,
-  },
-]
-
 export default function DeployPage() {
   const { addToast } = useToast()
+  const { t } = useTranslation()
+
+  const providers: Provider[] = [
+    {
+      id: 'vercel',
+      name: 'Vercel',
+      description: t('deploy.providerTypes.vercel'),
+      icon: Globe,
+      connected: false,
+    },
+    {
+      id: 'netlify',
+      name: 'Netlify',
+      description: t('deploy.providerTypes.netlify'),
+      icon: Zap,
+      connected: false,
+    },
+    {
+      id: 'aws',
+      name: 'AWS',
+      description: t('deploy.providerTypes.aws'),
+      icon: Cloud,
+      connected: false,
+    },
+    {
+      id: 'selfhost',
+      name: 'Self-Hosted',
+      description: t('deploy.providerTypes.selfhost'),
+      icon: Server,
+      connected: false,
+    },
+  ]
+
   const [deploymentToDelete, setDeploymentToDelete] = useState<Deployment | null>(null)
   const [deployments, setDeployments] = useState<Deployment[]>([
     {
@@ -94,8 +97,8 @@ export default function DeployPage() {
     setConnectedProviders([...connectedProviders, providerId])
     addToast({
       type: 'success',
-      title: 'Provider connected',
-      description: `${provider?.name || 'Provider'} has been connected successfully`,
+      title: t('deploy.toasts.providerConnectedTitle'),
+      description: t('deploy.toasts.providerConnectedDesc', { name: provider?.name || 'Provider' }),
     })
   }
 
@@ -107,8 +110,8 @@ export default function DeployPage() {
 
     addToast({
       type: 'info',
-      title: 'Redeploying',
-      description: `${deployment?.projectName || 'App'} is being redeployed...`,
+      title: t('deploy.toasts.redeployingTitle'),
+      description: t('deploy.toasts.redeployingDesc', { name: deployment?.projectName || 'App' }),
     })
 
     await new Promise(resolve => setTimeout(resolve, 3000))
@@ -119,8 +122,8 @@ export default function DeployPage() {
 
     addToast({
       type: 'success',
-      title: 'Deployed',
-      description: `${deployment?.projectName || 'App'} is now live`,
+      title: t('deploy.toasts.deployedTitle'),
+      description: t('deploy.toasts.deployedDesc', { name: deployment?.projectName || 'App' }),
     })
   }
 
@@ -129,8 +132,8 @@ export default function DeployPage() {
     setDeploymentToDelete(null)
     addToast({
       type: 'success',
-      title: 'Deployment removed',
-      description: `${deployment.projectName} deployment has been removed`,
+      title: t('deploy.toasts.deploymentRemovedTitle'),
+      description: t('deploy.toasts.deploymentRemovedDesc', { name: deployment.projectName }),
     })
   }
 
@@ -150,22 +153,22 @@ export default function DeployPage() {
   const getStatusLabel = (status: Deployment['status']) => {
     switch (status) {
       case 'live':
-        return 'Live'
+        return t('common.live')
       case 'building':
-        return 'Building...'
+        return t('common.building')
       case 'failed':
-        return 'Failed'
+        return t('common.failed')
       case 'stopped':
-        return 'Stopped'
+        return t('common.stopped')
     }
   }
 
   return (
     <div className="space-y-6">
       <div>
-        <h2 className="text-2xl font-bold tracking-tight">Deploy</h2>
+        <h2 className="text-2xl font-bold tracking-tight">{t('deploy.title')}</h2>
         <p className="text-muted-foreground">
-          Manage your production deployments
+          {t('deploy.subtitle')}
         </p>
       </div>
 
@@ -174,12 +177,12 @@ export default function DeployPage() {
         <CardHeader>
           <div className="flex items-center justify-between">
             <div>
-              <CardTitle>Active Deployments</CardTitle>
-              <CardDescription>Your apps running in production</CardDescription>
+              <CardTitle>{t('deploy.activeDeployments')}</CardTitle>
+              <CardDescription>{t('deploy.activeDeploymentsDesc')}</CardDescription>
             </div>
             <Link href="/dashboard/projects">
               <Button variant="outline" size="sm">
-                Deploy New App
+                {t('deploy.deployNewApp')}
                 <ArrowRight className="ml-2 h-4 w-4" />
               </Button>
             </Link>
@@ -191,12 +194,12 @@ export default function DeployPage() {
               <div className="rounded-full bg-muted p-4 mb-4">
                 <Globe className="h-8 w-8 text-muted-foreground" />
               </div>
-              <h3 className="font-medium mb-1">No deployments yet</h3>
+              <h3 className="font-medium mb-1">{t('deploy.noDeployments')}</h3>
               <p className="text-sm text-muted-foreground text-center max-w-xs mb-4">
-                Complete the pipeline for a project to deploy it to production.
+                {t('deploy.noDeploymentsDesc')}
               </p>
               <Link href="/dashboard/projects">
-                <Button>View Projects</Button>
+                <Button>{t('common.viewProjects')}</Button>
               </Link>
             </div>
           ) : (
@@ -252,7 +255,7 @@ export default function DeployPage() {
                         disabled={deployment.status === 'building'}
                       >
                         <RefreshCw className={`h-4 w-4 mr-1 ${deployment.status === 'building' ? 'animate-spin' : ''}`} />
-                        Redeploy
+                        {t('common.redeploy')}
                       </Button>
                       <Button
                         variant="ghost"
@@ -274,8 +277,8 @@ export default function DeployPage() {
       {/* Deployment Providers */}
       <Card>
         <CardHeader>
-          <CardTitle>Deployment Providers</CardTitle>
-          <CardDescription>Connect your hosting platforms for easy deployment</CardDescription>
+          <CardTitle>{t('deploy.providers')}</CardTitle>
+          <CardDescription>{t('deploy.providersDesc')}</CardDescription>
         </CardHeader>
         <CardContent>
           <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
@@ -296,7 +299,7 @@ export default function DeployPage() {
                   {isConnected ? (
                     <span className="flex items-center gap-1 text-xs text-green-600">
                       <CheckCircle className="h-3 w-3" />
-                      Connected
+                      {t('common.connected')}
                     </span>
                   ) : (
                     <Button
@@ -304,7 +307,7 @@ export default function DeployPage() {
                       size="sm"
                       onClick={() => handleConnect(provider.id)}
                     >
-                      Connect
+                      {t('common.connect')}
                     </Button>
                   )}
                 </div>
@@ -320,33 +323,33 @@ export default function DeployPage() {
           <CardHeader className="pb-2">
             <CardTitle className="text-sm font-medium flex items-center gap-2">
               <Activity className="h-4 w-4 text-muted-foreground" />
-              Total Deployments
+              {t('deploy.totalDeployments')}
             </CardTitle>
           </CardHeader>
           <CardContent>
             <p className="text-3xl font-bold">{deployments.length}</p>
-            <p className="text-xs text-muted-foreground">Across all providers</p>
+            <p className="text-xs text-muted-foreground">{t('deploy.acrossAllProviders')}</p>
           </CardContent>
         </Card>
         <Card>
           <CardHeader className="pb-2">
             <CardTitle className="text-sm font-medium flex items-center gap-2">
               <CheckCircle className="h-4 w-4 text-green-500" />
-              Live Apps
+              {t('deploy.liveApps')}
             </CardTitle>
           </CardHeader>
           <CardContent>
             <p className="text-3xl font-bold">
               {deployments.filter(d => d.status === 'live').length}
             </p>
-            <p className="text-xs text-muted-foreground">Currently running</p>
+            <p className="text-xs text-muted-foreground">{t('deploy.currentlyRunning')}</p>
           </CardContent>
         </Card>
         <Card>
           <CardHeader className="pb-2">
             <CardTitle className="text-sm font-medium flex items-center gap-2">
               <Globe className="h-4 w-4 text-muted-foreground" />
-              Connected Providers
+              {t('deploy.connectedProviders')}
             </CardTitle>
           </CardHeader>
           <CardContent>
@@ -359,19 +362,19 @@ export default function DeployPage() {
       {/* Quick Tips */}
       <Card className="bg-primary/5 border-primary/20">
         <CardContent className="pt-6">
-          <h3 className="font-medium mb-3">Deployment Tips</h3>
+          <h3 className="font-medium mb-3">{t('deploy.deploymentTips')}</h3>
           <ul className="space-y-2 text-sm text-muted-foreground">
             <li className="flex items-start gap-2">
               <CheckCircle className="h-4 w-4 text-primary mt-0.5 flex-shrink-0" />
-              Connect multiple providers for redundancy and A/B testing
+              {t('deploy.tip1')}
             </li>
             <li className="flex items-start gap-2">
               <CheckCircle className="h-4 w-4 text-primary mt-0.5 flex-shrink-0" />
-              Use Vercel for Next.js apps for optimal performance
+              {t('deploy.tip2')}
             </li>
             <li className="flex items-start gap-2">
               <CheckCircle className="h-4 w-4 text-primary mt-0.5 flex-shrink-0" />
-              Set up custom domains in your project settings after deployment
+              {t('deploy.tip3')}
             </li>
           </ul>
         </CardContent>

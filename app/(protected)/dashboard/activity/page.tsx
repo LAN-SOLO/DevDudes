@@ -2,6 +2,7 @@
 
 import { useState } from 'react'
 import Link from 'next/link'
+import { useTranslation } from '@/lib/i18n/language-provider'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
@@ -122,6 +123,7 @@ const categoryConfig = {
 }
 
 export default function ActivityPage() {
+  const { t } = useTranslation()
   const [searchQuery, setSearchQuery] = useState('')
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null)
 
@@ -148,12 +150,12 @@ export default function ActivityPage() {
   }, {} as Record<string, ActivityItem[]>)
 
   const categories = [
-    { id: 'project', label: 'Projects' },
-    { id: 'deployment', label: 'Deployments' },
-    { id: 'database', label: 'Databases' },
-    { id: 'settings', label: 'Settings' },
-    { id: 'auth', label: 'Auth' },
-    { id: 'api', label: 'API' },
+    { id: 'project', label: t('activity.categories.projects') },
+    { id: 'deployment', label: t('activity.categories.deployments') },
+    { id: 'database', label: t('activity.categories.databases') },
+    { id: 'settings', label: t('activity.categories.settings') },
+    { id: 'auth', label: t('activity.categories.auth') },
+    { id: 'api', label: t('activity.categories.api') },
   ]
 
   const stats = {
@@ -174,9 +176,9 @@ export default function ActivityPage() {
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h2 className="text-2xl font-bold tracking-tight">Activity Log</h2>
+          <h2 className="text-2xl font-bold tracking-tight">{t('activity.title')}</h2>
           <p className="text-muted-foreground">
-            Track all actions and changes in your account
+            {t('activity.subtitle')}
           </p>
         </div>
         <Button variant="outline">
@@ -195,7 +197,7 @@ export default function ActivityPage() {
               </div>
               <div>
                 <p className="text-2xl font-bold">{stats.total}</p>
-                <p className="text-sm text-muted-foreground">Total Activities</p>
+                <p className="text-sm text-muted-foreground">{t('activity.totalActivities')}</p>
               </div>
             </div>
           </CardContent>
@@ -208,7 +210,7 @@ export default function ActivityPage() {
               </div>
               <div>
                 <p className="text-2xl font-bold">{stats.today}</p>
-                <p className="text-sm text-muted-foreground">Today</p>
+                <p className="text-sm text-muted-foreground">{t('activity.today')}</p>
               </div>
             </div>
           </CardContent>
@@ -221,7 +223,7 @@ export default function ActivityPage() {
               </div>
               <div>
                 <p className="text-2xl font-bold">{stats.thisWeek}</p>
-                <p className="text-sm text-muted-foreground">This Week</p>
+                <p className="text-sm text-muted-foreground">{t('activity.thisWeek')}</p>
               </div>
             </div>
           </CardContent>
@@ -235,7 +237,7 @@ export default function ActivityPage() {
             <div className="relative flex-1">
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
               <Input
-                placeholder="Search activities..."
+                placeholder={t('activity.searchActivities')}
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 className="pl-9"
@@ -247,7 +249,7 @@ export default function ActivityPage() {
                 size="sm"
                 onClick={() => setSelectedCategory(null)}
               >
-                All
+                {t('common.all')}
               </Button>
               {categories.map((cat) => (
                 <Button
@@ -267,11 +269,11 @@ export default function ActivityPage() {
       {/* Activity List */}
       <Card>
         <CardHeader>
-          <CardTitle>Activity Timeline</CardTitle>
+          <CardTitle>{t('activity.activityTimeline')}</CardTitle>
           <CardDescription>
             {filteredActivities.length === 0
-              ? 'No activities found'
-              : `Showing ${filteredActivities.length} activit${filteredActivities.length === 1 ? 'y' : 'ies'}`}
+              ? t('activity.noActivitiesFound')
+              : `${t('activity.showing')} ${filteredActivities.length} ${filteredActivities.length === 1 ? t('activity.activity') : t('activity.activities')}`}
           </CardDescription>
         </CardHeader>
         <CardContent>
@@ -280,10 +282,10 @@ export default function ActivityPage() {
               <div className="rounded-full bg-muted p-4 mb-4">
                 <Activity className="h-8 w-8 text-muted-foreground" />
               </div>
-              <h3 className="font-medium mb-1">No activities found</h3>
+              <h3 className="font-medium mb-1">{t('activity.noActivitiesFound')}</h3>
               <p className="text-sm text-muted-foreground text-center max-w-xs">
                 {searchQuery || selectedCategory
-                  ? 'Try adjusting your filters'
+                  ? t('activity.tryAdjustingFilters')
                   : 'Your activity history will appear here'}
               </p>
             </div>
@@ -319,7 +321,7 @@ export default function ActivityPage() {
                                     href={`/dashboard/projects/${activity.metadata.projectId}`}
                                     className="text-sm text-primary hover:underline mt-1 inline-block"
                                   >
-                                    View Project
+                                    {t('activity.viewProject')}
                                   </Link>
                                 )}
                               </div>
@@ -350,10 +352,9 @@ export default function ActivityPage() {
               <Activity className="h-5 w-5 text-primary" />
             </div>
             <div>
-              <p className="font-medium">Activity Retention</p>
+              <p className="font-medium">{t('activity.retention')}</p>
               <p className="text-sm text-muted-foreground">
-                Activity logs are retained for 90 days on the Free plan. Upgrade to Pro for 1 year retention,
-                or Enterprise for unlimited retention with advanced audit features.
+                {t('activity.retentionDesc')}
               </p>
             </div>
           </div>

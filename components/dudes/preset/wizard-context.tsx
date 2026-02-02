@@ -61,6 +61,7 @@ const defaultConfig: PresetConfig = {
 interface WizardContextType {
   config: PresetConfig
   updateConfig: (updates: Partial<PresetConfig>) => void
+  importConfig: (config: Partial<PresetConfig>) => void
   currentStep: number
   setCurrentStep: (step: number) => void
   totalSteps: number
@@ -80,11 +81,18 @@ export function WizardProvider({ children }: { children: ReactNode }) {
     setConfig((prev) => ({ ...prev, ...updates }))
   }
 
+  const importConfig = (imported: Partial<PresetConfig>) => {
+    setConfig({ ...defaultConfig, ...imported })
+    setCurrentStep(8)
+    setIsComplete(false)
+  }
+
   return (
     <WizardContext.Provider
       value={{
         config,
         updateConfig,
+        importConfig,
         currentStep,
         setCurrentStep,
         totalSteps,

@@ -29,7 +29,13 @@ export async function middleware(request: NextRequest) {
 
   // IMPORTANT: Use getUser() NOT getSession()
   // getUser() validates the JWT on every request
-  const { data: { user } } = await supabase.auth.getUser()
+  let user = null
+  try {
+    const { data } = await supabase.auth.getUser()
+    user = data.user
+  } catch {
+    // Supabase unavailable — treat as unauthenticated
+  }
 
   // Protect dashboard routes
   if (!user && request.nextUrl.pathname.startsWith('/dashboard')) {

@@ -6,6 +6,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Button } from '@/components/ui/button'
 import { ArrowLeft, ArrowRight, Globe, Cloud, Server, Check, Loader2, AlertCircle, ExternalLink } from 'lucide-react'
 import Link from 'next/link'
+import { useTranslation } from '@/lib/i18n/language-provider'
 import { getProjectConfig, updateProjectStatus } from '@/app/actions/pipeline'
 
 const providers = [
@@ -16,6 +17,7 @@ const providers = [
 ]
 
 export default function DeployDudePage() {
+  const { t } = useTranslation()
   const searchParams = useSearchParams()
   const projectId = searchParams.get('project')
 
@@ -101,9 +103,9 @@ export default function DeployDudePage() {
           </Button>
         </Link>
         <div>
-          <h2 className="text-2xl font-bold tracking-tight">Deploy Dude</h2>
+          <h2 className="text-2xl font-bold tracking-tight">{t('pipeline.dudes.deploy.name')}</h2>
           <p className="text-muted-foreground">
-            One-click deployment to your favorite platform
+            {t('pipeline.dudes.deploy.description')}
           </p>
         </div>
       </div>

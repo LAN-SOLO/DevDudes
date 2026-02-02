@@ -1,6 +1,7 @@
 'use client'
 
 import { useState } from 'react'
+import { useTranslation } from '@/lib/i18n/language-provider'
 import { useWizard } from '../wizard-context'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
@@ -46,6 +47,7 @@ const suggestedEntities: Record<string, Array<{ name: string; fields: Array<{ na
 
 export function StepData() {
   const { config, updateConfig, setCurrentStep } = useWizard()
+  const { t } = useTranslation()
   const [newEntityName, setNewEntityName] = useState('')
 
   const suggestions = suggestedEntities[config.appType] || suggestedEntities.default
@@ -79,15 +81,15 @@ export function StepData() {
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Define your data model</CardTitle>
+        <CardTitle>{t('preset.data.title')}</CardTitle>
         <CardDescription>
-          What types of data will your app manage?
+          {t('preset.data.description')}
         </CardDescription>
       </CardHeader>
       <CardContent className="space-y-6">
         {/* Suggested Entities */}
         <div className="space-y-2">
-          <p className="text-sm font-medium">Suggested for {config.appType || 'your app'}</p>
+          <p className="text-sm font-medium">{t('preset.data.suggestedFor', { appType: config.appType || 'your app' })}</p>
           <div className="flex flex-wrap gap-2">
             {suggestions.map((entity) => {
               const isAdded = config.entities.some(e => e.name === entity.name)
@@ -109,10 +111,10 @@ export function StepData() {
 
         {/* Current Entities */}
         <div className="space-y-2">
-          <p className="text-sm font-medium">Your data entities</p>
+          <p className="text-sm font-medium">{t('preset.data.yourEntities')}</p>
           {config.entities.length === 0 ? (
             <p className="text-sm text-muted-foreground">
-              No entities added yet. Add from suggestions or create your own.
+              {t('preset.data.noEntities')}
             </p>
           ) : (
             <div className="space-y-2">
@@ -124,7 +126,7 @@ export function StepData() {
                   <div>
                     <span className="font-medium">{entity.name}</span>
                     <span className="ml-2 text-sm text-muted-foreground">
-                      {entity.fields.length} fields
+                      {entity.fields.length} {t('preset.data.fields')}
                     </span>
                   </div>
                   <Button
@@ -143,7 +145,7 @@ export function StepData() {
         {/* Add Custom Entity */}
         <div className="flex gap-2">
           <Input
-            placeholder="Add custom entity (e.g., Order, Task)"
+            placeholder={t('preset.data.addCustomEntity')}
             value={newEntityName}
             onChange={(e) => setNewEntityName(e.target.value)}
             onKeyDown={(e) => e.key === 'Enter' && addEntity(newEntityName)}
@@ -156,10 +158,10 @@ export function StepData() {
         <div className="flex justify-between">
           <Button variant="outline" onClick={() => setCurrentStep(3)}>
             <ArrowLeft className="mr-2 h-4 w-4" />
-            Back
+            {t('preset.common.back')}
           </Button>
           <Button onClick={() => setCurrentStep(5)}>
-            Continue
+            {t('preset.common.continue')}
             <ArrowRight className="ml-2 h-4 w-4" />
           </Button>
         </div>

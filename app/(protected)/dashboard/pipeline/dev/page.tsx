@@ -6,6 +6,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { ArrowLeft, ArrowRight, Play, Eye, Terminal, FolderTree, FileCode, ChevronRight, ChevronDown, Loader2, AlertCircle } from 'lucide-react'
 import Link from 'next/link'
+import { useTranslation } from '@/lib/i18n/language-provider'
 import { getProjectConfig } from '@/app/actions/pipeline'
 import type { GeneratedConcept } from '@/app/actions/pipeline'
 
@@ -17,6 +18,7 @@ interface FileNode {
 }
 
 export default function DevDudePage() {
+  const { t } = useTranslation()
   const searchParams = useSearchParams()
   const projectId = searchParams.get('project')
 
@@ -48,7 +50,7 @@ export default function DevDudePage() {
               { name: 'layout.tsx', type: 'file', content: generateLayoutCode() },
               { name: 'page.tsx', type: 'file', content: generateHomeCode() },
               ...concept.pages.map(page => ({
-                name: page.route.split('/').pop() || 'page',
+                name: page.route.replace(/^\//, '').replace(/\//g, '-') || 'page',
                 type: 'folder' as const,
                 children: [{ name: 'page.tsx', type: 'file' as const, content: generatePageCode(page) }]
               }))
@@ -280,9 +282,9 @@ export function cn(...inputs: ClassValue[]) {
             </Button>
           </Link>
           <div>
-            <h2 className="text-2xl font-bold tracking-tight">Dev Dude</h2>
+            <h2 className="text-2xl font-bold tracking-tight">{t('pipeline.dudes.dev.name')}</h2>
             <p className="text-muted-foreground">
-              Interactive development environment with live preview
+              {t('pipeline.dudes.dev.description')}
             </p>
           </div>
         </div>
@@ -323,9 +325,9 @@ export function cn(...inputs: ClassValue[]) {
           </Button>
         </Link>
         <div className="flex-1">
-          <h2 className="text-2xl font-bold tracking-tight">Dev Dude</h2>
+          <h2 className="text-2xl font-bold tracking-tight">{t('pipeline.dudes.dev.name')}</h2>
           <p className="text-muted-foreground">
-            Interactive development environment for {project?.name}
+            {t('pipeline.dudes.dev.description')}
           </p>
         </div>
         <Link href={`/dashboard/pipeline/test?project=${projectId}`}>

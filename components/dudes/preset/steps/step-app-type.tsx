@@ -1,6 +1,7 @@
 'use client'
 
 import { useWizard } from '../wizard-context'
+import { useTranslation } from '@/lib/i18n/language-provider'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { ArrowLeft, ArrowRight } from 'lucide-react'
@@ -15,25 +16,26 @@ import {
   BarChart3
 } from 'lucide-react'
 
-const appTypes = [
-  { id: 'crm', label: 'CRM', description: 'Manage customers and sales', icon: Users },
-  { id: 'inventory', label: 'Inventory', description: 'Track products and stock', icon: Package },
-  { id: 'invoicing', label: 'Invoicing', description: 'Billing and payments', icon: FileText },
-  { id: 'hrm', label: 'HR Management', description: 'Employees and payroll', icon: UserCog },
-  { id: 'project', label: 'Project Manager', description: 'Tasks and timelines', icon: FolderKanban },
-  { id: 'helpdesk', label: 'Help Desk', description: 'Support tickets', icon: LifeBuoy },
-  { id: 'ecommerce', label: 'E-commerce', description: 'Online store', icon: ShoppingCart },
-  { id: 'analytics', label: 'Analytics', description: 'Reports and dashboards', icon: BarChart3 },
-]
-
-const targetUsers = [
-  { id: 'internal', label: 'Internal Team', description: 'Employees only' },
-  { id: 'customers', label: 'Customers', description: 'External users' },
-  { id: 'both', label: 'Both', description: 'Internal and external' },
-]
-
 export function StepAppType() {
   const { config, updateConfig, setCurrentStep } = useWizard()
+  const { t } = useTranslation()
+
+  const appTypes = [
+    { id: 'crm', label: t('preset.appType.types.crm'), description: t('preset.appType.types.crmDesc'), icon: Users },
+    { id: 'inventory', label: t('preset.appType.types.inventory'), description: t('preset.appType.types.inventoryDesc'), icon: Package },
+    { id: 'invoicing', label: t('preset.appType.types.invoicing'), description: t('preset.appType.types.invoicingDesc'), icon: FileText },
+    { id: 'hrm', label: t('preset.appType.types.hrm'), description: t('preset.appType.types.hrmDesc'), icon: UserCog },
+    { id: 'project', label: t('preset.appType.types.project'), description: t('preset.appType.types.projectDesc'), icon: FolderKanban },
+    { id: 'helpdesk', label: t('preset.appType.types.helpdesk'), description: t('preset.appType.types.helpdeskDesc'), icon: LifeBuoy },
+    { id: 'ecommerce', label: t('preset.appType.types.ecommerce'), description: t('preset.appType.types.ecommerceDesc'), icon: ShoppingCart },
+    { id: 'analytics', label: t('preset.appType.types.analytics'), description: t('preset.appType.types.analyticsDesc'), icon: BarChart3 },
+  ]
+
+  const targetUsers = [
+    { id: 'internal', label: t('preset.appType.targetUsers.internal'), description: t('preset.appType.targetUsers.internalDesc') },
+    { id: 'customers', label: t('preset.appType.targetUsers.customers'), description: t('preset.appType.targetUsers.customersDesc') },
+    { id: 'both', label: t('preset.appType.targetUsers.both'), description: t('preset.appType.targetUsers.bothDesc') },
+  ]
 
   const canContinue = config.appType && config.targetUsers.length > 0
 
@@ -49,9 +51,9 @@ export function StepAppType() {
   return (
     <Card>
       <CardHeader>
-        <CardTitle>What type of app do you need?</CardTitle>
+        <CardTitle>{t('preset.appType.title')}</CardTitle>
         <CardDescription>
-          Select the category that best matches your requirements
+          {t('preset.appType.description')}
         </CardDescription>
       </CardHeader>
       <CardContent className="space-y-6">
@@ -76,7 +78,7 @@ export function StepAppType() {
         </div>
 
         <div className="space-y-2">
-          <p className="text-sm font-medium">Who will use this app?</p>
+          <p className="text-sm font-medium">{t('preset.appType.whoWillUse')}</p>
           <div className="grid grid-cols-3 gap-3">
             {targetUsers.map((target) => (
               <button
@@ -98,10 +100,10 @@ export function StepAppType() {
         <div className="flex justify-between">
           <Button variant="outline" onClick={() => setCurrentStep(1)}>
             <ArrowLeft className="mr-2 h-4 w-4" />
-            Back
+            {t('preset.common.back')}
           </Button>
           <Button onClick={() => setCurrentStep(3)} disabled={!canContinue}>
-            Continue
+            {t('preset.common.continue')}
             <ArrowRight className="ml-2 h-4 w-4" />
           </Button>
         </div>

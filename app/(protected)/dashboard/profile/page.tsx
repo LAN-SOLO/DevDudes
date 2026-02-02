@@ -10,6 +10,7 @@ import { ConfirmDialog } from '@/components/ui/confirm-dialog'
 import { useToast } from '@/components/ui/toast'
 import { createClient } from '@/lib/supabase/client'
 import { Loader2, Camera } from 'lucide-react'
+import { useTranslation } from '@/lib/i18n/language-provider'
 import type { User } from '@supabase/supabase-js'
 
 export default function ProfilePage() {
@@ -19,6 +20,7 @@ export default function ProfilePage() {
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false)
   const [isDeleting, setIsDeleting] = useState(false)
   const { addToast } = useToast()
+  const { t } = useTranslation()
   const [profileForm, setProfileForm] = useState({
     fullName: '',
     company: '',
@@ -67,14 +69,14 @@ export default function ProfilePage() {
     if (error) {
       addToast({
         type: 'error',
-        title: 'Error',
+        title: t('profile.toasts.errorTitle'),
         description: error.message,
       })
     } else {
       addToast({
         type: 'success',
-        title: 'Profile updated',
-        description: 'Your profile has been saved successfully.',
+        title: t('profile.toasts.profileUpdatedTitle'),
+        description: t('profile.toasts.profileUpdatedDesc'),
       })
     }
   }
@@ -87,8 +89,8 @@ export default function ProfilePage() {
     setShowDeleteConfirm(false)
     addToast({
       type: 'info',
-      title: 'Account deletion requested',
-      description: 'Your request has been submitted. Check your email for confirmation.',
+      title: t('profile.toasts.deleteRequestedTitle'),
+      description: t('profile.toasts.deleteRequestedDesc'),
     })
   }
 
@@ -115,9 +117,9 @@ export default function ProfilePage() {
   return (
     <div className="space-y-6">
       <div>
-        <h2 className="text-2xl font-bold tracking-tight">Profile</h2>
+        <h2 className="text-2xl font-bold tracking-tight">{t('profile.title')}</h2>
         <p className="text-muted-foreground">
-          Manage your account information
+          {t('profile.subtitle')}
         </p>
       </div>
 
@@ -125,8 +127,8 @@ export default function ProfilePage() {
         {/* Avatar Card */}
         <Card className="lg:col-span-1">
           <CardHeader>
-            <CardTitle>Your Avatar</CardTitle>
-            <CardDescription>Click to upload a new photo</CardDescription>
+            <CardTitle>{t('profile.yourAvatar')}</CardTitle>
+            <CardDescription>{t('profile.avatarDesc')}</CardDescription>
           </CardHeader>
           <CardContent className="flex flex-col items-center">
             <div className="relative mb-4">
@@ -142,20 +144,20 @@ export default function ProfilePage() {
             </div>
             <p className="text-sm font-medium">{profileForm.fullName || user?.email}</p>
             <p className="text-xs text-muted-foreground">{user?.email}</p>
-            <p className="text-xs text-muted-foreground mt-2">Member since {createdAt}</p>
+            <p className="text-xs text-muted-foreground mt-2">{t('profile.memberSince')} {createdAt}</p>
           </CardContent>
         </Card>
 
         {/* Profile Form */}
         <Card className="lg:col-span-2">
           <CardHeader>
-            <CardTitle>Profile Information</CardTitle>
-            <CardDescription>Update your personal details</CardDescription>
+            <CardTitle>{t('profile.profileInfo')}</CardTitle>
+            <CardDescription>{t('profile.profileInfoDesc')}</CardDescription>
           </CardHeader>
           <CardContent className="space-y-4">
             <div className="grid gap-4 sm:grid-cols-2">
               <div className="space-y-2">
-                <Label htmlFor="fullName">Full Name</Label>
+                <Label htmlFor="fullName">{t('profile.fullName')}</Label>
                 <Input
                   id="fullName"
                   placeholder="John Doe"
@@ -164,7 +166,7 @@ export default function ProfilePage() {
                 />
               </div>
               <div className="space-y-2">
-                <Label htmlFor="email">Email</Label>
+                <Label htmlFor="email">{t('profile.email')}</Label>
                 <Input
                   id="email"
                   type="email"
@@ -176,7 +178,7 @@ export default function ProfilePage() {
             </div>
             <div className="grid gap-4 sm:grid-cols-2">
               <div className="space-y-2">
-                <Label htmlFor="company">Company</Label>
+                <Label htmlFor="company">{t('profile.company')}</Label>
                 <Input
                   id="company"
                   placeholder="Acme Inc."
@@ -185,7 +187,7 @@ export default function ProfilePage() {
                 />
               </div>
               <div className="space-y-2">
-                <Label htmlFor="role">Role</Label>
+                <Label htmlFor="role">{t('profile.role')}</Label>
                 <Input
                   id="role"
                   placeholder="Software Engineer"
@@ -195,7 +197,7 @@ export default function ProfilePage() {
               </div>
             </div>
             <div className="space-y-2">
-              <Label htmlFor="website">Website</Label>
+              <Label htmlFor="website">{t('profile.website')}</Label>
               <Input
                 id="website"
                 placeholder="https://example.com"
@@ -207,10 +209,10 @@ export default function ProfilePage() {
               {isSaving ? (
                 <>
                   <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                  Saving...
+                  {t('common.saving')}
                 </>
               ) : (
-                'Save Changes'
+                t('common.save')
               )}
             </Button>
           </CardContent>
@@ -220,26 +222,26 @@ export default function ProfilePage() {
       {/* Account Stats */}
       <Card>
         <CardHeader>
-          <CardTitle>Account Statistics</CardTitle>
-          <CardDescription>Your activity on DevDudes</CardDescription>
+          <CardTitle>{t('profile.accountStats')}</CardTitle>
+          <CardDescription>{t('profile.accountStatsDesc')}</CardDescription>
         </CardHeader>
         <CardContent>
           <div className="grid gap-4 sm:grid-cols-4">
             <div className="rounded-lg border p-4 text-center">
               <p className="text-2xl font-bold">0</p>
-              <p className="text-sm text-muted-foreground">Projects Created</p>
+              <p className="text-sm text-muted-foreground">{t('profile.projectsCreated')}</p>
             </div>
             <div className="rounded-lg border p-4 text-center">
               <p className="text-2xl font-bold">0</p>
-              <p className="text-sm text-muted-foreground">Apps Deployed</p>
+              <p className="text-sm text-muted-foreground">{t('profile.appsDeployed')}</p>
             </div>
             <div className="rounded-lg border p-4 text-center">
               <p className="text-2xl font-bold">0</p>
-              <p className="text-sm text-muted-foreground">Templates Used</p>
+              <p className="text-sm text-muted-foreground">{t('profile.templatesUsed')}</p>
             </div>
             <div className="rounded-lg border p-4 text-center">
               <p className="text-2xl font-bold">Free</p>
-              <p className="text-sm text-muted-foreground">Current Plan</p>
+              <p className="text-sm text-muted-foreground">{t('profile.currentPlan')}</p>
             </div>
           </div>
         </CardContent>
@@ -248,22 +250,22 @@ export default function ProfilePage() {
       {/* Danger Zone */}
       <Card className="border-red-200">
         <CardHeader>
-          <CardTitle className="text-red-600">Danger Zone</CardTitle>
-          <CardDescription>Irreversible account actions</CardDescription>
+          <CardTitle className="text-red-600">{t('profile.dangerZone')}</CardTitle>
+          <CardDescription>{t('profile.dangerZoneDesc')}</CardDescription>
         </CardHeader>
         <CardContent>
           <div className="flex items-center justify-between">
             <div>
-              <p className="font-medium">Delete Account</p>
+              <p className="font-medium">{t('profile.deleteAccount')}</p>
               <p className="text-sm text-muted-foreground">
-                Permanently delete your account and all associated data
+                {t('profile.deleteAccountDesc')}
               </p>
             </div>
             <Button
               variant="destructive"
               onClick={() => setShowDeleteConfirm(true)}
             >
-              Delete Account
+              {t('profile.deleteAccount')}
             </Button>
           </div>
         </CardContent>
@@ -273,9 +275,9 @@ export default function ProfilePage() {
       <ConfirmDialog
         open={showDeleteConfirm}
         onOpenChange={setShowDeleteConfirm}
-        title="Delete your account?"
+        title={t('profile.deleteAccountConfirm')}
         description="This action cannot be undone. This will permanently delete your account, all your projects and generated apps, profile settings, connected databases, and API keys."
-        confirmLabel="Delete Account"
+        confirmLabel={t('profile.deleteAccount')}
         variant="destructive"
         loading={isDeleting}
         onConfirm={handleDeleteAccount}

@@ -8,8 +8,10 @@ import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card'
 import { PasswordStrength } from '@/components/auth/password-strength'
+import { useTranslation } from '@/lib/i18n/language-provider'
 
 export function UpdatePasswordForm() {
+  const { t } = useTranslation()
   const searchParams = useSearchParams()
   const error = searchParams.get('error')
   const [password, setPassword] = useState('')
@@ -17,8 +19,8 @@ export function UpdatePasswordForm() {
   return (
     <Card className="w-full max-w-md">
       <CardHeader className="space-y-1">
-        <CardTitle className="text-2xl font-bold">Update password</CardTitle>
-        <CardDescription>Enter your new password</CardDescription>
+        <CardTitle className="text-2xl font-bold">{t('auth.updatePassword.title')}</CardTitle>
+        <CardDescription>{t('auth.updatePassword.subtitle')}</CardDescription>
       </CardHeader>
       <form action={updatePassword}>
         <CardContent className="space-y-4">
@@ -28,7 +30,7 @@ export function UpdatePasswordForm() {
             </div>
           )}
           <div className="space-y-2">
-            <Label htmlFor="password">New password</Label>
+            <Label htmlFor="password">{t('auth.updatePassword.newPassword')}</Label>
             <Input
               id="password"
               name="password"
@@ -40,11 +42,11 @@ export function UpdatePasswordForm() {
             />
             <PasswordStrength password={password} />
             <p className="text-xs text-muted-foreground">
-              Min 8 characters with uppercase, lowercase, and number
+              {t('auth.updatePassword.passwordRequirements')}
             </p>
           </div>
           <div className="space-y-2">
-            <Label htmlFor="confirmPassword">Confirm password</Label>
+            <Label htmlFor="confirmPassword">{t('auth.updatePassword.confirmPassword')}</Label>
             <Input
               id="confirmPassword"
               name="confirmPassword"
@@ -56,7 +58,7 @@ export function UpdatePasswordForm() {
         </CardContent>
         <CardFooter>
           <Button type="submit" className="w-full">
-            Update password
+            {t('auth.updatePassword.updatePassword')}
           </Button>
         </CardFooter>
       </form>

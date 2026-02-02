@@ -1,5 +1,6 @@
 'use client'
 
+import { useTranslation } from '@/lib/i18n/language-provider'
 import { useWizard } from '../wizard-context'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
@@ -7,20 +8,21 @@ import { Input } from '@/components/ui/input'
 import { ArrowLeft, ArrowRight, Check, Plus, X } from 'lucide-react'
 import { useState } from 'react'
 
-const authMethods = [
-  { id: 'email', label: 'Email & Password', description: 'Traditional login' },
-  { id: 'magic-link', label: 'Magic Link', description: 'Passwordless email' },
-  { id: 'google', label: 'Google', description: 'OAuth provider' },
-  { id: 'github', label: 'GitHub', description: 'OAuth provider' },
-  { id: 'microsoft', label: 'Microsoft', description: 'Azure AD / Office 365' },
-  { id: 'saml', label: 'SAML/SSO', description: 'Enterprise single sign-on' },
-]
-
 const defaultRoles = ['admin', 'user', 'viewer']
 
 export function StepAuth() {
   const { config, updateConfig, setCurrentStep } = useWizard()
+  const { t } = useTranslation()
   const [newRole, setNewRole] = useState('')
+
+  const authMethods = [
+    { id: 'email', label: t('preset.auth.methods.email'), description: t('preset.auth.methods.emailDesc') },
+    { id: 'magic-link', label: t('preset.auth.methods.magicLink'), description: t('preset.auth.methods.magicLinkDesc') },
+    { id: 'google', label: t('preset.auth.methods.google'), description: t('preset.auth.methods.googleDesc') },
+    { id: 'github', label: t('preset.auth.methods.github'), description: t('preset.auth.methods.githubDesc') },
+    { id: 'microsoft', label: t('preset.auth.methods.microsoft'), description: t('preset.auth.methods.microsoftDesc') },
+    { id: 'saml', label: t('preset.auth.methods.saml'), description: t('preset.auth.methods.samlDesc') },
+  ]
 
   const toggleAuthMethod = (id: string) => {
     const current = config.authMethods
@@ -54,15 +56,15 @@ export function StepAuth() {
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Authentication & Roles</CardTitle>
+        <CardTitle>{t('preset.auth.title')}</CardTitle>
         <CardDescription>
-          Configure how users will log in and their permission levels
+          {t('preset.auth.description')}
         </CardDescription>
       </CardHeader>
       <CardContent className="space-y-6">
         {/* Auth Methods */}
         <div className="space-y-2">
-          <p className="text-sm font-medium">Authentication methods</p>
+          <p className="text-sm font-medium">{t('preset.auth.authMethods')}</p>
           <div className="grid gap-2 sm:grid-cols-2">
             {authMethods.map((method) => (
               <button
@@ -97,9 +99,9 @@ export function StepAuth() {
         {/* Roles */}
         <div className="space-y-2">
           <div className="flex items-center justify-between">
-            <p className="text-sm font-medium">User roles</p>
+            <p className="text-sm font-medium">{t('preset.auth.userRoles')}</p>
             <Button variant="link" size="sm" onClick={addDefaultRoles}>
-              Add defaults
+              {t('preset.auth.addDefaults')}
             </Button>
           </div>
           <div className="flex flex-wrap gap-2">
@@ -120,7 +122,7 @@ export function StepAuth() {
           </div>
           <div className="flex gap-2">
             <Input
-              placeholder="Add custom role"
+              placeholder={t('preset.auth.addCustomRole')}
               value={newRole}
               onChange={(e) => setNewRole(e.target.value)}
               onKeyDown={(e) => e.key === 'Enter' && addRole()}
@@ -134,10 +136,10 @@ export function StepAuth() {
         <div className="flex justify-between">
           <Button variant="outline" onClick={() => setCurrentStep(4)}>
             <ArrowLeft className="mr-2 h-4 w-4" />
-            Back
+            {t('preset.common.back')}
           </Button>
           <Button onClick={() => setCurrentStep(6)}>
-            Continue
+            {t('preset.common.continue')}
             <ArrowRight className="ml-2 h-4 w-4" />
           </Button>
         </div>

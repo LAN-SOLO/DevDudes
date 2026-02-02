@@ -1,3 +1,5 @@
+'use client'
+
 import Link from 'next/link'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
@@ -10,72 +12,74 @@ import {
   Zap,
   Check,
 } from 'lucide-react'
-
-const features = [
-  {
-    title: '8-Step Configuration',
-    description: 'Define your app requirements with our guided wizard',
-    icon: Workflow,
-  },
-  {
-    title: 'AI Architecture',
-    description: 'Automatically design optimal app structure',
-    icon: Sparkles,
-  },
-  {
-    title: 'Code Generation',
-    description: 'Generate production-ready Next.js code',
-    icon: FileCode,
-  },
-  {
-    title: 'Database Setup',
-    description: 'Auto-configure Supabase with RLS policies',
-    icon: Database,
-  },
-]
-
-const startOptions = [
-  {
-    id: 'scratch',
-    title: 'Start from Scratch',
-    description: 'Configure every aspect of your app with our 8-step wizard',
-    href: '/dashboard/pipeline/preset',
-    icon: Workflow,
-    primary: true,
-  },
-  {
-    id: 'template',
-    title: 'Use a Template',
-    description: 'Start with a pre-built template and customize it',
-    href: '/dashboard/templates',
-    icon: FileCode,
-    primary: false,
-  },
-  {
-    id: 'database',
-    title: 'From Existing Database',
-    description: 'Connect your database and generate an app from your schema',
-    href: '/dashboard/connections',
-    icon: Database,
-    primary: false,
-  },
-]
+import { useTranslation } from '@/lib/i18n/language-provider'
 
 export default function GeneratorPage() {
+  const { t } = useTranslation()
+
+  const features = [
+    {
+      title: t('generator.features.configuration.title'),
+      description: t('generator.features.configuration.description'),
+      icon: Workflow,
+    },
+    {
+      title: t('generator.features.architecture.title'),
+      description: t('generator.features.architecture.description'),
+      icon: Sparkles,
+    },
+    {
+      title: t('generator.features.codeGeneration.title'),
+      description: t('generator.features.codeGeneration.description'),
+      icon: FileCode,
+    },
+    {
+      title: t('generator.features.database.title'),
+      description: t('generator.features.database.description'),
+      icon: Database,
+    },
+  ]
+
+  const startOptions = [
+    {
+      id: 'scratch',
+      title: t('generator.startFromScratch'),
+      description: t('generator.startFromScratchDesc'),
+      href: '/dashboard/pipeline/preset',
+      icon: Workflow,
+      primary: true,
+    },
+    {
+      id: 'template',
+      title: t('generator.useTemplate'),
+      description: t('generator.useTemplateDesc'),
+      href: '/dashboard/templates',
+      icon: FileCode,
+      primary: false,
+    },
+    {
+      id: 'database',
+      title: t('generator.fromDatabase'),
+      description: t('generator.fromDatabaseDesc'),
+      href: '/dashboard/connections',
+      icon: Database,
+      primary: false,
+    },
+  ]
+
   return (
     <div className="space-y-8">
       {/* Hero Section */}
       <div className="text-center space-y-4">
         <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary/10 text-primary text-sm font-medium">
           <Zap className="h-4 w-4" />
-          AI-Powered App Generation
+          {t('generator.badge')}
         </div>
         <h2 className="text-3xl font-bold tracking-tight">
-          Create Production-Ready Apps
+          {t('generator.title')}
         </h2>
         <p className="text-muted-foreground max-w-2xl mx-auto">
-          Transform your ideas into fully functional business applications in minutes.
-          Our AI handles the architecture, code generation, and deployment.
+          {t('generator.subtitle')}
         </p>
       </div>
 
@@ -115,9 +119,9 @@ export default function GeneratorPage() {
       {/* Features Grid */}
       <Card>
         <CardHeader>
-          <CardTitle>What You Get</CardTitle>
+          <CardTitle>{t('generator.whatYouGet')}</CardTitle>
           <CardDescription>
-            Every app includes enterprise-grade features out of the box
+            {t('generator.whatYouGetDesc')}
           </CardDescription>
         </CardHeader>
         <CardContent>
@@ -140,9 +144,9 @@ export default function GeneratorPage() {
       {/* Tech Stack */}
       <Card>
         <CardHeader>
-          <CardTitle>Modern Tech Stack</CardTitle>
+          <CardTitle>{t('generator.techStack')}</CardTitle>
           <CardDescription>
-            Built with the latest technologies for performance and scalability
+            {t('generator.techStackDesc')}
           </CardDescription>
         </CardHeader>
         <CardContent>
@@ -172,15 +176,15 @@ export default function GeneratorPage() {
         <CardContent className="pt-6">
           <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
             <div>
-              <h3 className="text-lg font-semibold">Ready to build your app?</h3>
+              <h3 className="text-lg font-semibold">{t('generator.readyToBuild')}</h3>
               <p className="text-sm text-muted-foreground">
-                Start with the pipeline wizard for full customization
+                {t('generator.startWithPipeline')}
               </p>
             </div>
             <Link href="/dashboard/pipeline/preset">
               <Button size="lg">
                 <Sparkles className="mr-2 h-5 w-5" />
-                Start Building
+                {t('common.startBuilding')}
               </Button>
             </Link>
           </div>

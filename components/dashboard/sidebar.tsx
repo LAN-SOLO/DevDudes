@@ -3,6 +3,7 @@
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { cn } from '@/lib/utils'
+import { useTranslation } from '@/lib/i18n/language-provider'
 import {
   LayoutDashboard,
   Sparkles,
@@ -38,54 +39,55 @@ interface NavSection {
   items: NavItem[]
 }
 
-const navSections: NavSection[] = [
-  {
-    label: 'Overview',
-    items: [
-      { href: '/dashboard', label: 'Dashboard', icon: LayoutDashboard },
-      { href: '/dashboard/activity', label: 'Activity', icon: Activity },
-      { href: '/dashboard/notifications', label: 'Notifications', icon: Bell },
-    ],
-  },
-  {
-    label: 'Build',
-    items: [
-      { href: '/dashboard/generator', label: 'Quick Generate', icon: Sparkles },
-      { href: '/dashboard/pipeline', label: 'Pipeline', icon: Workflow },
-      { href: '/dashboard/projects', label: 'Projects', icon: FolderOpen },
-      { href: '/dashboard/templates', label: 'Templates', icon: FileCode },
-    ],
-  },
-  {
-    label: 'Infrastructure',
-    items: [
-      { href: '/dashboard/connections', label: 'Connections', icon: Database },
-      { href: '/dashboard/integrations', label: 'Integrations', icon: Plug },
-      { href: '/dashboard/deploy', label: 'Deploy', icon: Globe },
-    ],
-  },
-  {
-    label: 'Workspace',
-    items: [
-      { href: '/dashboard/team', label: 'Team', icon: Users },
-      { href: '/dashboard/analytics', label: 'Analytics', icon: BarChart3 },
-      { href: '/dashboard/billing', label: 'Billing', icon: CreditCard },
-    ],
-  },
-  {
-    label: 'Account',
-    items: [
-      { href: '/dashboard/profile', label: 'Profile', icon: User },
-      { href: '/dashboard/settings', label: 'Settings', icon: Settings },
-      { href: '/dashboard/whats-new', label: "What's New", icon: Gift },
-      { href: '/dashboard/help', label: 'Help', icon: HelpCircle },
-    ],
-  },
-]
-
 export function Sidebar() {
   const pathname = usePathname()
   const [collapsed, setCollapsed] = useState(false)
+  const { t } = useTranslation()
+
+  const navSections: NavSection[] = [
+    {
+      label: t('sidebar.sections.overview'),
+      items: [
+        { href: '/dashboard', label: t('sidebar.nav.dashboard'), icon: LayoutDashboard },
+        { href: '/dashboard/activity', label: t('sidebar.nav.activity'), icon: Activity },
+        { href: '/dashboard/notifications', label: t('sidebar.nav.notifications'), icon: Bell },
+      ],
+    },
+    {
+      label: t('sidebar.sections.build'),
+      items: [
+        { href: '/dashboard/generator', label: t('sidebar.nav.quickGenerate'), icon: Sparkles },
+        { href: '/dashboard/pipeline', label: t('sidebar.nav.pipeline'), icon: Workflow },
+        { href: '/dashboard/projects', label: t('sidebar.nav.projects'), icon: FolderOpen },
+        { href: '/dashboard/templates', label: t('sidebar.nav.templates'), icon: FileCode },
+      ],
+    },
+    {
+      label: t('sidebar.sections.infrastructure'),
+      items: [
+        { href: '/dashboard/connections', label: t('sidebar.nav.connections'), icon: Database },
+        { href: '/dashboard/integrations', label: t('sidebar.nav.integrations'), icon: Plug },
+        { href: '/dashboard/deploy', label: t('sidebar.nav.deploy'), icon: Globe },
+      ],
+    },
+    {
+      label: t('sidebar.sections.workspace'),
+      items: [
+        { href: '/dashboard/team', label: t('sidebar.nav.team'), icon: Users },
+        { href: '/dashboard/analytics', label: t('sidebar.nav.analytics'), icon: BarChart3 },
+        { href: '/dashboard/billing', label: t('sidebar.nav.billing'), icon: CreditCard },
+      ],
+    },
+    {
+      label: t('sidebar.sections.account'),
+      items: [
+        { href: '/dashboard/profile', label: t('sidebar.nav.profile'), icon: User },
+        { href: '/dashboard/settings', label: t('sidebar.nav.settings'), icon: Settings },
+        { href: '/dashboard/whats-new', label: t('sidebar.nav.whatsNew'), icon: Gift },
+        { href: '/dashboard/help', label: t('sidebar.nav.help'), icon: HelpCircle },
+      ],
+    },
+  ]
 
   return (
     <aside className={cn(

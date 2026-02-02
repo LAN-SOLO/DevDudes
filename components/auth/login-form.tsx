@@ -8,16 +8,18 @@ import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card'
 import { OAuthButtons } from '@/components/auth/oauth-buttons'
+import { useTranslation } from '@/lib/i18n/language-provider'
 
 export function LoginForm() {
+  const { t } = useTranslation()
   const searchParams = useSearchParams()
   const error = searchParams.get('error')
 
   return (
     <Card className="w-full max-w-md">
       <CardHeader className="space-y-1">
-        <CardTitle className="text-2xl font-bold">Welcome back</CardTitle>
-        <CardDescription>Enter your credentials to sign in</CardDescription>
+        <CardTitle className="text-2xl font-bold">{t('auth.login.title')}</CardTitle>
+        <CardDescription>{t('auth.login.subtitle')}</CardDescription>
       </CardHeader>
       <form action={login}>
         <CardContent className="space-y-4">
@@ -35,13 +37,13 @@ export function LoginForm() {
             </div>
             <div className="relative flex justify-center text-xs uppercase">
               <span className="bg-background px-2 text-muted-foreground">
-                Or continue with email
+                {t('auth.login.orContinueWith')}
               </span>
             </div>
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="email">Email</Label>
+            <Label htmlFor="email">{t('auth.login.email')}</Label>
             <Input
               id="email"
               name="email"
@@ -51,7 +53,7 @@ export function LoginForm() {
             />
           </div>
           <div className="space-y-2">
-            <Label htmlFor="password">Password</Label>
+            <Label htmlFor="password">{t('auth.login.password')}</Label>
             <Input
               id="password"
               name="password"
@@ -62,16 +64,16 @@ export function LoginForm() {
         </CardContent>
         <CardFooter className="flex flex-col space-y-4">
           <Button type="submit" className="w-full">
-            Sign in
+            {t('auth.login.signIn')}
           </Button>
           <div className="text-sm text-center space-y-2">
             <Link href="/reset-password" className="text-muted-foreground hover:underline">
-              Forgot your password?
+              {t('auth.login.forgotPassword')}
             </Link>
             <p className="text-muted-foreground">
-              Don&apos;t have an account?{' '}
+              {t('auth.login.noAccount')}{' '}
               <Link href="/signup" className="text-primary hover:underline">
-                Sign up
+                {t('auth.login.signUp')}
               </Link>
             </p>
           </div>

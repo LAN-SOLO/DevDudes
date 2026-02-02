@@ -28,7 +28,7 @@ export async function getProjects() {
 
   const { data, error } = await supabase
     .from('projects')
-    .select('*')
+    .select('id, name, description, app_type, status, created_at, updated_at')
     .order('created_at', { ascending: false })
 
   if (error) {
@@ -48,8 +48,9 @@ export async function getProject(id: string) {
 
   const { data, error } = await supabase
     .from('projects')
-    .select('*')
+    .select('id, name, description, app_type, status, preset_config, generated_concept, created_at, updated_at')
     .eq('id', id)
+    .eq('user_id', user.id)
     .single()
 
   if (error) {
@@ -123,6 +124,7 @@ export async function updateProject(id: string, formData: FormData) {
     .from('projects')
     .update(result.data)
     .eq('id', id)
+    .eq('user_id', user.id)
 
   if (error) {
     return { error: error.message }
@@ -145,6 +147,7 @@ export async function deleteProject(id: string) {
     .from('projects')
     .delete()
     .eq('id', id)
+    .eq('user_id', user.id)
 
   if (error) {
     return { error: error.message }

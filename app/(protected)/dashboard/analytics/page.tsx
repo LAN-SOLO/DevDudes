@@ -5,6 +5,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { useToast } from '@/components/ui/toast'
+import { useTranslation } from '@/lib/i18n/language-provider'
 import {
   BarChart3,
   TrendingUp,
@@ -38,41 +39,6 @@ interface ProjectMetric {
   trend: 'up' | 'down' | 'stable'
 }
 
-const metrics: MetricCard[] = [
-  {
-    title: 'Total Pageviews',
-    value: '12,847',
-    change: 12.5,
-    changeLabel: 'vs last month',
-    icon: Eye,
-    color: 'bg-blue-100 text-blue-600',
-  },
-  {
-    title: 'Unique Visitors',
-    value: '3,429',
-    change: 8.2,
-    changeLabel: 'vs last month',
-    icon: Users,
-    color: 'bg-green-100 text-green-600',
-  },
-  {
-    title: 'Avg. Session Duration',
-    value: '4m 32s',
-    change: -2.1,
-    changeLabel: 'vs last month',
-    icon: Clock,
-    color: 'bg-purple-100 text-purple-600',
-  },
-  {
-    title: 'API Calls',
-    value: '45,231',
-    change: 23.7,
-    changeLabel: 'vs last month',
-    icon: Zap,
-    color: 'bg-yellow-100 text-yellow-600',
-  },
-]
-
 const projectMetrics: ProjectMetric[] = [
   { id: '1', name: 'Customer Portal', views: 5420, users: 1245, avgTime: '5m 12s', trend: 'up' },
   { id: '2', name: 'Inventory System', views: 3210, users: 890, avgTime: '3m 45s', trend: 'up' },
@@ -100,8 +66,44 @@ const topLocations = [
 
 export default function AnalyticsPage() {
   const { addToast } = useToast()
+  const { t } = useTranslation()
   const [timeRange, setTimeRange] = useState<'7d' | '30d' | '90d'>('30d')
   const [isRefreshing, setIsRefreshing] = useState(false)
+
+  const metrics: MetricCard[] = [
+    {
+      title: t('analytics.totalPageviews'),
+      value: '12,847',
+      change: 12.5,
+      changeLabel: t('analytics.vsLastMonth'),
+      icon: Eye,
+      color: 'bg-blue-100 text-blue-600',
+    },
+    {
+      title: t('analytics.uniqueVisitors'),
+      value: '3,429',
+      change: 8.2,
+      changeLabel: t('analytics.vsLastMonth'),
+      icon: Users,
+      color: 'bg-green-100 text-green-600',
+    },
+    {
+      title: t('analytics.avgSessionDuration'),
+      value: '4m 32s',
+      change: -2.1,
+      changeLabel: t('analytics.vsLastMonth'),
+      icon: Clock,
+      color: 'bg-purple-100 text-purple-600',
+    },
+    {
+      title: t('analytics.apiCalls'),
+      value: '45,231',
+      change: 23.7,
+      changeLabel: t('analytics.vsLastMonth'),
+      icon: Zap,
+      color: 'bg-yellow-100 text-yellow-600',
+    },
+  ]
 
   const handleRefresh = async () => {
     setIsRefreshing(true)
@@ -109,16 +111,16 @@ export default function AnalyticsPage() {
     setIsRefreshing(false)
     addToast({
       type: 'success',
-      title: 'Data refreshed',
-      description: 'Analytics data has been updated',
+      title: t('analytics.toasts.dataRefreshedTitle'),
+      description: t('analytics.toasts.dataRefreshedDesc'),
     })
   }
 
   const handleExport = () => {
     addToast({
       type: 'info',
-      title: 'Exporting data',
-      description: 'Your analytics report is being prepared for download',
+      title: t('analytics.toasts.exportingTitle'),
+      description: t('analytics.toasts.exportingDesc'),
     })
   }
 
@@ -128,9 +130,9 @@ export default function AnalyticsPage() {
     <div className="space-y-6">
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
         <div>
-          <h2 className="text-2xl font-bold tracking-tight">Analytics</h2>
+          <h2 className="text-2xl font-bold tracking-tight">{t('analytics.title')}</h2>
           <p className="text-muted-foreground">
-            Track your apps performance and user engagement
+            {t('analytics.subtitle')}
           </p>
         </div>
         <div className="flex items-center gap-2">
@@ -145,7 +147,7 @@ export default function AnalyticsPage() {
                     : 'text-muted-foreground hover:text-foreground'
                 }`}
               >
-                {range === '7d' ? '7 days' : range === '30d' ? '30 days' : '90 days'}
+                {range === '7d' ? t('analytics.days7') : range === '30d' ? t('analytics.days30') : t('analytics.days90')}
               </button>
             ))}
           </div>
@@ -154,7 +156,7 @@ export default function AnalyticsPage() {
           </Button>
           <Button variant="outline" onClick={handleExport}>
             <Download className="mr-2 h-4 w-4" />
-            Export
+            {t('common.export')}
           </Button>
         </div>
       </div>
@@ -194,17 +196,17 @@ export default function AnalyticsPage() {
           <CardHeader>
             <div className="flex items-center justify-between">
               <div>
-                <CardTitle>Traffic Overview</CardTitle>
-                <CardDescription>Daily pageviews and unique visitors</CardDescription>
+                <CardTitle>{t('analytics.trafficOverview')}</CardTitle>
+                <CardDescription>{t('analytics.trafficDesc')}</CardDescription>
               </div>
               <div className="flex items-center gap-4 text-sm">
                 <div className="flex items-center gap-2">
                   <div className="h-3 w-3 rounded-full bg-primary" />
-                  <span className="text-muted-foreground">Views</span>
+                  <span className="text-muted-foreground">{t('common.views')}</span>
                 </div>
                 <div className="flex items-center gap-2">
                   <div className="h-3 w-3 rounded-full bg-green-500" />
-                  <span className="text-muted-foreground">Users</span>
+                  <span className="text-muted-foreground">{t('common.users')}</span>
                 </div>
               </div>
             </div>
@@ -237,9 +239,9 @@ export default function AnalyticsPage() {
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
               <Globe className="h-5 w-5" />
-              Top Locations
+              {t('analytics.topLocations')}
             </CardTitle>
-            <CardDescription>Where your visitors are from</CardDescription>
+            <CardDescription>{t('analytics.topLocationsDesc')}</CardDescription>
           </CardHeader>
           <CardContent>
             <div className="space-y-4">
@@ -270,11 +272,11 @@ export default function AnalyticsPage() {
         <CardHeader>
           <div className="flex items-center justify-between">
             <div>
-              <CardTitle>Project Performance</CardTitle>
-              <CardDescription>Analytics for your deployed applications</CardDescription>
+              <CardTitle>{t('analytics.projectPerformance')}</CardTitle>
+              <CardDescription>{t('analytics.projectPerformanceDesc')}</CardDescription>
             </div>
             <Button variant="outline" size="sm">
-              View All
+              {t('common.viewAll')}
             </Button>
           </div>
         </CardHeader>
@@ -283,11 +285,11 @@ export default function AnalyticsPage() {
             <table className="w-full">
               <thead>
                 <tr className="border-b">
-                  <th className="text-left py-3 pr-4 font-medium">Project</th>
-                  <th className="text-right py-3 px-4 font-medium">Pageviews</th>
-                  <th className="text-right py-3 px-4 font-medium">Users</th>
-                  <th className="text-right py-3 px-4 font-medium">Avg. Time</th>
-                  <th className="text-right py-3 pl-4 font-medium">Trend</th>
+                  <th className="text-left py-3 pr-4 font-medium">{t('analytics.project')}</th>
+                  <th className="text-right py-3 px-4 font-medium">{t('analytics.pageviews')}</th>
+                  <th className="text-right py-3 px-4 font-medium">{t('common.users')}</th>
+                  <th className="text-right py-3 px-4 font-medium">{t('analytics.avgTime')}</th>
+                  <th className="text-right py-3 pl-4 font-medium">{t('analytics.trend')}</th>
                 </tr>
               </thead>
               <tbody className="divide-y">
@@ -314,15 +316,15 @@ export default function AnalyticsPage() {
                       {project.trend === 'up' ? (
                         <Badge className="bg-green-100 text-green-700">
                           <TrendingUp className="mr-1 h-3 w-3" />
-                          Up
+                          {t('common.up')}
                         </Badge>
                       ) : project.trend === 'down' ? (
                         <Badge className="bg-red-100 text-red-700">
                           <TrendingDown className="mr-1 h-3 w-3" />
-                          Down
+                          {t('common.down')}
                         </Badge>
                       ) : (
-                        <Badge variant="secondary">Stable</Badge>
+                        <Badge variant="secondary">{t('common.stable')}</Badge>
                       )}
                     </td>
                   </tr>
@@ -339,15 +341,15 @@ export default function AnalyticsPage() {
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
               <div className="h-2 w-2 rounded-full bg-green-500 animate-pulse" />
-              Real-time Visitors
+              {t('analytics.realTimeVisitors')}
             </CardTitle>
-            <CardDescription>Users currently on your apps</CardDescription>
+            <CardDescription>{t('analytics.realTimeDesc')}</CardDescription>
           </CardHeader>
           <CardContent>
             <div className="flex items-center justify-center py-8">
               <div className="text-center">
                 <p className="text-5xl font-bold">24</p>
-                <p className="text-sm text-muted-foreground mt-2">active users right now</p>
+                <p className="text-sm text-muted-foreground mt-2">{t('analytics.activeUsersNow')}</p>
               </div>
             </div>
             <div className="grid grid-cols-3 gap-4 pt-4 border-t">
@@ -369,8 +371,8 @@ export default function AnalyticsPage() {
 
         <Card>
           <CardHeader>
-            <CardTitle>Top Pages</CardTitle>
-            <CardDescription>Most visited pages across all apps</CardDescription>
+            <CardTitle>{t('analytics.topPages')}</CardTitle>
+            <CardDescription>{t('analytics.topPagesDesc')}</CardDescription>
           </CardHeader>
           <CardContent>
             <div className="space-y-4">
@@ -404,14 +406,14 @@ export default function AnalyticsPage() {
                 <BarChart3 className="h-5 w-5 text-primary" />
               </div>
               <div>
-                <p className="font-medium">Want more insights?</p>
+                <p className="font-medium">{t('analytics.wantMoreInsights')}</p>
                 <p className="text-sm text-muted-foreground">
-                  Upgrade to Pro for advanced analytics, custom reports, and data export
+                  {t('analytics.upgradeForAnalytics')}
                 </p>
               </div>
             </div>
             <Button asChild>
-              <a href="/dashboard/billing">Upgrade to Pro</a>
+              <a href="/dashboard/billing">{t('analytics.upgradeToPro')}</a>
             </Button>
           </div>
         </CardContent>

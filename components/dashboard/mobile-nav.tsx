@@ -3,6 +3,7 @@
 import { useState } from 'react'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
+import { useTranslation } from '@/lib/i18n/language-provider'
 import { cn } from '@/lib/utils'
 import { Button } from '@/components/ui/button'
 import {
@@ -33,36 +34,37 @@ import {
   Menu,
 } from 'lucide-react'
 
-const navItems = [
-  { href: '/dashboard', label: 'Dashboard', icon: LayoutDashboard },
-  { href: '/dashboard/generator', label: 'Quick Generate', icon: Sparkles },
-  { href: '/dashboard/pipeline', label: 'Pipeline', icon: Workflow },
-  { href: '/dashboard/projects', label: 'Projects', icon: FolderOpen },
-  { href: '/dashboard/templates', label: 'Templates', icon: FileCode },
-  { href: '/dashboard/connections', label: 'Connections', icon: Database },
-  { href: '/dashboard/integrations', label: 'Integrations', icon: Plug },
-  { href: '/dashboard/deploy', label: 'Deploy', icon: Globe },
-  { href: '/dashboard/team', label: 'Team', icon: Users },
-  { href: '/dashboard/activity', label: 'Activity', icon: Activity },
-  { href: '/dashboard/analytics', label: 'Analytics', icon: BarChart3 },
-  { href: '/dashboard/notifications', label: 'Notifications', icon: Bell },
-  { href: '/dashboard/whats-new', label: "What's New", icon: Gift },
-  { href: '/dashboard/billing', label: 'Billing', icon: CreditCard },
-  { href: '/dashboard/profile', label: 'Profile', icon: User },
-  { href: '/dashboard/settings', label: 'Settings', icon: Settings },
-  { href: '/dashboard/help', label: 'Help', icon: HelpCircle },
-]
-
 export function MobileNav() {
   const [open, setOpen] = useState(false)
   const pathname = usePathname()
+  const { t } = useTranslation()
+
+  const navItems = [
+    { href: '/dashboard', label: t('sidebar.nav.dashboard'), icon: LayoutDashboard },
+    { href: '/dashboard/generator', label: t('sidebar.nav.quickGenerate'), icon: Sparkles },
+    { href: '/dashboard/pipeline', label: t('sidebar.nav.pipeline'), icon: Workflow },
+    { href: '/dashboard/projects', label: t('sidebar.nav.projects'), icon: FolderOpen },
+    { href: '/dashboard/templates', label: t('sidebar.nav.templates'), icon: FileCode },
+    { href: '/dashboard/connections', label: t('sidebar.nav.connections'), icon: Database },
+    { href: '/dashboard/integrations', label: t('sidebar.nav.integrations'), icon: Plug },
+    { href: '/dashboard/deploy', label: t('sidebar.nav.deploy'), icon: Globe },
+    { href: '/dashboard/team', label: t('sidebar.nav.team'), icon: Users },
+    { href: '/dashboard/activity', label: t('sidebar.nav.activity'), icon: Activity },
+    { href: '/dashboard/analytics', label: t('sidebar.nav.analytics'), icon: BarChart3 },
+    { href: '/dashboard/notifications', label: t('sidebar.nav.notifications'), icon: Bell },
+    { href: '/dashboard/whats-new', label: t('sidebar.nav.whatsNew'), icon: Gift },
+    { href: '/dashboard/billing', label: t('sidebar.nav.billing'), icon: CreditCard },
+    { href: '/dashboard/profile', label: t('sidebar.nav.profile'), icon: User },
+    { href: '/dashboard/settings', label: t('sidebar.nav.settings'), icon: Settings },
+    { href: '/dashboard/help', label: t('sidebar.nav.help'), icon: HelpCircle },
+  ]
 
   return (
     <Sheet open={open} onOpenChange={setOpen}>
       <SheetTrigger asChild>
         <Button variant="ghost" size="icon" className="lg:hidden">
           <Menu className="h-5 w-5" />
-          <span className="sr-only">Toggle menu</span>
+          <span className="sr-only">{t('header.toggleMenu')}</span>
         </Button>
       </SheetTrigger>
       <SheetContent side="left" className="w-72 p-0">

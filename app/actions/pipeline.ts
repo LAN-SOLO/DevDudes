@@ -113,6 +113,7 @@ export async function savePresetConfig(projectId: string | null, config: PresetC
       preset_config: config as unknown as Record<string, unknown>,
     })
     .eq('id', projectId)
+    .eq('user_id', user.id)
 
   if (error) {
     return { error: error.message, projectId: null }
@@ -177,6 +178,11 @@ export async function saveGeneratedConcept(projectId: string, concept: Generated
     return { error: 'Not authenticated' }
   }
 
+  // Basic structure validation
+  if (!concept?.summary || !concept?.architecture || !concept?.pages || !concept?.implementationSteps || !concept?.estimatedComplexity) {
+    return { error: 'Invalid concept structure' }
+  }
+
   const { error } = await supabase
     .from('projects')
     .update({
@@ -184,6 +190,7 @@ export async function saveGeneratedConcept(projectId: string, concept: Generated
       generated_concept: concept as unknown as Record<string, unknown>,
     })
     .eq('id', projectId)
+    .eq('user_id', user.id)
 
   if (error) {
     return { error: error.message }
@@ -195,6 +202,8 @@ export async function saveGeneratedConcept(projectId: string, concept: Generated
   return { error: null }
 }
 
+const validStatuses = ['draft', 'configuring', 'generating', 'ready', 'deployed', 'archived'] as const
+
 export async function updateProjectStatus(projectId: string, status: string) {
   const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()
@@ -203,10 +212,15 @@ export async function updateProjectStatus(projectId: string, status: string) {
     return { error: 'Not authenticated' }
   }
 
+  if (!validStatuses.includes(status as typeof validStatuses[number])) {
+    return { error: 'Invalid status' }
+  }
+
   const { error } = await supabase
     .from('projects')
     .update({ status })
     .eq('id', projectId)
+    .eq('user_id', user.id)
 
   if (error) {
     return { error: error.message }

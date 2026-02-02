@@ -1,6 +1,7 @@
 'use client'
 
 import { useState } from 'react'
+import { useTranslation } from '@/lib/i18n/language-provider'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import {
@@ -28,6 +29,7 @@ interface Notification {
 }
 
 export default function NotificationsPage() {
+  const { t } = useTranslation()
   const [notifications, setNotifications] = useState<Notification[]>([
     {
       id: '1',
@@ -132,22 +134,22 @@ export default function NotificationsPage() {
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h2 className="text-2xl font-bold tracking-tight">Notifications</h2>
+          <h2 className="text-2xl font-bold tracking-tight">{t('notifications.pageTitle')}</h2>
           <p className="text-muted-foreground">
-            Stay updated on your projects and deployments
+            {t('notifications.pageDescription')}
           </p>
         </div>
         <div className="flex items-center gap-2">
           {unreadCount > 0 && (
             <Button variant="outline" size="sm" onClick={markAllAsRead}>
               <CheckCheck className="mr-2 h-4 w-4" />
-              Mark All Read
+              {t('notifications.markAllAsRead')}
             </Button>
           )}
           {notifications.length > 0 && (
             <Button variant="ghost" size="sm" onClick={clearAll}>
               <Trash2 className="mr-2 h-4 w-4" />
-              Clear All
+              {t('notifications.clearAll')}
             </Button>
           )}
         </div>
@@ -163,7 +165,7 @@ export default function NotificationsPage() {
               </div>
               <div>
                 <p className="text-2xl font-bold">{notifications.length}</p>
-                <p className="text-sm text-muted-foreground">Total Notifications</p>
+                <p className="text-sm text-muted-foreground">{t('notifications.total')}</p>
               </div>
             </div>
           </CardContent>
@@ -176,7 +178,7 @@ export default function NotificationsPage() {
               </div>
               <div>
                 <p className="text-2xl font-bold">{unreadCount}</p>
-                <p className="text-sm text-muted-foreground">Unread</p>
+                <p className="text-sm text-muted-foreground">{t('notifications.unread')}</p>
               </div>
             </div>
           </CardContent>
@@ -189,7 +191,7 @@ export default function NotificationsPage() {
               </div>
               <div>
                 <p className="text-2xl font-bold">{notifications.length - unreadCount}</p>
-                <p className="text-sm text-muted-foreground">Read</p>
+                <p className="text-sm text-muted-foreground">{t('notifications.read')}</p>
               </div>
             </div>
           </CardContent>
@@ -203,14 +205,14 @@ export default function NotificationsPage() {
           size="sm"
           onClick={() => setFilter('all')}
         >
-          All ({notifications.length})
+          {t('notifications.showAll')} ({notifications.length})
         </Button>
         <Button
           variant={filter === 'unread' ? 'default' : 'outline'}
           size="sm"
           onClick={() => setFilter('unread')}
         >
-          Unread ({unreadCount})
+          {t('notifications.showUnreadOnly')} ({unreadCount})
         </Button>
       </div>
 
@@ -218,11 +220,11 @@ export default function NotificationsPage() {
       <Card>
         <CardHeader>
           <CardTitle>
-            {filter === 'unread' ? 'Unread Notifications' : 'All Notifications'}
+            {filter === 'unread' ? t('notifications.showUnreadOnly') : t('notifications.showAll')}
           </CardTitle>
           <CardDescription>
             {filteredNotifications.length === 0
-              ? 'No notifications to show'
+              ? t('notifications.empty')
               : `Showing ${filteredNotifications.length} notification${filteredNotifications.length === 1 ? '' : 's'}`}
           </CardDescription>
         </CardHeader>
@@ -233,12 +235,10 @@ export default function NotificationsPage() {
                 <Bell className="h-8 w-8 text-muted-foreground" />
               </div>
               <h3 className="font-medium mb-1">
-                {filter === 'unread' ? 'All caught up!' : 'No notifications yet'}
+                {t('notifications.empty')}
               </h3>
               <p className="text-sm text-muted-foreground text-center max-w-xs">
-                {filter === 'unread'
-                  ? 'You have read all your notifications.'
-                  : 'Notifications about your projects and deployments will appear here.'}
+                {t('notifications.emptyDescription')}
               </p>
             </div>
           ) : (
@@ -281,7 +281,7 @@ export default function NotificationsPage() {
                             size="icon"
                             className="h-8 w-8"
                             onClick={() => markAsRead(notification.id)}
-                            title="Mark as read"
+                            title={t('notifications.markAsRead')}
                           >
                             <Check className="h-4 w-4" />
                           </Button>
@@ -291,7 +291,7 @@ export default function NotificationsPage() {
                           size="icon"
                           className="h-8 w-8 text-muted-foreground hover:text-red-500"
                           onClick={() => deleteNotification(notification.id)}
-                          title="Delete"
+                          title={t('notifications.deleteNotification')}
                         >
                           <Trash2 className="h-4 w-4" />
                         </Button>
@@ -314,16 +314,16 @@ export default function NotificationsPage() {
                 <Settings className="h-5 w-5 text-primary" />
               </div>
               <div>
-                <p className="font-medium">Notification Preferences</p>
+                <p className="font-medium">{t('notifications.manageSettings')}</p>
                 <p className="text-sm text-muted-foreground">
-                  Customize which notifications you receive
+                  {t('notifications.emptyDescription')}
                 </p>
               </div>
             </div>
             <Button variant="outline" asChild>
               <a href="/dashboard/settings">
                 <Sparkles className="mr-2 h-4 w-4" />
-                Manage Settings
+                {t('notifications.manageSettings')}
               </a>
             </Button>
           </div>

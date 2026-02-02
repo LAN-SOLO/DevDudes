@@ -13,6 +13,7 @@ import {
   Rocket,
   CheckCircle,
 } from 'lucide-react'
+import { useTranslation } from '@/lib/i18n/language-provider'
 
 interface Step {
   id: string
@@ -68,6 +69,7 @@ function useLocalStorage<T>(key: string, initialValue: T): [T, (value: T) => voi
 }
 
 export function WelcomeBanner() {
+  const { t } = useTranslation()
   const [isDismissed, setIsDismissed] = useLocalStorage('welcome-dismissed', false)
   const [completedStepIds, setCompletedStepIds] = useLocalStorage<string[]>('onboarding-steps', [])
   // Since we're using useSyncExternalStore with getServerSnapshot, hydration is handled
@@ -75,26 +77,26 @@ export function WelcomeBanner() {
   const baseSteps = useMemo(() => [
     {
       id: 'create',
-      title: 'Create Your First App',
-      description: 'Use the generator to build your first application',
+      title: t('dashboard.welcome.createFirstApp'),
+      description: t('dashboard.welcome.createFirstAppDesc'),
       icon: Sparkles,
       href: '/dashboard/generator',
     },
     {
       id: 'template',
-      title: 'Explore Templates',
-      description: 'Browse pre-built templates for common use cases',
+      title: t('dashboard.welcome.exploreTemplates'),
+      description: t('dashboard.welcome.exploreTemplatesDesc'),
       icon: FileCode,
       href: '/dashboard/templates',
     },
     {
       id: 'connect',
-      title: 'Connect a Database',
-      description: 'Link your existing database to generate apps',
+      title: t('dashboard.welcome.connectDatabase'),
+      description: t('dashboard.welcome.connectDatabaseDesc'),
       icon: Database,
       href: '/dashboard/connections',
     },
-  ], [])
+  ], [t])
 
   const steps: Step[] = useMemo(() =>
     baseSteps.map((step) => ({
@@ -129,11 +131,11 @@ export function WelcomeBanner() {
               <Rocket className="h-5 w-5 text-primary" />
             </div>
             <div>
-              <h3 className="font-semibold">Welcome to DevDudes!</h3>
+              <h3 className="font-semibold">{t('dashboard.welcome.title')}</h3>
               <p className="text-sm text-muted-foreground">
                 {allCompleted
-                  ? "You're all set! Start building amazing apps."
-                  : 'Complete these steps to get started'}
+                  ? t('dashboard.welcome.allSet')
+                  : t('dashboard.welcome.completeSteps')}
               </p>
             </div>
           </div>
@@ -150,7 +152,7 @@ export function WelcomeBanner() {
         {/* Progress */}
         <div className="mb-4">
           <div className="flex items-center justify-between text-sm mb-2">
-            <span className="text-muted-foreground">Getting started</span>
+            <span className="text-muted-foreground">{t('dashboard.welcome.gettingStarted')}</span>
             <span className="font-medium">{completedCount} / {steps.length}</span>
           </div>
           <div className="h-2 rounded-full bg-muted overflow-hidden">
@@ -207,12 +209,12 @@ export function WelcomeBanner() {
         {allCompleted && (
           <div className="mt-4 pt-4 border-t flex items-center justify-between">
             <p className="text-sm text-muted-foreground">
-              Ready to build something awesome?
+              {t('dashboard.welcome.readyToBuild')}
             </p>
             <Link href="/dashboard/pipeline/preset">
               <Button size="sm">
                 <Sparkles className="mr-2 h-4 w-4" />
-                Start Building
+                {t('common.startBuilding')}
               </Button>
             </Link>
           </div>

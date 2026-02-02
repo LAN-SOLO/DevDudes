@@ -7,6 +7,7 @@ import { Input } from '@/components/ui/input'
 import { Textarea } from '@/components/ui/textarea'
 import { Label } from '@/components/ui/label'
 import { useToast } from '@/components/ui/toast'
+import { useTranslation } from '@/lib/i18n/language-provider'
 import {
   HelpCircle,
   BookOpen,
@@ -25,84 +26,91 @@ import {
 
 interface FAQ {
   id: string
-  question: string
-  answer: string
-  category: string
+  questionKey: string
+  answerKey: string
+  categoryKey: string
 }
 
 const faqs: FAQ[] = [
   {
     id: '1',
-    question: 'How do I create my first app?',
-    answer: 'Navigate to the Generator page and select "Start from Scratch" to use our 8-step wizard, or choose a template to get started quickly. The wizard will guide you through defining your app requirements, and our AI will generate the code.',
-    category: 'Getting Started',
+    questionKey: 'help.faqs.createApp.question',
+    answerKey: 'help.faqs.createApp.answer',
+    categoryKey: 'help.categories.gettingStarted',
   },
   {
     id: '2',
-    question: 'What databases are supported?',
-    answer: 'DevDudes supports PostgreSQL, MySQL, Supabase, and MongoDB. You can connect to existing databases or let us set up a new Supabase instance for you automatically.',
-    category: 'Databases',
+    questionKey: 'help.faqs.databases.question',
+    answerKey: 'help.faqs.databases.answer',
+    categoryKey: 'help.categories.databases',
   },
   {
     id: '3',
-    question: 'How do I deploy my app?',
-    answer: 'After completing the development phase, go to the Deploy step in the pipeline. You can deploy to Vercel, Netlify, or your own infrastructure. We handle the build process and configuration automatically.',
-    category: 'Deployment',
+    questionKey: 'help.faqs.deploy.question',
+    answerKey: 'help.faqs.deploy.answer',
+    categoryKey: 'help.categories.deployment',
   },
   {
     id: '4',
-    question: 'Can I edit the generated code?',
-    answer: 'Absolutely! The Dev Dude provides a full code editor where you can view and modify any generated files. You can also download the complete source code and work on it in your preferred IDE.',
-    category: 'Development',
+    questionKey: 'help.faqs.editCode.question',
+    answerKey: 'help.faqs.editCode.answer',
+    categoryKey: 'help.categories.development',
   },
   {
     id: '5',
-    question: 'What is the Dudes pipeline?',
-    answer: 'The Dudes pipeline is our 7-step workflow for app generation: Preset (configure), Combo (AI design), Prepair (environment setup), Dev (code generation), Test (quality assurance), Deploy (go live), and Docu (documentation).',
-    category: 'Getting Started',
+    questionKey: 'help.faqs.pipeline.question',
+    answerKey: 'help.faqs.pipeline.answer',
+    categoryKey: 'help.categories.gettingStarted',
   },
   {
     id: '6',
-    question: 'How do I upgrade my plan?',
-    answer: 'Visit the Billing page in your dashboard to view available plans and upgrade. Pro and Enterprise plans offer unlimited projects, more database connections, and priority support.',
-    category: 'Billing',
+    questionKey: 'help.faqs.upgrade.question',
+    answerKey: 'help.faqs.upgrade.answer',
+    categoryKey: 'help.categories.billing',
   },
   {
     id: '7',
-    question: 'Can I use my own domain?',
-    answer: 'Yes, Pro and Enterprise plans include custom domain support. After deploying, go to your project settings to configure your domain. We handle SSL certificates automatically.',
-    category: 'Deployment',
+    questionKey: 'help.faqs.customDomain.question',
+    answerKey: 'help.faqs.customDomain.answer',
+    categoryKey: 'help.categories.deployment',
   },
   {
     id: '8',
-    question: 'Is my data secure?',
-    answer: 'Yes, we take security seriously. All database credentials are encrypted at rest, connections use SSL/TLS, and we never access your actual data - only the schema for code generation.',
-    category: 'Security',
+    questionKey: 'help.faqs.security.question',
+    answerKey: 'help.faqs.security.answer',
+    categoryKey: 'help.categories.security',
   },
 ]
 
-const resources = [
+interface ResourceDef {
+  titleKey: string
+  descriptionKey: string
+  icon: typeof BookOpen
+  href: string
+}
+
+const resources: ResourceDef[] = [
   {
-    title: 'Documentation',
-    description: 'Comprehensive guides and API reference',
+    titleKey: 'help.documentation',
+    descriptionKey: 'help.documentationDesc',
     icon: BookOpen,
     href: '#',
   },
   {
-    title: 'Video Tutorials',
-    description: 'Step-by-step video walkthroughs',
+    titleKey: 'help.videoTutorials',
+    descriptionKey: 'help.videoTutorialsDesc',
     icon: Video,
     href: '#',
   },
   {
-    title: 'Code Examples',
-    description: 'Sample projects and snippets',
+    titleKey: 'help.codeExamples',
+    descriptionKey: 'help.codeExamplesDesc',
     icon: Code,
     href: '#',
   },
   {
-    title: 'Changelog',
-    description: 'Latest updates and new features',
+    titleKey: 'help.changelog',
+    descriptionKey: 'help.changelogDesc',
     icon: FileText,
     href: '/dashboard/whats-new',
   },
@@ -110,6 +118,7 @@ const resources = [
 
 export default function HelpPage() {
   const { addToast } = useToast()
+  const { t } = useTranslation()
   const [expandedFaq, setExpandedFaq] = useState<string | null>(null)
   const [searchQuery, setSearchQuery] = useState('')
   const [supportForm, setSupportForm] = useState({
@@ -120,12 +129,12 @@ export default function HelpPage() {
 
   const filteredFaqs = faqs.filter(
     faq =>
-      faq.question.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      faq.answer.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      faq.category.toLowerCase().includes(searchQuery.toLowerCase())
+      t(faq.questionKey).toLowerCase().includes(searchQuery.toLowerCase()) ||
+      t(faq.answerKey).toLowerCase().includes(searchQuery.toLowerCase()) ||
+      t(faq.categoryKey).toLowerCase().includes(searchQuery.toLowerCase())
   )
 
-  const categories = [...new Set(faqs.map(faq => faq.category))]
+  const categories = [...new Set(faqs.map(faq => faq.categoryKey))]
 
   const handleSendMessage = async () => {
     if (!supportForm.subject || !supportForm.message) return
@@ -137,31 +146,31 @@ export default function HelpPage() {
 
     addToast({
       type: 'success',
-      title: 'Message sent',
-      description: 'We\'ll get back to you as soon as possible',
+      title: t('help.toasts.messageSentTitle'),
+      description: t('help.toasts.messageSentDesc'),
     })
   }
 
   return (
     <div className="space-y-6">
       <div>
-        <h2 className="text-2xl font-bold tracking-tight">Help Center</h2>
+        <h2 className="text-2xl font-bold tracking-tight">{t('help.title')}</h2>
         <p className="text-muted-foreground">
-          Find answers and get support
+          {t('help.subtitle')}
         </p>
       </div>
 
       {/* Quick Resources */}
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
         {resources.map((resource) => (
-          <Card key={resource.title} className="hover:shadow-md transition-shadow">
+          <Card key={resource.titleKey} className="hover:shadow-md transition-shadow">
             <CardContent className="pt-6">
               <a href={resource.href} className="flex flex-col items-center text-center">
                 <div className="p-3 rounded-lg bg-primary/10 mb-3">
                   <resource.icon className="h-6 w-6 text-primary" />
                 </div>
-                <h3 className="font-medium mb-1">{resource.title}</h3>
-                <p className="text-xs text-muted-foreground">{resource.description}</p>
+                <h3 className="font-medium mb-1">{t(resource.titleKey)}</h3>
+                <p className="text-xs text-muted-foreground">{t(resource.descriptionKey)}</p>
               </a>
             </CardContent>
           </Card>
@@ -175,13 +184,13 @@ export default function HelpPage() {
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
                 <HelpCircle className="h-5 w-5" />
-                Frequently Asked Questions
+                {t('help.faq')}
               </CardTitle>
-              <CardDescription>Quick answers to common questions</CardDescription>
+              <CardDescription>{t('help.faqDesc')}</CardDescription>
               <div className="relative mt-2">
                 <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
                 <Input
-                  placeholder="Search FAQs..."
+                  placeholder={t('help.searchFaqs')}
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
                   className="pl-9"
@@ -199,14 +208,14 @@ export default function HelpPage() {
               ) : (
                 <div className="space-y-6">
                   {(searchQuery ? filteredFaqs : categories.map(cat => ({
-                    category: cat,
-                    items: faqs.filter(f => f.category === cat)
+                    categoryKey: cat,
+                    items: faqs.filter(f => f.categoryKey === cat)
                   }))).map((item) => {
-                    if ('category' in item && 'items' in item) {
+                    if ('categoryKey' in item && 'items' in item) {
                       return (
-                        <div key={item.category}>
+                        <div key={item.categoryKey}>
                           <h4 className="font-medium text-sm text-muted-foreground mb-3">
-                            {item.category}
+                            {t(item.categoryKey)}
                           </h4>
                           <div className="space-y-2">
                             {item.items.map((faq) => (
@@ -221,7 +230,7 @@ export default function HelpPage() {
                                   className="w-full flex items-center justify-between p-4 text-left hover:bg-muted/50 transition-colors"
                                 >
                                   <span className="font-medium text-sm pr-4">
-                                    {faq.question}
+                                    {t(faq.questionKey)}
                                   </span>
                                   {expandedFaq === faq.id ? (
                                     <ChevronUp className="h-4 w-4 flex-shrink-0 text-muted-foreground" />
@@ -231,7 +240,7 @@ export default function HelpPage() {
                                 </button>
                                 {expandedFaq === faq.id && (
                                   <div className="px-4 pb-4 text-sm text-muted-foreground">
-                                    {faq.answer}
+                                    {t(faq.answerKey)}
                                   </div>
                                 )}
                               </div>
@@ -255,10 +264,10 @@ export default function HelpPage() {
                         >
                           <div>
                             <span className="font-medium text-sm pr-4 block">
-                              {faq.question}
+                              {t(faq.questionKey)}
                             </span>
                             <span className="text-xs text-muted-foreground">
-                              {faq.category}
+                              {t(faq.categoryKey)}
                             </span>
                           </div>
                           {expandedFaq === faq.id ? (
@@ -269,7 +278,7 @@ export default function HelpPage() {
                         </button>
                         {expandedFaq === faq.id && (
                           <div className="px-4 pb-4 text-sm text-muted-foreground">
-                            {faq.answer}
+                            {t(faq.answerKey)}
                           </div>
                         )}
                       </div>
@@ -287,13 +296,13 @@ export default function HelpPage() {
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
                 <MessageSquare className="h-5 w-5" />
-                Contact Support
+                {t('help.contactSupport')}
               </CardTitle>
-              <CardDescription>Get help from our team</CardDescription>
+              <CardDescription>{t('help.contactSupportDesc')}</CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
               <div className="space-y-2">
-                <Label htmlFor="subject">Subject</Label>
+                <Label htmlFor="subject">{t('help.subject')}</Label>
                 <Input
                   id="subject"
                   placeholder="Brief description of your issue"
@@ -302,7 +311,7 @@ export default function HelpPage() {
                 />
               </div>
               <div className="space-y-2">
-                <Label htmlFor="message">Message</Label>
+                <Label htmlFor="message">{t('help.message')}</Label>
                 <Textarea
                   id="message"
                   placeholder="Describe your issue in detail..."
@@ -324,7 +333,7 @@ export default function HelpPage() {
                 ) : (
                   <>
                     <Send className="mr-2 h-4 w-4" />
-                    Send Message
+                    {t('help.sendMessage')}
                   </>
                 )}
               </Button>
@@ -335,7 +344,7 @@ export default function HelpPage() {
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
                 <Mail className="h-5 w-5" />
-                Other Ways to Reach Us
+                {t('help.otherWays')}
               </CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
@@ -345,7 +354,7 @@ export default function HelpPage() {
               >
                 <Mail className="h-5 w-5 text-muted-foreground" />
                 <div>
-                  <p className="text-sm font-medium">Email Us</p>
+                  <p className="text-sm font-medium">{t('help.emailUs')}</p>
                   <p className="text-xs text-muted-foreground">support@devdudes.app</p>
                 </div>
               </a>
@@ -355,7 +364,7 @@ export default function HelpPage() {
               >
                 <MessageSquare className="h-5 w-5 text-muted-foreground" />
                 <div className="flex-1">
-                  <p className="text-sm font-medium">Community Discord</p>
+                  <p className="text-sm font-medium">{t('help.communityDiscord')}</p>
                   <p className="text-xs text-muted-foreground">Join our community</p>
                 </div>
                 <ExternalLink className="h-4 w-4 text-muted-foreground" />
@@ -366,7 +375,7 @@ export default function HelpPage() {
               >
                 <Code className="h-5 w-5 text-muted-foreground" />
                 <div className="flex-1">
-                  <p className="text-sm font-medium">GitHub Issues</p>
+                  <p className="text-sm font-medium">{t('help.githubIssues')}</p>
                   <p className="text-xs text-muted-foreground">Report bugs or request features</p>
                 </div>
                 <ExternalLink className="h-4 w-4 text-muted-foreground" />
@@ -377,12 +386,12 @@ export default function HelpPage() {
           <Card className="bg-primary/5 border-primary/20">
             <CardContent className="pt-6">
               <div className="text-center">
-                <p className="font-medium mb-1">Need faster support?</p>
+                <p className="font-medium mb-1">{t('help.fasterSupport')}</p>
                 <p className="text-sm text-muted-foreground mb-4">
-                  Pro and Enterprise plans include priority support with faster response times.
+                  {t('help.fasterSupportDesc')}
                 </p>
                 <Button variant="outline" size="sm" asChild>
-                  <a href="/dashboard/billing">View Plans</a>
+                  <a href="/dashboard/billing">{t('help.viewPlans')}</a>
                 </Button>
               </div>
             </CardContent>

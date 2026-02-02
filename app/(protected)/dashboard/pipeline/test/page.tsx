@@ -6,6 +6,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Button } from '@/components/ui/button'
 import { TestTube, ArrowLeft, ArrowRight, Play, Check, X, Loader2, AlertCircle, RefreshCw } from 'lucide-react'
 import Link from 'next/link'
+import { useTranslation } from '@/lib/i18n/language-provider'
 import { getProjectConfig } from '@/app/actions/pipeline'
 
 interface TestCase {
@@ -23,6 +24,7 @@ interface TestSuite {
 }
 
 export default function TestDudePage() {
+  const { t } = useTranslation()
   const searchParams = useSearchParams()
   const projectId = searchParams.get('project')
 
@@ -164,9 +166,9 @@ export default function TestDudePage() {
           </Button>
         </Link>
         <div className="flex-1">
-          <h2 className="text-2xl font-bold tracking-tight">Test Dude</h2>
+          <h2 className="text-2xl font-bold tracking-tight">{t('pipeline.dudes.test.name')}</h2>
           <p className="text-muted-foreground">
-            Automated testing and quality assurance
+            {t('pipeline.dudes.test.description')}
           </p>
         </div>
         {projectId && hasRun && allPassed && (

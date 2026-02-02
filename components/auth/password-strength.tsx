@@ -2,12 +2,14 @@
 
 import { getPasswordStrength } from '@/lib/validations/auth'
 import { cn } from '@/lib/utils'
+import { useTranslation } from '@/lib/i18n/language-provider'
 
 interface PasswordStrengthProps {
   password: string
 }
 
 export function PasswordStrength({ password }: PasswordStrengthProps) {
+  const { t } = useTranslation()
   if (!password) return null
 
   const { score, label, color } = getPasswordStrength(password)
@@ -32,7 +34,7 @@ export function PasswordStrength({ password }: PasswordStrengthProps) {
         score > 2 && score <= 4 && 'text-yellow-600',
         score > 4 && 'text-green-600'
       )}>
-        Password strength: {label}
+        {t('auth.passwordStrength.label')}: {label}
       </p>
     </div>
   )

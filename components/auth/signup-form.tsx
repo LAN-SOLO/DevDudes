@@ -10,8 +10,10 @@ import { Label } from '@/components/ui/label'
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card'
 import { PasswordStrength } from '@/components/auth/password-strength'
 import { OAuthButtons } from '@/components/auth/oauth-buttons'
+import { useTranslation } from '@/lib/i18n/language-provider'
 
 export function SignupForm() {
+  const { t } = useTranslation()
   const searchParams = useSearchParams()
   const error = searchParams.get('error')
   const message = searchParams.get('message')
@@ -20,8 +22,8 @@ export function SignupForm() {
   return (
     <Card className="w-full max-w-md">
       <CardHeader className="space-y-1">
-        <CardTitle className="text-2xl font-bold">Create an account</CardTitle>
-        <CardDescription>Enter your details to get started</CardDescription>
+        <CardTitle className="text-2xl font-bold">{t('auth.signup.title')}</CardTitle>
+        <CardDescription>{t('auth.signup.subtitle')}</CardDescription>
       </CardHeader>
       <form action={signup}>
         <CardContent className="space-y-4">
@@ -44,13 +46,13 @@ export function SignupForm() {
             </div>
             <div className="relative flex justify-center text-xs uppercase">
               <span className="bg-background px-2 text-muted-foreground">
-                Or continue with email
+                {t('auth.login.orContinueWith')}
               </span>
             </div>
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="email">Email</Label>
+            <Label htmlFor="email">{t('auth.signup.email')}</Label>
             <Input
               id="email"
               name="email"
@@ -60,7 +62,7 @@ export function SignupForm() {
             />
           </div>
           <div className="space-y-2">
-            <Label htmlFor="password">Password</Label>
+            <Label htmlFor="password">{t('auth.signup.password')}</Label>
             <Input
               id="password"
               name="password"
@@ -72,18 +74,18 @@ export function SignupForm() {
             />
             <PasswordStrength password={password} />
             <p className="text-xs text-muted-foreground">
-              Min 8 characters with uppercase, lowercase, and number
+              {t('auth.signup.passwordRequirements')}
             </p>
           </div>
         </CardContent>
         <CardFooter className="flex flex-col space-y-4">
           <Button type="submit" className="w-full">
-            Sign up
+            {t('auth.signup.signUp')}
           </Button>
           <p className="text-sm text-center text-muted-foreground">
-            Already have an account?{' '}
+            {t('auth.signup.hasAccount')}{' '}
             <Link href="/login" className="text-primary hover:underline">
-              Sign in
+              {t('auth.signup.signIn')}
             </Link>
           </p>
         </CardFooter>

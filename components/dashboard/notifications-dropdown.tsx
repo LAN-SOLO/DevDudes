@@ -1,6 +1,7 @@
 'use client'
 
 import { useState } from 'react'
+import { useTranslation } from '@/lib/i18n/language-provider'
 import Link from 'next/link'
 import { Bell, Check, Sparkles, AlertCircle, CreditCard, Users } from 'lucide-react'
 import { Button } from '@/components/ui/button'
@@ -65,6 +66,7 @@ const typeConfig = {
 }
 
 export function NotificationsDropdown() {
+  const { t } = useTranslation()
   const [notifications, setNotifications] = useState(initialNotifications)
   const [open, setOpen] = useState(false)
 
@@ -98,13 +100,13 @@ export function NotificationsDropdown() {
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end" className="w-80">
         <div className="flex items-center justify-between px-4 py-3 border-b">
-          <h4 className="font-semibold">Notifications</h4>
+          <h4 className="font-semibold">{t('notifications.title')}</h4>
           {unreadCount > 0 && (
             <button
               onClick={markAllAsRead}
               className="text-xs text-primary hover:underline"
             >
-              Mark all as read
+              {t('notifications.markAllAsRead')}
             </button>
           )}
         </div>
@@ -113,7 +115,7 @@ export function NotificationsDropdown() {
           {notifications.length === 0 ? (
             <div className="py-8 text-center">
               <Bell className="h-8 w-8 mx-auto mb-2 text-muted-foreground" />
-              <p className="text-sm text-muted-foreground">No notifications</p>
+              <p className="text-sm text-muted-foreground">{t('notifications.noNotifications')}</p>
             </div>
           ) : (
             notifications.slice(0, 5).map((notification) => {
@@ -159,7 +161,7 @@ export function NotificationsDropdown() {
             onClick={() => setOpen(false)}
             className="block w-full text-center text-sm text-primary hover:underline py-2"
           >
-            View all notifications
+            {t('notifications.viewAll')}
           </Link>
         </div>
       </DropdownMenuContent>

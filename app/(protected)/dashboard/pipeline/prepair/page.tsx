@@ -6,6 +6,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Button } from '@/components/ui/button'
 import { Wrench, ArrowLeft, ArrowRight, Terminal, FolderTree, Package, Check, Loader2, AlertCircle } from 'lucide-react'
 import Link from 'next/link'
+import { useTranslation } from '@/lib/i18n/language-provider'
 import { getProjectConfig, updateProjectStatus } from '@/app/actions/pipeline'
 
 interface SetupTask {
@@ -17,6 +18,7 @@ interface SetupTask {
 }
 
 export default function PrepairDudePage() {
+  const { t } = useTranslation()
   const searchParams = useSearchParams()
   const projectId = searchParams.get('project')
 
@@ -93,9 +95,9 @@ export default function PrepairDudePage() {
           </Button>
         </Link>
         <div>
-          <h2 className="text-2xl font-bold tracking-tight">Prepair Dude</h2>
+          <h2 className="text-2xl font-bold tracking-tight">{t('pipeline.dudes.prepair.name')}</h2>
           <p className="text-muted-foreground">
-            Set up your development environment automatically
+            {t('pipeline.dudes.prepair.description')}
           </p>
         </div>
       </div>

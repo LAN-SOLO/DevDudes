@@ -29,6 +29,7 @@ import {
   LogOut,
 } from 'lucide-react'
 import { useTheme } from '@/components/theme-provider'
+import { useTranslation } from '@/lib/i18n/language-provider'
 
 interface CommandItem {
   id: string
@@ -40,52 +41,53 @@ interface CommandItem {
   category: 'navigation' | 'actions' | 'recent'
 }
 
-const navigationCommands: CommandItem[] = [
-  { id: 'dashboard', title: 'Dashboard', description: 'Go to dashboard', icon: LayoutDashboard, href: '/dashboard', category: 'navigation' },
-  { id: 'generator', title: 'Quick Generate', description: 'Start generating an app', icon: Sparkles, href: '/dashboard/generator', category: 'navigation' },
-  { id: 'pipeline', title: 'Pipeline', description: 'View the 7 Dudes pipeline', icon: Workflow, href: '/dashboard/pipeline', category: 'navigation' },
-  { id: 'projects', title: 'Projects', description: 'View all projects', icon: FolderOpen, href: '/dashboard/projects', category: 'navigation' },
-  { id: 'templates', title: 'Templates', description: 'Browse templates', icon: FileCode, href: '/dashboard/templates', category: 'navigation' },
-  { id: 'connections', title: 'Connections', description: 'Manage database connections', icon: Database, href: '/dashboard/connections', category: 'navigation' },
-  { id: 'integrations', title: 'Integrations', description: 'Connect third-party tools', icon: Plug, href: '/dashboard/integrations', category: 'navigation' },
-  { id: 'deploy', title: 'Deploy', description: 'View deployments', icon: Globe, href: '/dashboard/deploy', category: 'navigation' },
-  { id: 'team', title: 'Team', description: 'Manage team members', icon: Users, href: '/dashboard/team', category: 'navigation' },
-  { id: 'activity', title: 'Activity Log', description: 'View activity history', icon: Activity, href: '/dashboard/activity', category: 'navigation' },
-  { id: 'analytics', title: 'Analytics', description: 'View app analytics', icon: BarChart3, href: '/dashboard/analytics', category: 'navigation' },
-  { id: 'notifications', title: 'Notifications', description: 'View notifications', icon: Bell, href: '/dashboard/notifications', category: 'navigation' },
-  { id: 'whats-new', title: "What's New", description: 'See latest updates', icon: Gift, href: '/dashboard/whats-new', category: 'navigation' },
-  { id: 'billing', title: 'Billing', description: 'Manage subscription', icon: CreditCard, href: '/dashboard/billing', category: 'navigation' },
-  { id: 'profile', title: 'Profile', description: 'Edit your profile', icon: User, href: '/dashboard/profile', category: 'navigation' },
-  { id: 'settings', title: 'Settings', description: 'App settings', icon: Settings, href: '/dashboard/settings', category: 'navigation' },
-  { id: 'help', title: 'Help Center', description: 'Get help and support', icon: HelpCircle, href: '/dashboard/help', category: 'navigation' },
-]
-
-const actionCommands: CommandItem[] = [
-  { id: 'new-project', title: 'New Project', description: 'Create a new project', icon: Plus, href: '/dashboard/pipeline/preset', category: 'actions' },
-  { id: 'new-connection', title: 'Add Connection', description: 'Connect a new database', icon: Database, href: '/dashboard/connections', category: 'actions' },
-  { id: 'view-docs', title: 'Documentation', description: 'View documentation', icon: FileCode, href: '/dashboard/help', category: 'actions' },
-]
-
 export function CommandPalette() {
   const [isOpen, setIsOpen] = useState(false)
   const [search, setSearch] = useState('')
   const [selectedIndex, setSelectedIndex] = useState(0)
   const router = useRouter()
   const { theme, setTheme } = useTheme()
+  const { t } = useTranslation()
+
+  const navigationCommands: CommandItem[] = [
+    { id: 'dashboard', title: t('sidebar.nav.dashboard'), description: t('commandPalette.dashboard'), icon: LayoutDashboard, href: '/dashboard', category: 'navigation' },
+    { id: 'generator', title: t('sidebar.nav.quickGenerate'), description: t('commandPalette.quickGenerate'), icon: Sparkles, href: '/dashboard/generator', category: 'navigation' },
+    { id: 'pipeline', title: t('sidebar.nav.pipeline'), description: t('commandPalette.pipeline'), icon: Workflow, href: '/dashboard/pipeline', category: 'navigation' },
+    { id: 'projects', title: t('sidebar.nav.projects'), description: t('commandPalette.projects'), icon: FolderOpen, href: '/dashboard/projects', category: 'navigation' },
+    { id: 'templates', title: t('sidebar.nav.templates'), description: t('commandPalette.templates'), icon: FileCode, href: '/dashboard/templates', category: 'navigation' },
+    { id: 'connections', title: t('sidebar.nav.connections'), description: t('commandPalette.connections'), icon: Database, href: '/dashboard/connections', category: 'navigation' },
+    { id: 'integrations', title: t('sidebar.nav.integrations'), description: t('commandPalette.integrations'), icon: Plug, href: '/dashboard/integrations', category: 'navigation' },
+    { id: 'deploy', title: t('sidebar.nav.deploy'), description: t('commandPalette.deploy'), icon: Globe, href: '/dashboard/deploy', category: 'navigation' },
+    { id: 'team', title: t('sidebar.nav.team'), description: t('commandPalette.team'), icon: Users, href: '/dashboard/team', category: 'navigation' },
+    { id: 'activity', title: t('sidebar.nav.activity'), description: t('commandPalette.activityLog'), icon: Activity, href: '/dashboard/activity', category: 'navigation' },
+    { id: 'analytics', title: t('sidebar.nav.analytics'), description: t('commandPalette.analytics'), icon: BarChart3, href: '/dashboard/analytics', category: 'navigation' },
+    { id: 'notifications', title: t('sidebar.nav.notifications'), description: t('commandPalette.notifications'), icon: Bell, href: '/dashboard/notifications', category: 'navigation' },
+    { id: 'whats-new', title: t('sidebar.nav.whatsNew'), description: t('commandPalette.whatsNew'), icon: Gift, href: '/dashboard/whats-new', category: 'navigation' },
+    { id: 'billing', title: t('sidebar.nav.billing'), description: t('commandPalette.billing'), icon: CreditCard, href: '/dashboard/billing', category: 'navigation' },
+    { id: 'profile', title: t('sidebar.nav.profile'), description: t('commandPalette.profile'), icon: User, href: '/dashboard/profile', category: 'navigation' },
+    { id: 'settings', title: t('sidebar.nav.settings'), description: t('commandPalette.settings'), icon: Settings, href: '/dashboard/settings', category: 'navigation' },
+    { id: 'help', title: t('sidebar.nav.help'), description: t('commandPalette.help'), icon: HelpCircle, href: '/dashboard/help', category: 'navigation' },
+  ]
+
+  const actionCommands: CommandItem[] = [
+    { id: 'new-project', title: t('commandPalette.newProject'), description: t('commandPalette.createNewProject'), icon: Plus, href: '/dashboard/pipeline/preset', category: 'actions' },
+    { id: 'new-connection', title: t('commandPalette.addConnection'), description: t('commandPalette.connectNewDb'), icon: Database, href: '/dashboard/connections', category: 'actions' },
+    { id: 'view-docs', title: t('commandPalette.documentation'), description: t('commandPalette.viewDocs'), icon: FileCode, href: '/dashboard/help', category: 'actions' },
+  ]
 
   const settingsCommands: CommandItem[] = [
     {
       id: 'toggle-theme',
-      title: theme === 'dark' ? 'Switch to Light Mode' : 'Switch to Dark Mode',
-      description: 'Toggle between light and dark theme',
+      title: theme === 'dark' ? t('commandPalette.switchToLight') : t('commandPalette.switchToDark'),
+      description: t('commandPalette.toggleTheme'),
       icon: theme === 'dark' ? Sun : Moon,
       action: () => setTheme(theme === 'dark' ? 'light' : 'dark'),
       category: 'actions',
     },
     {
       id: 'logout',
-      title: 'Sign Out',
-      description: 'Sign out of your account',
+      title: t('commandPalette.signOut'),
+      description: t('commandPalette.signOutDesc'),
       icon: LogOut,
       href: '/login',
       category: 'actions',
@@ -186,7 +188,7 @@ export function CommandPalette() {
             <Search className="h-4 w-4 text-muted-foreground mr-3" />
             <input
               type="text"
-              placeholder="Search commands..."
+              placeholder={t('commandPalette.searchCommands')}
               value={search}
               onChange={(e) => handleSearchChange(e.target.value)}
               className="flex-1 py-4 bg-transparent outline-none text-sm"
@@ -201,14 +203,14 @@ export function CommandPalette() {
           <div className="max-h-[300px] overflow-auto p-2">
             {filteredCommands.length === 0 ? (
               <div className="text-center py-8 text-muted-foreground text-sm">
-                No commands found
+                {t('commandPalette.noCommands')}
               </div>
             ) : (
               <>
                 {groupedCommands.actions.length > 0 && (
                   <div className="mb-2">
                     <div className="px-2 py-1 text-xs text-muted-foreground font-medium">
-                      Actions
+                      {t('commandPalette.actions')}
                     </div>
                     {groupedCommands.actions.map((command) => {
                       const globalIndex = filteredCommands.indexOf(command)
@@ -245,7 +247,7 @@ export function CommandPalette() {
                 {groupedCommands.navigation.length > 0 && (
                   <div>
                     <div className="px-2 py-1 text-xs text-muted-foreground font-medium">
-                      Navigation
+                      {t('commandPalette.navigation')}
                     </div>
                     {groupedCommands.navigation.map((command) => {
                       const globalIndex = filteredCommands.indexOf(command)
@@ -288,16 +290,16 @@ export function CommandPalette() {
               <span className="flex items-center gap-1">
                 <kbd className="bg-muted px-1.5 py-0.5 rounded">↑</kbd>
                 <kbd className="bg-muted px-1.5 py-0.5 rounded">↓</kbd>
-                navigate
+                {t('common.navigate')}
               </span>
               <span className="flex items-center gap-1">
                 <kbd className="bg-muted px-1.5 py-0.5 rounded">↵</kbd>
-                select
+                {t('common.select')}
               </span>
             </div>
             <div className="flex items-center gap-1">
               <Command className="h-3 w-3" />
-              <span>K to toggle</span>
+              <span>{t('commandPalette.kToToggle')}</span>
             </div>
           </div>
         </div>
@@ -308,6 +310,8 @@ export function CommandPalette() {
 
 // Keyboard shortcut hint component for the header
 export function CommandPaletteHint() {
+  const { t } = useTranslation()
+
   return (
     <button
       onClick={() => {
@@ -323,7 +327,7 @@ export function CommandPaletteHint() {
       className="hidden sm:flex items-center gap-2 px-3 py-1.5 text-sm text-muted-foreground bg-muted/50 hover:bg-muted rounded-md border transition-colors"
     >
       <Search className="h-4 w-4" />
-      <span>Search...</span>
+      <span>{t('header.searchPlaceholder')}</span>
       <kbd className="flex items-center gap-0.5 text-xs bg-background px-1.5 py-0.5 rounded border">
         <Command className="h-3 w-3" />
         <span>K</span>
