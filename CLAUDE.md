@@ -41,6 +41,9 @@ app/
 components/
 ├── auth/                # Auth forms, OAuth buttons, password strength
 ├── dashboard/           # Sidebar, header, stats, quick-actions
+├── dudes/               # Pipeline wizard components
+│   ├── preset/          # Preset Dude wizard (8-step business config)
+│   └── workflow/        # Workflow Dude wizard (6-step workflow builder)
 ├── landing/             # Header, hero, features, pricing, footer
 └── ui/                  # shadcn/ui components
 
@@ -52,7 +55,10 @@ lib/
 ├── types/
 │   └── database.ts      # TypeScript types for database tables
 ├── validations/
-│   └── auth.ts          # Zod schemas for auth
+│   ├── auth.ts          # Zod schemas for auth
+│   └── workflow.ts      # Zod schemas for workflow pipeline
+├── i18n/
+│   └── locales/         # en.json, de.json translations
 └── utils.ts             # cn() utility
 
 middleware.ts            # Auth session refresh and route protection
@@ -111,3 +117,81 @@ NEXT_PUBLIC_APP_URL=http://localhost:3005
 Add new components: `npx shadcn@latest add <component-name>`
 
 Configuration in `components.json` - uses new-york style, neutral base color.
+
+## Pipeline (The 7 Dudes)
+
+The pipeline is a multi-step wizard system for building applications. Located at `/dashboard/pipeline`.
+
+### Pipeline Variants
+
+| Dude | Route | Description |
+|------|-------|-------------|
+| Preset | `/pipeline/preset` | 8-step business app configuration |
+| Workflow | `/pipeline/workflow` | 6-step workflow builder with rich content |
+| Combo | `/pipeline/combo` | AI concept generation |
+| Prepair | `/pipeline/prepair` | Environment setup |
+| Dev | `/pipeline/dev` | Interactive development |
+| Test | `/pipeline/test` | Automated testing |
+| Deploy | `/pipeline/deploy` | Deployment configuration |
+| Docu | `/pipeline/docu` | Documentation generation |
+
+### Workflow Pipeline
+
+The Workflow Dude (`/dashboard/pipeline/workflow`) allows users to define step-by-step workflows with rich content.
+
+**6-Step Wizard:**
+1. **Step Builder** - Define workflow steps with drag-and-drop reordering
+2. **Features** - Select app features (dashboard, notifications, webhooks, etc.)
+3. **Auth Config** - Toggle authentication, select methods, define roles
+4. **UI Preferences** - Theme, primary color, layout style
+5. **AI Integrations** - Configure n8n, OpenAI, Claude, Mistral, DeepSeek
+6. **Deployment** - Target platform and region
+
+**Data Model:**
+```typescript
+interface WorkflowStep {
+  id: string
+  order: number
+  title: string
+  description: string
+  templates: { id, name, type, size?, url? }[]  // File attachments
+  links: { id, label, url, type }[]              // Reference links
+  services: { id, name, type, endpoint?, authType }[]  // API services
+  isExpanded: boolean
+}
+
+interface WorkflowConfig {
+  steps: WorkflowStep[]
+  features: string[]
+  authEnabled: boolean
+  authMethods: string[]
+  roles: string[]
+  theme: 'light' | 'dark' | 'system'
+  primaryColor: string
+  layout: 'sidebar' | 'topnav' | 'minimal'
+  aiIntegrations: AIIntegration[]
+  deployTarget: string
+  region: string
+}
+```
+
+**Key Files:**
+- `lib/validations/workflow.ts` - Zod schemas and types
+- `components/dudes/workflow/workflow-context.tsx` - State management
+- `components/dudes/workflow/step-card.tsx` - Draggable step editor
+- `components/dudes/workflow/workflow-wizard.tsx` - Main wizard component
+- `app/actions/pipeline.ts` - Server actions (`saveWorkflowConfig`)
+
+**Dependencies:**
+- `@dnd-kit/core` and `@dnd-kit/sortable` for drag-and-drop
+
+### Adding a New Pipeline Variant
+
+1. Create validation schema in `lib/validations/`
+2. Create context provider in `components/dudes/<name>/<name>-context.tsx`
+3. Create step components in `components/dudes/<name>/steps/`
+4. Create wizard shell (`<name>-wizard.tsx`, `<name>-nav.tsx`, `<name>-complete.tsx`)
+5. Create page at `app/(protected)/dashboard/pipeline/<name>/page.tsx`
+6. Add to pipeline hub in `app/(protected)/dashboard/pipeline/page.tsx`
+7. Add server action in `app/actions/pipeline.ts`
+8. Add i18n translations in `lib/i18n/locales/`

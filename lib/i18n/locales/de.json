@@ -140,7 +140,7 @@
     "kToToggle": "K zum Umschalten",
     "dashboard": "Zum Dashboard gehen",
     "quickGenerate": "App-Generierung starten",
-    "pipeline": "Die 7 Dudes Pipeline anzeigen",
+    "pipeline": "Die 8 Dudes Pipeline anzeigen",
     "projects": "Alle Projekte anzeigen",
     "templates": "Vorlagen durchsuchen",
     "connections": "Datenbankverbindungen verwalten",
@@ -339,6 +339,9 @@
     "useTemplate": "Vorlage verwenden",
     "useTemplateDesc": "Wählen Sie aus vorgefertigten Vorlagen, um die Entwicklung zu beschleunigen",
     "browseTemplates": "Vorlagen durchsuchen",
+    "workflowOverview": "Workflow Pipeline",
+    "workflowSteps": "6 Schritte",
+    "startWorkflow": "Workflow starten",
     "dudes": {
       "preset": {
         "name": "Preset Dude",
@@ -374,10 +377,15 @@
         "name": "Docu Dude",
         "description": "Automatisch generierte Dokumentation und Anleitungen",
         "longDescription": "Generieren Sie API-Dokumentation, Benutzerhandbücher und Entwicklerdokumentation automatisch."
+      },
+      "workflow": {
+        "name": "Workflow Dude",
+        "description": "Definieren Sie schrittweise Workflows mit reichhaltigen Inhalten",
+        "longDescription": "Erstellen Sie detaillierte Workflows mit Vorlagen, Links und API-Diensten für jeden Schritt, konfigurieren Sie dann Funktionen, Auth, UI und KI-Integrationen."
       }
     },
     "progress": "Pipeline-Fortschritt",
-    "progressDesc": "Verfolgen Sie Ihre App durch den 7 Dudes Workflow",
+    "progressDesc": "Verfolgen Sie Ihre App durch den 8 Dudes Workflow",
     "continuePipeline": "Pipeline fortsetzen",
     "viewLive": "Live anzeigen",
     "viewCode": "Code anzeigen",
@@ -675,6 +683,196 @@
       "authMethods": "Auth-Methoden",
       "integrations": "Integrationen",
       "deployTarget": "Bereitstellungsziel"
+    }
+  },
+  "workflow": {
+    "nav": {
+      "steps": "Schritte",
+      "features": "Funktionen",
+      "auth": "Auth",
+      "ui": "UI",
+      "ai": "KI",
+      "deploy": "Bereitstellen"
+    },
+    "common": {
+      "continue": "Weiter",
+      "back": "Zurück",
+      "selected": "ausgewählt",
+      "importConfig": "Konfiguration importieren"
+    },
+    "stepBuilder": {
+      "title": "Erstellen Sie Ihren Workflow",
+      "description": "Definieren Sie jeden Schritt Ihres Workflows mit Vorlagen, Links und API-Diensten",
+      "noSteps": "Noch keine Workflow-Schritte. Fügen Sie Ihren ersten Schritt hinzu.",
+      "addFirstStep": "Ersten Schritt hinzufügen",
+      "addStep": "Schritt hinzufügen",
+      "stepTitlePlaceholder": "Schritt-Titel eingeben...",
+      "description": "Beschreibung",
+      "descriptionPlaceholder": "Beschreiben Sie, was in diesem Schritt passiert...",
+      "templates": "Vorlagen",
+      "links": "Links",
+      "services": "Dienste",
+      "addTemplate": "Klicken zum Hinzufügen von Vorlagen",
+      "linkLabel": "Bezeichnung",
+      "linkUrl": "URL",
+      "serviceName": "Dienstname",
+      "serviceEndpoint": "Endpunkt (optional)"
+    },
+    "features": {
+      "title": "Funktionen auswählen",
+      "description": "Wählen Sie die Funktionen für Ihre Workflow-Anwendung",
+      "dashboard": "Dashboard",
+      "dashboardDesc": "Übersicht und Analysen",
+      "notifications": "Benachrichtigungen",
+      "notificationsDesc": "In-App-Warnungen und Erinnerungen",
+      "search": "Globale Suche",
+      "searchDesc": "Schnell alles finden",
+      "export": "Datenexport",
+      "exportDesc": "CSV- und PDF-Exporte",
+      "audit": "Audit-Protokoll",
+      "auditDesc": "Alle Änderungen verfolgen",
+      "api": "API-Zugang",
+      "apiDesc": "REST-API für Integrationen",
+      "webhooks": "Webhooks",
+      "webhooksDesc": "Externe Dienste auslösen",
+      "scheduling": "Zeitplanung",
+      "schedulingDesc": "Workflow-Ausführungen planen",
+      "customFeatures": "Benutzerdefinierte Funktionen (optional)",
+      "customFeaturesPlaceholder": "Beschreiben Sie zusätzliche Funktionen, die Sie benötigen..."
+    },
+    "auth": {
+      "title": "Authentifizierung & Rollen",
+      "description": "Konfigurieren Sie Benutzerauthentifizierung und Berechtigungen",
+      "enableAuth": "Authentifizierung aktivieren",
+      "enableAuthDesc": "Benutzer müssen sich anmelden, um auf den Workflow zuzugreifen",
+      "authMethods": "Authentifizierungsmethoden",
+      "userRoles": "Benutzerrollen",
+      "addDefaults": "Standards hinzufügen",
+      "addCustomRole": "Benutzerdefinierte Rolle hinzufügen",
+      "methods": {
+        "email": "E-Mail & Passwort",
+        "emailDesc": "Traditionelle Anmeldung",
+        "magicLink": "Magic Link",
+        "magicLinkDesc": "Passwortlose E-Mail",
+        "google": "Google",
+        "googleDesc": "OAuth-Anbieter",
+        "github": "GitHub",
+        "githubDesc": "OAuth-Anbieter",
+        "microsoft": "Microsoft",
+        "microsoftDesc": "Azure AD / Office 365",
+        "saml": "SAML/SSO",
+        "samlDesc": "Enterprise Single Sign-on"
+      }
+    },
+    "ui": {
+      "title": "UI-Einstellungen",
+      "description": "Passen Sie das Erscheinungsbild Ihrer Workflow-Anwendung an",
+      "defaultTheme": "Standard-Theme",
+      "primaryColor": "Primärfarbe",
+      "layoutStyle": "Layout-Stil",
+      "themes": {
+        "light": "Hell",
+        "dark": "Dunkel",
+        "system": "System"
+      },
+      "colors": {
+        "sky": "Himmelblau",
+        "green": "Grün",
+        "purple": "Violett",
+        "amber": "Bernstein",
+        "red": "Rot",
+        "pink": "Rosa",
+        "cyan": "Cyan",
+        "indigo": "Indigo"
+      },
+      "layouts": {
+        "sidebar": "Seitenleiste",
+        "sidebarDesc": "Navigation links",
+        "topnav": "Top-Navigation",
+        "topnavDesc": "Navigation oben",
+        "minimal": "Minimal",
+        "minimalDesc": "Sauberes, einfaches Layout"
+      }
+    },
+    "ai": {
+      "title": "KI-Integrationen",
+      "description": "Konfigurieren Sie KI-Anbieter für Ihre Workflow-Automatisierung",
+      "mode": "Modus",
+      "modes": {
+        "service": "Cloud-Dienst",
+        "local": "Lokale Bereitstellung",
+        "both": "Beide"
+      },
+      "endpoint": "Lokaler Endpunkt",
+      "endpointPlaceholder": "http://localhost:11434",
+      "model": "Modell",
+      "modelPlaceholder": "z.B. gpt-4, claude-3-opus"
+    },
+    "deploy": {
+      "title": "Bereitstellung",
+      "description": "Wählen Sie, wo Ihre Workflow-Anwendung bereitgestellt werden soll",
+      "deploymentTarget": "Bereitstellungsziel",
+      "region": "Region",
+      "configSummary": "Konfigurationsübersicht",
+      "notSet": "Nicht festgelegt",
+      "disabled": "Deaktiviert",
+      "none": "Keine",
+      "completeConfig": "Konfiguration abschließen",
+      "targets": {
+        "vercel": "Vercel",
+        "vercelDesc": "Empfohlen für Next.js",
+        "aws": "AWS",
+        "awsDesc": "Amazon Web Services",
+        "gcp": "Google Cloud",
+        "gcpDesc": "Google Cloud Platform",
+        "docker": "Docker",
+        "dockerDesc": "Container-Export",
+        "selfHost": "Selbst gehostet",
+        "selfHostDesc": "Eigener Server"
+      },
+      "regions": {
+        "auto": "Auto (Empfohlen)",
+        "autoDesc": "Am nächsten zu Ihren Benutzern",
+        "usEast": "US Ost",
+        "usEastDesc": "Nord-Virginia",
+        "usWest": "US West",
+        "usWestDesc": "San Francisco",
+        "euWest": "Europa",
+        "euWestDesc": "Frankfurt",
+        "apSouth": "Asien-Pazifik",
+        "apSouthDesc": "Singapur"
+      },
+      "summary": {
+        "steps": "Workflow-Schritte",
+        "features": "Funktionen",
+        "auth": "Auth",
+        "aiIntegrations": "KI-Integrationen",
+        "layout": "Layout",
+        "defined": "definiert"
+      }
+    },
+    "complete": {
+      "title": "Workflow-Konfiguration abgeschlossen!",
+      "description": "Ihre Workflow-Konfiguration ist bereit. Fahren Sie mit der KI-Generierung fort oder exportieren Sie die Konfiguration.",
+      "failedToSave": "Konfiguration konnte nicht gespeichert werden",
+      "saving": "Wird gespeichert...",
+      "continueToAI": "Weiter zur KI-Generierung",
+      "exportConfig": "Konfiguration exportieren",
+      "edit": "Bearbeiten",
+      "workflowSteps": "Workflow-Schritte",
+      "untitledStep": "Unbenannter Schritt",
+      "templates": "Vorlagen",
+      "links": "Links",
+      "services": "Dienste",
+      "selectedFeatures": "Ausgewählte Funktionen",
+      "noFeatures": "Keine Funktionen ausgewählt",
+      "authentication": "Authentifizierung",
+      "methods": "Methoden",
+      "disabled": "Deaktiviert",
+      "aiIntegrations": "KI-Integrationen",
+      "none": "Keine",
+      "deployTarget": "Bereitstellungsziel",
+      "notSet": "Nicht festgelegt"
     }
   },
   "projects": {

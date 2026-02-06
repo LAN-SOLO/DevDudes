@@ -140,7 +140,7 @@
     "kToToggle": "K to toggle",
     "dashboard": "Go to dashboard",
     "quickGenerate": "Start generating an app",
-    "pipeline": "View the 7 Dudes pipeline",
+    "pipeline": "View the 8 Dudes pipeline",
     "projects": "View all projects",
     "templates": "Browse templates",
     "connections": "Manage database connections",
@@ -339,6 +339,9 @@
     "useTemplate": "Use a Template",
     "useTemplateDesc": "Choose from pre-built templates to speed up development",
     "browseTemplates": "Browse Templates",
+    "workflowOverview": "Workflow Pipeline",
+    "workflowSteps": "6 Steps",
+    "startWorkflow": "Start Workflow",
     "dudes": {
       "preset": {
         "name": "Preset Dude",
@@ -374,10 +377,15 @@
         "name": "Docu Dude",
         "description": "Auto-generated documentation and guides",
         "longDescription": "Generate API documentation, user guides, and developer documentation automatically."
+      },
+      "workflow": {
+        "name": "Workflow Dude",
+        "description": "Define step-by-step workflows with rich content",
+        "longDescription": "Create detailed workflows with templates, links, and API services for each step, then configure features, auth, UI, and AI integrations."
       }
     },
     "progress": "Pipeline Progress",
-    "progressDesc": "Track your app through the 7 Dudes workflow",
+    "progressDesc": "Track your app through the 8 Dudes workflow",
     "continuePipeline": "Continue Pipeline",
     "viewLive": "View Live",
     "viewCode": "View Code",
@@ -675,6 +683,196 @@
       "authMethods": "Auth Methods",
       "integrations": "Integrations",
       "deployTarget": "Deploy Target"
+    }
+  },
+  "workflow": {
+    "nav": {
+      "steps": "Steps",
+      "features": "Features",
+      "auth": "Auth",
+      "ui": "UI",
+      "ai": "AI",
+      "deploy": "Deploy"
+    },
+    "common": {
+      "continue": "Continue",
+      "back": "Back",
+      "selected": "selected",
+      "importConfig": "Import Config"
+    },
+    "stepBuilder": {
+      "title": "Build Your Workflow",
+      "description": "Define each step of your workflow with templates, links, and API services",
+      "noSteps": "No workflow steps yet. Add your first step to get started.",
+      "addFirstStep": "Add First Step",
+      "addStep": "Add Step",
+      "stepTitlePlaceholder": "Enter step title...",
+      "description": "Description",
+      "descriptionPlaceholder": "Describe what happens in this step...",
+      "templates": "Templates",
+      "links": "Links",
+      "services": "Services",
+      "addTemplate": "Click to add templates",
+      "linkLabel": "Label",
+      "linkUrl": "URL",
+      "serviceName": "Service name",
+      "serviceEndpoint": "Endpoint (optional)"
+    },
+    "features": {
+      "title": "Select Features",
+      "description": "Choose the features you want in your workflow application",
+      "dashboard": "Dashboard",
+      "dashboardDesc": "Overview and analytics",
+      "notifications": "Notifications",
+      "notificationsDesc": "In-app alerts and reminders",
+      "search": "Global Search",
+      "searchDesc": "Find anything quickly",
+      "export": "Data Export",
+      "exportDesc": "CSV and PDF exports",
+      "audit": "Audit Log",
+      "auditDesc": "Track all changes",
+      "api": "API Access",
+      "apiDesc": "REST API for integrations",
+      "webhooks": "Webhooks",
+      "webhooksDesc": "Trigger external services",
+      "scheduling": "Scheduling",
+      "schedulingDesc": "Schedule workflow runs",
+      "customFeatures": "Custom features (optional)",
+      "customFeaturesPlaceholder": "Describe any additional features you need..."
+    },
+    "auth": {
+      "title": "Authentication & Roles",
+      "description": "Configure user authentication and permissions",
+      "enableAuth": "Enable Authentication",
+      "enableAuthDesc": "Require users to log in to access the workflow",
+      "authMethods": "Authentication methods",
+      "userRoles": "User roles",
+      "addDefaults": "Add defaults",
+      "addCustomRole": "Add custom role",
+      "methods": {
+        "email": "Email & Password",
+        "emailDesc": "Traditional login",
+        "magicLink": "Magic Link",
+        "magicLinkDesc": "Passwordless email",
+        "google": "Google",
+        "googleDesc": "OAuth provider",
+        "github": "GitHub",
+        "githubDesc": "OAuth provider",
+        "microsoft": "Microsoft",
+        "microsoftDesc": "Azure AD / Office 365",
+        "saml": "SAML/SSO",
+        "samlDesc": "Enterprise single sign-on"
+      }
+    },
+    "ui": {
+      "title": "UI Preferences",
+      "description": "Customize the look and feel of your workflow application",
+      "defaultTheme": "Default theme",
+      "primaryColor": "Primary color",
+      "layoutStyle": "Layout style",
+      "themes": {
+        "light": "Light",
+        "dark": "Dark",
+        "system": "System"
+      },
+      "colors": {
+        "sky": "Sky",
+        "green": "Green",
+        "purple": "Purple",
+        "amber": "Amber",
+        "red": "Red",
+        "pink": "Pink",
+        "cyan": "Cyan",
+        "indigo": "Indigo"
+      },
+      "layouts": {
+        "sidebar": "Sidebar",
+        "sidebarDesc": "Navigation on the left",
+        "topnav": "Top Navigation",
+        "topnavDesc": "Navigation at top",
+        "minimal": "Minimal",
+        "minimalDesc": "Clean, simple layout"
+      }
+    },
+    "ai": {
+      "title": "AI Integrations",
+      "description": "Configure AI providers to power your workflow automation",
+      "mode": "Mode",
+      "modes": {
+        "service": "Cloud Service",
+        "local": "Local Deployment",
+        "both": "Both"
+      },
+      "endpoint": "Local Endpoint",
+      "endpointPlaceholder": "http://localhost:11434",
+      "model": "Model",
+      "modelPlaceholder": "e.g., gpt-4, claude-3-opus"
+    },
+    "deploy": {
+      "title": "Deployment",
+      "description": "Choose where to deploy your workflow application",
+      "deploymentTarget": "Deployment target",
+      "region": "Region",
+      "configSummary": "Configuration Summary",
+      "notSet": "Not set",
+      "disabled": "Disabled",
+      "none": "None",
+      "completeConfig": "Complete Configuration",
+      "targets": {
+        "vercel": "Vercel",
+        "vercelDesc": "Recommended for Next.js",
+        "aws": "AWS",
+        "awsDesc": "Amazon Web Services",
+        "gcp": "Google Cloud",
+        "gcpDesc": "Google Cloud Platform",
+        "docker": "Docker",
+        "dockerDesc": "Container export",
+        "selfHost": "Self-hosted",
+        "selfHostDesc": "Your own server"
+      },
+      "regions": {
+        "auto": "Auto (Recommended)",
+        "autoDesc": "Closest to your users",
+        "usEast": "US East",
+        "usEastDesc": "North Virginia",
+        "usWest": "US West",
+        "usWestDesc": "San Francisco",
+        "euWest": "Europe",
+        "euWestDesc": "Frankfurt",
+        "apSouth": "Asia Pacific",
+        "apSouthDesc": "Singapore"
+      },
+      "summary": {
+        "steps": "Workflow Steps",
+        "features": "Features",
+        "auth": "Auth",
+        "aiIntegrations": "AI Integrations",
+        "layout": "Layout",
+        "defined": "defined"
+      }
+    },
+    "complete": {
+      "title": "Workflow Configuration Complete!",
+      "description": "Your workflow configuration is ready. Continue to AI generation or export the config.",
+      "failedToSave": "Failed to save configuration",
+      "saving": "Saving...",
+      "continueToAI": "Continue to AI Generation",
+      "exportConfig": "Export Config",
+      "edit": "Edit",
+      "workflowSteps": "Workflow Steps",
+      "untitledStep": "Untitled Step",
+      "templates": "templates",
+      "links": "links",
+      "services": "services",
+      "selectedFeatures": "Selected Features",
+      "noFeatures": "No features selected",
+      "authentication": "Authentication",
+      "methods": "methods",
+      "disabled": "Disabled",
+      "aiIntegrations": "AI Integrations",
+      "none": "None",
+      "deployTarget": "Deploy Target",
+      "notSet": "Not set"
     }
   },
   "projects": {

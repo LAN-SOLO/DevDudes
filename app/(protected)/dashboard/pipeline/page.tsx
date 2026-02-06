@@ -16,11 +16,58 @@ import {
   Sparkles,
   Clock,
   Play,
+  Workflow,
+  ListChecks,
+  ToggleRight,
+  Shield,
+  Palette,
+  Brain,
+  Cloud,
 } from 'lucide-react'
 import { useTranslation } from '@/lib/i18n/language-provider'
 
 export default function PipelinePage() {
   const { t } = useTranslation()
+
+  // Workflow Pipeline internal steps
+  const workflowSteps = [
+    {
+      id: 'steps',
+      name: t('workflow.nav.steps'),
+      icon: ListChecks,
+      color: 'bg-indigo-100 text-indigo-600',
+    },
+    {
+      id: 'features',
+      name: t('workflow.nav.features'),
+      icon: ToggleRight,
+      color: 'bg-green-100 text-green-600',
+    },
+    {
+      id: 'auth',
+      name: t('workflow.nav.auth'),
+      icon: Shield,
+      color: 'bg-amber-100 text-amber-600',
+    },
+    {
+      id: 'ui',
+      name: t('workflow.nav.ui'),
+      icon: Palette,
+      color: 'bg-pink-100 text-pink-600',
+    },
+    {
+      id: 'ai',
+      name: t('workflow.nav.ai'),
+      icon: Brain,
+      color: 'bg-purple-100 text-purple-600',
+    },
+    {
+      id: 'deploy',
+      name: t('workflow.nav.deploy'),
+      icon: Cloud,
+      color: 'bg-cyan-100 text-cyan-600',
+    },
+  ]
 
   const dudes = [
     {
@@ -119,7 +166,7 @@ export default function PipelinePage() {
         </Link>
       </div>
 
-      {/* Enhanced Pipeline Stepper */}
+      {/* App Pipeline Stepper */}
       <Card className="overflow-hidden">
         <div className="bg-gradient-to-r from-primary/5 via-primary/10 to-primary/5 p-6">
           <div className="flex items-center justify-between mb-4">
@@ -187,6 +234,89 @@ export default function PipelinePage() {
                 <span className="text-xs text-center">{dude.name.split(' ')[0]}</span>
               </Link>
             ))}
+          </div>
+        </div>
+      </Card>
+
+      {/* Workflow Pipeline Stepper */}
+      <Card className="overflow-hidden">
+        <div className="bg-gradient-to-r from-indigo-500/5 via-indigo-500/10 to-indigo-500/5 p-6">
+          <div className="flex items-center justify-between mb-4">
+            <div className="flex items-center gap-2">
+              <Workflow className="h-5 w-5 text-indigo-500" />
+              <span className="font-medium">{t('pipeline.workflowOverview')}</span>
+            </div>
+            <Badge variant="secondary" className="bg-background">
+              {t('pipeline.workflowSteps')}
+            </Badge>
+          </div>
+
+          {/* Desktop Stepper */}
+          <div className="hidden lg:block">
+            <div className="relative">
+              {/* Progress Line */}
+              <div className="absolute top-6 left-0 right-0 h-0.5 bg-muted" />
+
+              {/* Steps */}
+              <div className="relative flex justify-between">
+                {workflowSteps.map((step, index) => (
+                  <Link
+                    key={step.id}
+                    href="/dashboard/pipeline/workflow"
+                    className="flex flex-col items-center gap-2 group"
+                  >
+                    <div className={`relative z-10 p-3 rounded-full ${step.color} border-4 border-background shadow-sm group-hover:scale-110 transition-transform`}>
+                      <step.icon className="h-5 w-5" />
+                    </div>
+                    <span className="text-sm font-medium group-hover:text-indigo-500 transition-colors">
+                      {step.name}
+                    </span>
+                    <span className="text-xs text-muted-foreground">{`${t('common.step')} ${index + 1}`}</span>
+                  </Link>
+                ))}
+              </div>
+            </div>
+          </div>
+
+          {/* Mobile Stepper */}
+          <div className="lg:hidden grid grid-cols-3 gap-2">
+            {workflowSteps.slice(0, 3).map((step) => (
+              <Link
+                key={step.id}
+                href="/dashboard/pipeline/workflow"
+                className="flex flex-col items-center gap-1 p-2 rounded-lg hover:bg-background/50 transition-colors"
+              >
+                <div className={`p-2 rounded-full ${step.color}`}>
+                  <step.icon className="h-4 w-4" />
+                </div>
+                <span className="text-xs text-center">{step.name}</span>
+              </Link>
+            ))}
+          </div>
+          <div className="lg:hidden grid grid-cols-3 gap-2 mt-2">
+            {workflowSteps.slice(3).map((step) => (
+              <Link
+                key={step.id}
+                href="/dashboard/pipeline/workflow"
+                className="flex flex-col items-center gap-1 p-2 rounded-lg hover:bg-background/50 transition-colors"
+              >
+                <div className={`p-2 rounded-full ${step.color}`}>
+                  <step.icon className="h-4 w-4" />
+                </div>
+                <span className="text-xs text-center">{step.name}</span>
+              </Link>
+            ))}
+          </div>
+
+          {/* Start Workflow Button */}
+          <div className="mt-4 pt-4 border-t border-indigo-500/10 flex justify-center">
+            <Link href="/dashboard/pipeline/workflow">
+              <Button variant="outline" className="border-indigo-500/30 hover:bg-indigo-500/10 hover:text-indigo-500">
+                <Workflow className="mr-2 h-4 w-4" />
+                {t('pipeline.startWorkflow')}
+                <ArrowRight className="ml-2 h-4 w-4" />
+              </Button>
+            </Link>
           </div>
         </div>
       </Card>
