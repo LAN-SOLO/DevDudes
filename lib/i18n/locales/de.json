@@ -342,6 +342,10 @@
     "workflowOverview": "Workflow Pipeline",
     "workflowSteps": "6 Schritte",
     "startWorkflow": "Workflow starten",
+    "gameOverview": "Game Pipeline",
+    "gameSteps": "16 Schritte",
+    "gamePresetSteps": "16-Schritte-Assistent Übersicht",
+    "startGamePipeline": "Game Pipeline starten",
     "dudes": {
       "preset": {
         "name": "Preset Dude",
@@ -382,6 +386,11 @@
         "name": "Workflow Dude",
         "description": "Definieren Sie schrittweise Workflows mit reichhaltigen Inhalten",
         "longDescription": "Erstellen Sie detaillierte Workflows mit Vorlagen, Links und API-Diensten für jeden Schritt, konfigurieren Sie dann Funktionen, Auth, UI und KI-Integrationen."
+      },
+      "gamePreset": {
+        "name": "Game Dude",
+        "description": "Gestalten Sie Ihr Spielkonzept mit einem 16-Schritte-Assistenten",
+        "longDescription": "Konfigurieren Sie jeden Aspekt Ihres Spiels: Thema, Genre, Mechaniken, Engine, Monetarisierung und mehr mit einem intuitiven 16-Schritte-Assistenten mit KI-Empfehlungen."
       }
     },
     "progress": "Pipeline-Fortschritt",
@@ -873,6 +882,182 @@
       "none": "Keine",
       "deployTarget": "Bereitstellungsziel",
       "notSet": "Nicht festgelegt"
+    }
+  },
+  "game": {
+    "common": {
+      "next": "Weiter",
+      "importConfig": "Konfiguration importieren"
+    },
+    "nav": {
+      "setup": "Einrichtung",
+      "design": "Design",
+      "world": "Welt",
+      "systems": "Systeme",
+      "tech": "Technik"
+    },
+    "import": {
+      "title": "Spielprojekt starten",
+      "description": "Beginnen Sie ein neues Spieldesign oder importieren Sie eine bestehende Konfiguration",
+      "startFresh": "Neu starten",
+      "startFreshDesc": "Erstellen Sie Ihr Spielkonzept von Grund auf mit unserem 16-Schritte-Assistenten",
+      "importProject": "Projekt importieren",
+      "importProjectDesc": "Eine bestehende Spielkonfiguration importieren (demnächst)"
+    },
+    "theme": {
+      "title": "Spielthema",
+      "description": "Wählen Sie bis zu 3 Themen, die die Atmosphäre Ihres Spiels definieren",
+      "customTheme": "Eigenes Thema",
+      "customThemePlaceholder": "Geben Sie ein eigenes Thema ein, das oben nicht aufgeführt ist...",
+      "customThemeHint": "Fügen Sie Ihr eigenes Thema hinzu, wenn die obigen Optionen nicht passen",
+      "elevatorPitch": "Kurzvorstellung",
+      "elevatorPitchPlaceholder": "Beschreiben Sie Ihr Spiel in 1-2 Sätzen..."
+    },
+    "narrative": {
+      "title": "Narratives Design",
+      "description": "Definieren Sie den Erzählansatz für Ihr Spiel",
+      "focusLabel": "Narrativer Fokus",
+      "structureLabel": "Story-Struktur",
+      "victoryLabel": "Siegbedingung"
+    },
+    "genre": {
+      "title": "Spielgenre",
+      "description": "Wählen Sie die Genres, die Ihr Spiel am besten beschreiben (alle zutreffenden auswählen)"
+    },
+    "platform": {
+      "title": "Zielplattformen",
+      "description": "Wählen Sie die Plattformen, auf denen Ihr Spiel verfügbar sein soll",
+      "primaryLabel": "Hauptplattform",
+      "primaryPlaceholder": "Hauptplattform auswählen"
+    },
+    "visual": {
+      "title": "Visueller Stil",
+      "description": "Definieren Sie die visuelle Dimension und den Kunststil Ihres Spiels",
+      "dimensionLabel": "Dimension",
+      "artStyleLabel": "Kunststil"
+    },
+    "camera": {
+      "title": "Kameraperspektive",
+      "description": "Wählen Sie den Kamerastil für Ihr Spiel",
+      "descriptionFiltered": "Kameraoptionen gefiltert für {dimension}-Spiele",
+      "noDimensionWarning": "Tipp: Wählen Sie eine Dimension im Visuell-Schritt für gefilterte Kameraoptionen."
+    },
+    "world": {
+      "title": "Weltdesign",
+      "description": "Definieren Sie die Struktur und den Umfang Ihrer Spielwelt",
+      "structureLabel": "Weltstruktur",
+      "generationLabel": "Level-Generierung",
+      "scopeLabel": "Weltumfang"
+    },
+    "player": {
+      "title": "Spielmodus",
+      "description": "Definieren Sie, wie Spieler mit Ihrem Spiel interagieren",
+      "multiplayerConfig": "Mehrspieler-Konfiguration",
+      "maxPlayers": "Max. Spieler",
+      "networkModel": "Netzwerkmodell",
+      "syncType": "Sync-Typ",
+      "selectNetwork": "Netzwerkmodell auswählen",
+      "selectSync": "Sync-Typ auswählen"
+    },
+    "coreMechanics": {
+      "title": "Kernmechaniken",
+      "description": "Wählen Sie bis zu 3 Kernmechaniken, die das Spielerlebnis definieren"
+    },
+    "secondaryMechanics": {
+      "title": "Sekundäre Mechaniken",
+      "description": "Fügen Sie optionale Mechaniken hinzu. KI-empfohlene Optionen sind hervorgehoben."
+    },
+    "progression": {
+      "title": "Fortschritt & Schwierigkeit",
+      "description": "Definieren Sie, wie Spieler vorankommen und den Schwierigkeitsgrad",
+      "systemsLabel": "Fortschrittssysteme",
+      "difficultyLabel": "Schwierigkeit",
+      "rewardsLabel": "Belohnungstypen"
+    },
+    "audio": {
+      "title": "Audio-Design",
+      "description": "Konfigurieren Sie Sound und Musik für Ihr Spiel",
+      "musicLabel": "Musikstil",
+      "sfxLabel": "Soundeffekte",
+      "voiceLabel": "Sprachausgabe"
+    },
+    "engine": {
+      "title": "Game Engine & Technik",
+      "description": "Wählen Sie den Technologie-Stack für Ihr Spiel",
+      "engineLabel": "Game Engine",
+      "fpsLabel": "Ziel-FPS",
+      "techLabel": "Zusätzliche Technologie"
+    },
+    "monetization": {
+      "title": "Monetarisierung & Vertrieb",
+      "description": "Definieren Sie Ihr Geschäftsmodell und Ihre Vertriebsstrategie",
+      "modelLabel": "Geschäftsmodell",
+      "distributionLabel": "Vertriebskanäle"
+    },
+    "aiFreetext": {
+      "title": "KI-Funktionen & Notizen",
+      "description": "Konfigurieren Sie KI-Funktionen und fügen Sie zusätzliche Notizen für Ihr Spiel hinzu",
+      "inGameAiLabel": "In-Game KI-Funktionen",
+      "devAiLabel": "Entwicklungs-KI-Tools",
+      "detailedDescLabel": "Detaillierte Spielbeschreibung",
+      "detailedDescPlaceholder": "Geben Sie eine detaillierte Beschreibung Ihrer Spielvision, Geschichte und einzigartigen Mechaniken an...",
+      "gameplayLoopLabel": "Kern-Gameplay-Schleife",
+      "gameplayLoopPlaceholder": "Beschreiben Sie die Haupt-Gameplay-Schleife: Was macht der Spieler wiederholt?",
+      "referenceGamesLabel": "Referenzspiele",
+      "referenceGamesPlaceholder": "Listen Sie Spiele auf, die dieses Projekt inspirieren (z.B. 'Zelda trifft Stardew Valley')",
+      "constraintsLabel": "Einschränkungen & Limitierungen",
+      "constraintsPlaceholder": "Budget, Zeitrahmen, Teamgröße oder technische Einschränkungen...",
+      "notesLabel": "Zusätzliche Notizen",
+      "notesPlaceholder": "Weitere Details, Inspirationen oder Anforderungen für Ihr Spiel...",
+      "complete": "Konfiguration abschließen"
+    },
+    "complete": {
+      "title": "Spielkonfiguration abgeschlossen!",
+      "description": "Ihr Spieldesign ist bereit. Fahren Sie mit der KI-Generierung fort oder exportieren Sie die Konfiguration.",
+      "failedToSave": "Konfiguration konnte nicht gespeichert werden",
+      "saving": "Wird gespeichert...",
+      "continueToAI": "Weiter zur KI-Generierung",
+      "exportConfig": "Konfiguration exportieren",
+      "edit": "Bearbeiten",
+      "themes": "Themen",
+      "genres": "Genres",
+      "platforms": "Plattformen",
+      "visual": "Visuell",
+      "engine": "Engine",
+      "business": "Geschäftsmodell",
+      "coreMechanics": "Kernmechaniken"
+    },
+    "analyze": {
+      "title": "Spielanalyse",
+      "description": "KI-gestützte Analyse Ihres Spieldesigns",
+      "noProject": "Kein Projekt ausgewählt",
+      "noProjectDesc": "Schließen Sie zuerst den Game Preset Assistenten ab, dann werden Sie zur Analyse weitergeleitet.",
+      "analyzing": "Spielkonfiguration wird analysiert...",
+      "complexity": "Komplexitätswert",
+      "feasibility": "Technische Machbarkeit",
+      "scope": "Umfangsschätzung",
+      "summaryTitle": "Analysezusammenfassung",
+      "warnings": "Warnungen",
+      "compatibilityIssues": "Kompatibilitätsprobleme",
+      "suggestions": "Vorschläge",
+      "continueToGeneration": "Weiter zur Generierung"
+    },
+    "combo": {
+      "title": "Spielgenerierung",
+      "description": "KI generiert Ihre Spielarchitektur und das Designdokument",
+      "noProject": "Kein Projekt ausgewählt",
+      "noProjectDesc": "Schließen Sie zuerst die Game Preset und Analyse Schritte ab.",
+      "generating": "Spieldokumente werden generiert...",
+      "generatedDocs": "Generierte Dokumente",
+      "generatedDocsDesc": "Ihre Spieldesign-Dokumente sind zur Überprüfung und zum Download bereit.",
+      "ready": "Bereit",
+      "downloadAll": "Alle Dokumente herunterladen"
+    },
+    "summary": {
+      "title": "Spielzusammenfassung",
+      "description": "Übersicht Ihres vollständigen Spieldesigns",
+      "placeholder": "Spielzusammenfassung",
+      "placeholderDesc": "Diese Funktion zeigt eine umfassende Zusammenfassung Ihres Spielprojekts."
     }
   },
   "projects": {

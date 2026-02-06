@@ -33,6 +33,7 @@ export default function DevDudePage() {
     '$'
   ])
   const [isRunning, setIsRunning] = useState(false)
+  const [previewHtml, setPreviewHtml] = useState<string | null>(null)
 
   // Generate file tree based on project concept
   const generateFileTree = (concept: GeneratedConcept | null): FileNode[] => {
@@ -211,6 +212,27 @@ export function cn(...inputs: ClassValue[]) {
     return findInTree(fileTree) || '// Select a file to view its contents'
   }
 
+  const buildPreviewHtml = () => {
+    const homeCode = generateHomeCode()
+    // Extract the JSX body from the component function
+    const bodyMatch = homeCode.match(/return\s*\(([\s\S]*)\)\s*\}/)
+    const jsxBody = bodyMatch ? bodyMatch[1].trim() : `<h1>${project?.name || 'App'}</h1>`
+
+    // Convert className to class for raw HTML
+    const htmlBody = jsxBody.replace(/className=/g, 'class=')
+
+    return `<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>body { margin: 0; font-family: system-ui, sans-serif; }</style>
+</head>
+<body>${htmlBody}</body>
+</html>`
+  }
+
   const handleRun = async () => {
     setIsRunning(true)
     setTerminalOutput(prev => [...prev, '$ npm run build', 'Creating optimized production build...'])
@@ -219,6 +241,7 @@ export function cn(...inputs: ClassValue[]) {
     setTerminalOutput(prev => [...prev, '✓ Compiled successfully', '✓ Linting and checking validity...'])
 
     await new Promise(resolve => setTimeout(resolve, 1000))
+    setPreviewHtml(buildPreviewHtml())
     setTerminalOutput(prev => [...prev, '✓ Build completed!', '$'])
     setIsRunning(false)
   }
@@ -416,19 +439,28 @@ export function cn(...inputs: ClassValue[]) {
           <CardHeader className="pb-3">
             <div className="flex items-center justify-between">
               <CardTitle className="text-base">Live Preview</CardTitle>
-              <Button variant="ghost" size="sm">
+              <Button variant="ghost" size="sm" onClick={() => setPreviewHtml(buildPreviewHtml())}>
                 <Eye className="h-4 w-4 mr-1" />
                 Refresh
               </Button>
             </div>
           </CardHeader>
           <CardContent>
-            <div className="rounded-lg border bg-white h-[180px] flex items-center justify-center">
-              <div className="text-center p-4">
-                <p className="font-semibold">{project?.name}</p>
-                <p className="text-sm text-muted-foreground">Preview will appear here</p>
+            {previewHtml ? (
+              <iframe
+                srcDoc={previewHtml}
+                className="rounded-lg border bg-white w-full h-[180px]"
+                sandbox="allow-scripts"
+                title="Live Preview"
+              />
+            ) : (
+              <div className="rounded-lg border bg-white h-[180px] flex items-center justify-center">
+                <div className="text-center p-4">
+                  <p className="font-semibold">{project?.name}</p>
+                  <p className="text-sm text-muted-foreground">Click Run or Refresh to preview</p>
+                </div>
               </div>
-            </div>
+            )}
           </CardContent>
         </Card>
 

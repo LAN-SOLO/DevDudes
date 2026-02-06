@@ -23,6 +23,12 @@ import {
   Palette,
   Brain,
   Cloud,
+  Gamepad2,
+  Layers,
+  Globe,
+  Cpu,
+  Settings2,
+  BarChart3,
 } from 'lucide-react'
 import { useTranslation } from '@/lib/i18n/language-provider'
 
@@ -66,6 +72,103 @@ export default function PipelinePage() {
       name: t('workflow.nav.deploy'),
       icon: Cloud,
       color: 'bg-cyan-100 text-cyan-600',
+    },
+  ]
+
+  // Game Pipeline category groups with individual steps
+  const gameCategories = [
+    {
+      id: 'setup',
+      name: t('game.nav.setup'),
+      icon: Settings2,
+      color: 'bg-emerald-100 text-emerald-600',
+      dotColor: 'bg-emerald-500',
+      steps: [
+        { num: 1, label: 'Import' },
+        { num: 2, label: 'Theme' },
+        { num: 3, label: 'Narrative' },
+      ],
+    },
+    {
+      id: 'design',
+      name: t('game.nav.design'),
+      icon: Palette,
+      color: 'bg-violet-100 text-violet-600',
+      dotColor: 'bg-violet-500',
+      steps: [
+        { num: 4, label: 'Genre' },
+        { num: 5, label: 'Platform' },
+        { num: 6, label: 'Visual' },
+        { num: 7, label: 'Camera' },
+      ],
+    },
+    {
+      id: 'world',
+      name: t('game.nav.world'),
+      icon: Globe,
+      color: 'bg-amber-100 text-amber-600',
+      dotColor: 'bg-amber-500',
+      steps: [
+        { num: 8, label: 'World' },
+        { num: 9, label: 'Player' },
+        { num: 10, label: 'Core Mechanics' },
+      ],
+    },
+    {
+      id: 'systems',
+      name: t('game.nav.systems'),
+      icon: Layers,
+      color: 'bg-rose-100 text-rose-600',
+      dotColor: 'bg-rose-500',
+      steps: [
+        { num: 11, label: 'Secondary' },
+        { num: 12, label: 'Progression' },
+        { num: 13, label: 'Audio' },
+      ],
+    },
+    {
+      id: 'tech',
+      name: t('game.nav.tech'),
+      icon: Cpu,
+      color: 'bg-sky-100 text-sky-600',
+      dotColor: 'bg-sky-500',
+      steps: [
+        { num: 14, label: 'Engine' },
+        { num: 15, label: 'Monetization' },
+        { num: 16, label: 'AI & Notes' },
+      ],
+    },
+  ]
+
+  // Game pipeline downstream steps (after the 16-step wizard)
+  const gamePipelineSteps = [
+    {
+      id: 'game-preset',
+      name: t('pipeline.dudes.gamePreset.name'),
+      icon: Gamepad2,
+      color: 'bg-emerald-100 text-emerald-600',
+      href: '/dashboard/pipeline/game-preset',
+    },
+    {
+      id: 'game-analyze',
+      name: t('game.analyze.title'),
+      icon: BarChart3,
+      color: 'bg-teal-100 text-teal-600',
+      href: '/dashboard/pipeline/game-analyze',
+    },
+    {
+      id: 'game-combo',
+      name: t('game.combo.title'),
+      icon: Wand2,
+      color: 'bg-cyan-100 text-cyan-600',
+      href: '/dashboard/pipeline/game-combo',
+    },
+    {
+      id: 'game-summary',
+      name: t('game.summary.title'),
+      icon: FileText,
+      color: 'bg-blue-100 text-blue-600',
+      href: '/dashboard/pipeline/game-summary',
     },
   ]
 
@@ -314,6 +417,105 @@ export default function PipelinePage() {
               <Button variant="outline" className="border-indigo-500/30 hover:bg-indigo-500/10 hover:text-indigo-500">
                 <Workflow className="mr-2 h-4 w-4" />
                 {t('pipeline.startWorkflow')}
+                <ArrowRight className="ml-2 h-4 w-4" />
+              </Button>
+            </Link>
+          </div>
+        </div>
+      </Card>
+
+      {/* Game Pipeline Stepper */}
+      <Card className="overflow-hidden">
+        <div className="bg-gradient-to-r from-emerald-500/5 via-emerald-500/10 to-emerald-500/5 p-6">
+          <div className="flex items-center justify-between mb-4">
+            <div className="flex items-center gap-2">
+              <Gamepad2 className="h-5 w-5 text-emerald-500" />
+              <span className="font-medium">{t('pipeline.gameOverview')}</span>
+            </div>
+            <Badge variant="secondary" className="bg-background">
+              {t('pipeline.gameSteps')}
+            </Badge>
+          </div>
+
+          {/* Pipeline Flow: Game Preset → Analyze → Combo → Summary */}
+          <div className="hidden lg:block mb-6">
+            <div className="relative">
+              <div className="absolute top-6 left-0 right-0 h-0.5 bg-muted" />
+              <div className="relative flex justify-between">
+                {gamePipelineSteps.map((step, index) => (
+                  <Link
+                    key={step.id}
+                    href={step.href}
+                    className="flex flex-col items-center gap-2 group"
+                  >
+                    <div className={`relative z-10 p-3 rounded-full ${step.color} border-4 border-background shadow-sm group-hover:scale-110 transition-transform`}>
+                      <step.icon className="h-5 w-5" />
+                    </div>
+                    <span className="text-sm font-medium group-hover:text-emerald-500 transition-colors">
+                      {step.name}
+                    </span>
+                    <span className="text-xs text-muted-foreground">{`${t('common.step')} ${index + 1}`}</span>
+                  </Link>
+                ))}
+              </div>
+            </div>
+          </div>
+
+          {/* Mobile Pipeline Flow */}
+          <div className="lg:hidden grid grid-cols-4 gap-2 mb-4">
+            {gamePipelineSteps.map((step) => (
+              <Link
+                key={step.id}
+                href={step.href}
+                className="flex flex-col items-center gap-1 p-2 rounded-lg hover:bg-background/50 transition-colors"
+              >
+                <div className={`p-2 rounded-full ${step.color}`}>
+                  <step.icon className="h-4 w-4" />
+                </div>
+                <span className="text-xs text-center">{step.name}</span>
+              </Link>
+            ))}
+          </div>
+
+          {/* 16-Step Detail by Category */}
+          <div className="border-t border-emerald-500/10 pt-4">
+            <p className="text-xs text-muted-foreground uppercase tracking-wider mb-3 font-medium">
+              {t('pipeline.gamePresetSteps')}
+            </p>
+            <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-5">
+              {gameCategories.map((cat) => (
+                <div key={cat.id} className="rounded-lg border bg-background/50 p-3">
+                  <div className="flex items-center gap-2 mb-2">
+                    <div className={`p-1.5 rounded-md ${cat.color}`}>
+                      <cat.icon className="h-3.5 w-3.5" />
+                    </div>
+                    <span className="text-xs font-semibold">{cat.name}</span>
+                  </div>
+                  <div className="space-y-1">
+                    {cat.steps.map((step) => (
+                      <Link
+                        key={step.num}
+                        href="/dashboard/pipeline/game-preset"
+                        className="flex items-center gap-2 rounded-md px-2 py-1 text-xs hover:bg-muted transition-colors group"
+                      >
+                        <span className={`h-1.5 w-1.5 rounded-full ${cat.dotColor} flex-shrink-0`} />
+                        <span className="text-muted-foreground group-hover:text-foreground transition-colors">
+                          {step.num}. {step.label}
+                        </span>
+                      </Link>
+                    ))}
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* Start Game Pipeline Button */}
+          <div className="mt-4 pt-4 border-t border-emerald-500/10 flex justify-center">
+            <Link href="/dashboard/pipeline/game-preset">
+              <Button variant="outline" className="border-emerald-500/30 hover:bg-emerald-500/10 hover:text-emerald-500">
+                <Gamepad2 className="mr-2 h-4 w-4" />
+                {t('pipeline.startGamePipeline')}
                 <ArrowRight className="ml-2 h-4 w-4" />
               </Button>
             </Link>

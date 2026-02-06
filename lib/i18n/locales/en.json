@@ -342,6 +342,10 @@
     "workflowOverview": "Workflow Pipeline",
     "workflowSteps": "6 Steps",
     "startWorkflow": "Start Workflow",
+    "gameOverview": "Game Pipeline",
+    "gameSteps": "16 Steps",
+    "gamePresetSteps": "16-Step Wizard Overview",
+    "startGamePipeline": "Start Game Pipeline",
     "dudes": {
       "preset": {
         "name": "Preset Dude",
@@ -382,6 +386,11 @@
         "name": "Workflow Dude",
         "description": "Define step-by-step workflows with rich content",
         "longDescription": "Create detailed workflows with templates, links, and API services for each step, then configure features, auth, UI, and AI integrations."
+      },
+      "gamePreset": {
+        "name": "Game Dude",
+        "description": "Design your game concept with a 16-step wizard",
+        "longDescription": "Configure every aspect of your game: theme, genre, mechanics, engine, monetization, and more through an intuitive 16-step wizard with AI recommendations."
       }
     },
     "progress": "Pipeline Progress",
@@ -873,6 +882,182 @@
       "none": "None",
       "deployTarget": "Deploy Target",
       "notSet": "Not set"
+    }
+  },
+  "game": {
+    "common": {
+      "next": "Next",
+      "importConfig": "Import Config"
+    },
+    "nav": {
+      "setup": "Setup",
+      "design": "Design",
+      "world": "World",
+      "systems": "Systems",
+      "tech": "Tech"
+    },
+    "import": {
+      "title": "Start Your Game Project",
+      "description": "Begin a new game design or import an existing configuration",
+      "startFresh": "Start Fresh",
+      "startFreshDesc": "Build your game concept from scratch with our 16-step wizard",
+      "importProject": "Import Project",
+      "importProjectDesc": "Import an existing game configuration (coming soon)"
+    },
+    "theme": {
+      "title": "Game Theme",
+      "description": "Choose up to 3 themes that define the atmosphere of your game",
+      "customTheme": "Custom Theme",
+      "customThemePlaceholder": "Enter a custom theme not listed above...",
+      "customThemeHint": "Add your own theme if the options above don't fit your vision",
+      "elevatorPitch": "Elevator Pitch",
+      "elevatorPitchPlaceholder": "Describe your game in 1-2 sentences..."
+    },
+    "narrative": {
+      "title": "Narrative Design",
+      "description": "Define the storytelling approach for your game",
+      "focusLabel": "Narrative Focus",
+      "structureLabel": "Story Structure",
+      "victoryLabel": "Victory Condition"
+    },
+    "genre": {
+      "title": "Game Genre",
+      "description": "Select the genres that best describe your game (select all that apply)"
+    },
+    "platform": {
+      "title": "Target Platforms",
+      "description": "Choose the platforms your game will be available on",
+      "primaryLabel": "Primary Platform",
+      "primaryPlaceholder": "Select primary platform"
+    },
+    "visual": {
+      "title": "Visual Style",
+      "description": "Define the visual dimension and art style of your game",
+      "dimensionLabel": "Dimension",
+      "artStyleLabel": "Art Style"
+    },
+    "camera": {
+      "title": "Camera Perspective",
+      "description": "Choose the camera style for your game",
+      "descriptionFiltered": "Camera options filtered for {dimension} games",
+      "noDimensionWarning": "Tip: Select a dimension in the Visual step for filtered camera options."
+    },
+    "world": {
+      "title": "World Design",
+      "description": "Define the structure and scope of your game world",
+      "structureLabel": "World Structure",
+      "generationLabel": "Level Generation",
+      "scopeLabel": "World Scope"
+    },
+    "player": {
+      "title": "Player Mode",
+      "description": "Define how players interact with your game",
+      "multiplayerConfig": "Multiplayer Configuration",
+      "maxPlayers": "Max Players",
+      "networkModel": "Network Model",
+      "syncType": "Sync Type",
+      "selectNetwork": "Select network model",
+      "selectSync": "Select sync type"
+    },
+    "coreMechanics": {
+      "title": "Core Mechanics",
+      "description": "Choose up to 3 core gameplay mechanics that define the player experience"
+    },
+    "secondaryMechanics": {
+      "title": "Secondary Mechanics",
+      "description": "Add optional mechanics to enrich your game. AI-recommended options are highlighted."
+    },
+    "progression": {
+      "title": "Progression & Difficulty",
+      "description": "Define how players progress and the challenge level",
+      "systemsLabel": "Progression Systems",
+      "difficultyLabel": "Difficulty",
+      "rewardsLabel": "Reward Types"
+    },
+    "audio": {
+      "title": "Audio Design",
+      "description": "Configure the sound and music for your game",
+      "musicLabel": "Music Style",
+      "sfxLabel": "Sound Effects",
+      "voiceLabel": "Voice Acting"
+    },
+    "engine": {
+      "title": "Game Engine & Tech",
+      "description": "Choose the technology stack for your game",
+      "engineLabel": "Game Engine",
+      "fpsLabel": "Target FPS",
+      "techLabel": "Additional Technology"
+    },
+    "monetization": {
+      "title": "Monetization & Distribution",
+      "description": "Define your business model and distribution strategy",
+      "modelLabel": "Business Model",
+      "distributionLabel": "Distribution Channels"
+    },
+    "aiFreetext": {
+      "title": "AI Features & Notes",
+      "description": "Configure AI features and add any additional notes for your game",
+      "inGameAiLabel": "In-Game AI Features",
+      "devAiLabel": "Development AI Tools",
+      "detailedDescLabel": "Detailed Game Description",
+      "detailedDescPlaceholder": "Provide a detailed description of your game vision, story, and unique mechanics...",
+      "gameplayLoopLabel": "Core Gameplay Loop",
+      "gameplayLoopPlaceholder": "Describe the main gameplay loop: what does the player do repeatedly?",
+      "referenceGamesLabel": "Reference Games",
+      "referenceGamesPlaceholder": "List games that inspire this project (e.g., 'Zelda meets Stardew Valley')",
+      "constraintsLabel": "Constraints & Limitations",
+      "constraintsPlaceholder": "Budget, timeline, team size, or technical constraints...",
+      "notesLabel": "Additional Notes",
+      "notesPlaceholder": "Any extra details, inspirations, or requirements for your game...",
+      "complete": "Complete Configuration"
+    },
+    "complete": {
+      "title": "Game Configuration Complete!",
+      "description": "Your game design is ready. Continue to AI generation or export the config.",
+      "failedToSave": "Failed to save configuration",
+      "saving": "Saving...",
+      "continueToAI": "Continue to AI Generation",
+      "exportConfig": "Export Config",
+      "edit": "Edit",
+      "themes": "Themes",
+      "genres": "Genres",
+      "platforms": "Platforms",
+      "visual": "Visual",
+      "engine": "Engine",
+      "business": "Business Model",
+      "coreMechanics": "Core Mechanics"
+    },
+    "analyze": {
+      "title": "Game Analysis",
+      "description": "AI-powered analysis of your game design",
+      "noProject": "No Project Selected",
+      "noProjectDesc": "Complete the Game Preset wizard first, then you'll be redirected here for analysis.",
+      "analyzing": "Analyzing your game configuration...",
+      "complexity": "Complexity Score",
+      "feasibility": "Technical Feasibility",
+      "scope": "Scope Estimate",
+      "summaryTitle": "Analysis Summary",
+      "warnings": "Warnings",
+      "compatibilityIssues": "Compatibility Issues",
+      "suggestions": "Suggestions",
+      "continueToGeneration": "Continue to Generation"
+    },
+    "combo": {
+      "title": "Game Generation",
+      "description": "AI generates your game architecture and design document",
+      "noProject": "No Project Selected",
+      "noProjectDesc": "Complete the Game Preset and Analysis steps first.",
+      "generating": "Generating game documents...",
+      "generatedDocs": "Generated Documents",
+      "generatedDocsDesc": "Your game design documents are ready for review and download.",
+      "ready": "Ready",
+      "downloadAll": "Download All Documents"
+    },
+    "summary": {
+      "title": "Game Summary",
+      "description": "Overview of your complete game design",
+      "placeholder": "Game Summary",
+      "placeholderDesc": "This feature will display a comprehensive summary of your game project."
     }
   },
   "projects": {
