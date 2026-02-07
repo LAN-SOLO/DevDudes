@@ -16,24 +16,32 @@ export async function saveGamePresetConfig(
     return { error: 'Not authenticated', projectId: null }
   }
 
-  const result = gamePresetConfigSchema.safeParse(config)
+  // Re-parse through JSON to fix serialization issues (e.g., arrays sent as objects
+  // across the server action boundary)
+  const sanitized = JSON.parse(JSON.stringify(config))
+  const result = gamePresetConfigSchema.safeParse(sanitized)
   if (!result.success) {
+    const issue = result.error.issues[0]
+    const path = issue?.path?.join('.') || 'unknown'
     return {
-      error: result.error.issues[0]?.message || 'Invalid configuration',
+      error: `${issue?.message || 'Invalid configuration'} (field: ${path})`,
       projectId: null,
     }
   }
 
-  const gameName = config.themes[0]
-    ? `${config.themes[0].charAt(0).toUpperCase() + config.themes[0].slice(1)} Game`
+  const validated = result.data
+  const gameName = validated.themes[0]
+    ? `${validated.themes[0].charAt(0).toUpperCase() + validated.themes[0].slice(1)} Game`
     : 'Untitled Game'
   const gameDescription = [
-    config.genres.join(', '),
-    config.dimension,
-    config.engine,
+    validated.genres.join(', '),
+    validated.dimension,
+    validated.engine,
   ]
     .filter(Boolean)
     .join(' | ')
+
+  const presetConfig = { type: 'game', ...validated } as unknown as Record<string, unknown>
 
   if (!projectId) {
     const { data, error } = await supabase
@@ -44,7 +52,7 @@ export async function saveGamePresetConfig(
         description: gameDescription || 'Game project',
         app_type: 'game',
         status: 'configuring',
-        preset_config: { type: 'game', ...config } as unknown as Record<string, unknown>,
+        preset_config: presetConfig,
       })
       .select()
       .single()
@@ -65,7 +73,7 @@ export async function saveGamePresetConfig(
       description: gameDescription || 'Game project',
       app_type: 'game',
       status: 'configuring',
-      preset_config: { type: 'game', ...config } as unknown as Record<string, unknown>,
+      preset_config: presetConfig,
     })
     .eq('id', projectId)
     .eq('user_id', user.id)
