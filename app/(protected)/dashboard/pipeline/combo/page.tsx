@@ -420,10 +420,10 @@ export default function ComboDudePage() {
             <div className="rounded-lg bg-muted p-4">
               <h4 className="font-medium mb-2">Configuration Summary</h4>
               <div className="grid gap-2 text-sm">
-                <div><span className="text-muted-foreground">Business:</span> {project.preset_config.businessName}</div>
-                <div><span className="text-muted-foreground">Type:</span> {project.preset_config.appType}</div>
-                <div><span className="text-muted-foreground">Features:</span> {project.preset_config.features.length} selected</div>
-                <div><span className="text-muted-foreground">Entities:</span> {project.preset_config.entities.length} defined</div>
+                <div><span className="text-muted-foreground">Business:</span> {project.preset_config.businessName ?? project.name}</div>
+                <div><span className="text-muted-foreground">Type:</span> {project.preset_config.appType ?? (project.preset_config as Record<string, unknown>).type as string ?? '—'}</div>
+                <div><span className="text-muted-foreground">Features:</span> {project.preset_config.features?.length ?? 0} selected</div>
+                <div><span className="text-muted-foreground">Entities:</span> {project.preset_config.entities?.length ?? 0} defined</div>
               </div>
             </div>
 
