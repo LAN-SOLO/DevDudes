@@ -223,9 +223,71 @@ export function getMonetizationRecommendations(config: GamePresetConfig): {
   if (genres.includes('mmo') || genres.includes('idle')) {
     model.push('free-to-play', 'subscription')
   }
+  if (genres.includes('card-game') || genres.includes('deck-builder')) {
+    model.push('free-to-play', 'battle-pass')
+  }
 
   return {
     model: [...new Set(model)],
     distribution: [...new Set(distribution)],
   }
+}
+
+export function getSocialRecommendations(config: GamePresetConfig): string[] {
+  const recs: string[] = []
+  const { playerMode, genres } = config
+
+  if (playerMode === 'online-multiplayer' || playerMode === 'mmo' || playerMode === 'async-multiplayer') {
+    recs.push('friends-list', 'chat', 'leaderboards')
+  }
+  if (genres.includes('card-game') || genres.includes('deck-builder')) {
+    recs.push('deck-sharing', 'spectating', 'tournaments')
+  }
+  if (playerMode !== 'single-player') {
+    recs.push('clans-guilds', 'emotes')
+  }
+  if (genres.includes('rpg') || genres.includes('mmo')) {
+    recs.push('trading', 'clans-guilds')
+  }
+
+  return [...new Set(recs)]
+}
+
+export function getRetentionRecommendations(config: GamePresetConfig): string[] {
+  const recs: string[] = []
+  const { businessModel, genres } = config
+
+  if (['free-to-play', 'freemium', 'battle-pass'].includes(businessModel)) {
+    recs.push('daily-rewards', 'season-pass', 'limited-events')
+  }
+  if (genres.includes('card-game') || genres.includes('deck-builder')) {
+    recs.push('daily-challenges', 'collection-milestones', 'season-pass')
+  }
+  if (genres.includes('rpg') || genres.includes('mmo')) {
+    recs.push('daily-quests', 'weekly-bosses', 'login-streaks')
+  }
+  if (genres.includes('idle')) {
+    recs.push('login-streaks', 'daily-rewards', 'milestone-rewards')
+  }
+
+  return [...new Set(recs)]
+}
+
+export function getAccessibilityRecommendations(config: GamePresetConfig): string[] {
+  const recs: string[] = []
+
+  // Always recommended
+  recs.push('colorblind-mode', 'subtitles', 'remappable-controls')
+
+  if (config.dimension === '3d') {
+    recs.push('motion-sickness-options', 'screen-reader')
+  }
+  if (config.voiceActing !== 'none') {
+    recs.push('subtitles', 'audio-descriptions')
+  }
+  if (config.platforms.includes('mobile-ios') || config.platforms.includes('mobile-android')) {
+    recs.push('scalable-ui', 'one-handed-mode')
+  }
+
+  return [...new Set(recs)]
 }

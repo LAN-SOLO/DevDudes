@@ -4,6 +4,9 @@ import { useGameWizard } from '../game-context'
 import { useTranslation } from '@/lib/i18n/language-provider'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
+import { Textarea } from '@/components/ui/textarea'
+import { Input } from '@/components/ui/input'
+import { Select } from '@/components/ui/select'
 import { ArrowLeft, ArrowRight } from 'lucide-react'
 import { OptionGrid } from '../shared/option-grid'
 import {
@@ -56,6 +59,44 @@ export function StepNarrative() {
             mode="single"
           />
         </div>
+
+        {config.narrativeFocus && config.narrativeFocus !== 'none' && (
+          <div className="space-y-4 rounded-lg border bg-muted/30 p-4">
+            <h3 className="text-sm font-medium">{t('game.narrative.loreTitle')}</h3>
+            <div className="space-y-2">
+              <label className="text-xs font-medium">{t('game.narrative.worldDescription')}</label>
+              <Textarea
+                value={config.lore.worldDescription}
+                onChange={(e) => updateConfig({ lore: { ...config.lore, worldDescription: e.target.value } })}
+                placeholder={t('game.narrative.worldDescriptionPlaceholder')}
+                rows={3}
+              />
+            </div>
+            <div className="space-y-2">
+              <label className="text-xs font-medium">{t('game.narrative.factions')}</label>
+              <Input
+                value={config.lore.factions.join(', ')}
+                onChange={(e) => updateConfig({ lore: { ...config.lore, factions: e.target.value.split(',').map(s => s.trim()).filter(Boolean) } })}
+                placeholder={t('game.narrative.factionsPlaceholder')}
+              />
+            </div>
+            <div className="space-y-2">
+              <label className="text-xs font-medium">{t('game.narrative.flavorTextTone')}</label>
+              <Select
+                value={config.lore.flavorTextTone}
+                onValueChange={(v) => updateConfig({ lore: { ...config.lore, flavorTextTone: v } })}
+                options={[
+                  { value: 'serious', label: 'Serious' },
+                  { value: 'whimsical', label: 'Whimsical' },
+                  { value: 'dark', label: 'Dark' },
+                  { value: 'humorous', label: 'Humorous' },
+                  { value: 'neutral', label: 'Neutral' },
+                ]}
+                placeholder={t('game.narrative.flavorTextTonePlaceholder')}
+              />
+            </div>
+          </div>
+        )}
 
         <div className="flex justify-between">
           <Button variant="outline" onClick={() => setCurrentStep(2)}>

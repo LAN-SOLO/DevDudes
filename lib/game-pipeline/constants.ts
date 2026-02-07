@@ -1,5 +1,12 @@
 import type { GameOption, StepCategory } from './types'
 
+// ── Utility: Card-game genre detection ────────────────────────
+export const CARD_GAME_GENRES = ['card-game', 'deck-builder', 'auto-battler'] as const
+
+export function isCardGame(genres: string[]): boolean {
+  return genres.some((g) => (CARD_GAME_GENRES as readonly string[]).includes(g))
+}
+
 // ── Nav Categories ──────────────────────────────────────────────
 export const STEP_CATEGORIES: StepCategory[] = [
   { id: 'setup', label: 'Setup', steps: [1, 2, 3] },
@@ -7,6 +14,9 @@ export const STEP_CATEGORIES: StepCategory[] = [
   { id: 'world', label: 'World', steps: [8, 9, 10] },
   { id: 'systems', label: 'Systems', steps: [11, 12, 13] },
   { id: 'tech', label: 'Tech', steps: [14, 15, 16] },
+  { id: 'cardgame', label: 'Card Game', steps: [17, 18, 19] },
+  { id: 'experience', label: 'Experience', steps: [20, 21, 22] },
+  { id: 'launch', label: 'Launch', steps: [23, 24] },
 ]
 
 export const STEP_LABELS: Record<number, string> = {
@@ -26,6 +36,14 @@ export const STEP_LABELS: Record<number, string> = {
   14: 'Engine',
   15: 'Monetization',
   16: 'AI & Notes',
+  17: 'Card System',
+  18: 'Match & Turns',
+  19: 'Card Visual',
+  20: 'Target Audience',
+  21: 'Social & Retention',
+  22: 'Accessibility',
+  23: 'Content Plan',
+  24: 'Advanced',
 }
 
 // ── Step 2: Themes ──────────────────────────────────────────────
@@ -72,6 +90,8 @@ export const VICTORY_CONDITION_OPTIONS: GameOption[] = [
   { value: 'sandbox', label: 'Sandbox', icon: 'Infinity', description: 'No win condition - open play' },
   { value: 'competitive', label: 'Competitive', icon: 'Medal', description: 'Outlast or outscore other players' },
   { value: 'completion', label: '100% Completion', icon: 'CheckCircle', description: 'Collect or complete everything' },
+  { value: 'combo-score', label: 'Combo Score', icon: 'Sparkles', description: 'Chain combos for highest multiplier' },
+  { value: 'deckout', label: 'Deckout', icon: 'Layers', description: 'Win by depleting opponent deck or resources' },
 ]
 
 // ── Step 4: Genre ───────────────────────────────────────────────
@@ -96,6 +116,9 @@ export const GENRE_OPTIONS: GameOption[] = [
   { value: 'tower-defense', label: 'Tower Defense', icon: 'Shield', description: 'Strategic placement of defenses' },
   { value: 'visual-novel', label: 'Visual Novel', icon: 'BookOpen', description: 'Story-driven with choice mechanics' },
   { value: 'idle', label: 'Idle/Incremental', icon: 'TrendingUp', description: 'Automated progression over time' },
+  { value: 'card-game', label: 'Card Game', icon: 'Layers', description: 'Card-based core gameplay (TCG/CCG)' },
+  { value: 'deck-builder', label: 'Deck Builder', icon: 'LayoutGrid', description: 'Build decks during gameplay runs' },
+  { value: 'auto-battler', label: 'Auto Battler', icon: 'Cpu', description: 'Draft units, auto-resolve combat rounds' },
 ]
 
 // ── Step 5: Platform ────────────────────────────────────────────
@@ -130,6 +153,16 @@ export const ART_STYLE_OPTIONS: GameOption[] = [
   { value: 'anime', label: 'Anime', icon: 'Flower2', description: 'Japanese animation style' },
   { value: 'minimalist', label: 'Minimalist', icon: 'Minimize', description: 'Simple shapes, clean design' },
   { value: 'stylized', label: 'Stylized', icon: 'Sparkles', description: 'Unique artistic interpretation' },
+  { value: 'ink-illustration', label: 'Ink Illustration', icon: 'PenTool', description: 'Bold ink strokes and crosshatching' },
+  { value: 'watercolor', label: 'Watercolor', icon: 'Droplets', description: 'Soft painted watercolor aesthetic' },
+  { value: 'paper-craft', label: 'Paper Craft', icon: 'Scissors', description: 'Layered paper cutout style' },
+]
+
+export const ANIMATION_INTENSITY_OPTIONS: GameOption[] = [
+  { value: 'minimal', label: 'Minimal', icon: 'Minus', description: 'Subtle transitions, no flashy effects' },
+  { value: 'moderate', label: 'Moderate', icon: 'Activity', description: 'Standard animations and feedback' },
+  { value: 'high', label: 'High', icon: 'Sparkles', description: 'Rich animations, particles, screen effects' },
+  { value: 'cinematic', label: 'Cinematic', icon: 'Film', description: 'Film-quality cutscenes and transitions' },
 ]
 
 // ── Step 7: Camera ──────────────────────────────────────────────
@@ -163,6 +196,8 @@ export const WORLD_STRUCTURE_OPTIONS: GameOption[] = [
   { value: 'procedural', label: 'Procedural', icon: 'Dices', description: 'Randomly generated layouts' },
   { value: 'room-based', label: 'Room-Based', icon: 'DoorOpen', description: 'Connected rooms / dungeons' },
   { value: 'linear-corridor', label: 'Linear Corridor', icon: 'Ruler', description: 'Guided path with scenery' },
+  { value: 'map-node', label: 'Map Node', icon: 'GitBranch', description: 'Branching path nodes (Slay the Spire style)' },
+  { value: 'tavern-hub', label: 'Tavern Hub', icon: 'Home', description: 'Single hub area with battle encounters' },
 ]
 
 export const LEVEL_GENERATION_OPTIONS: GameOption[] = [
@@ -186,6 +221,7 @@ export const PLAYER_MODE_OPTIONS: GameOption[] = [
   { value: 'online-multiplayer', label: 'Online Multiplayer', icon: 'Globe', description: 'Connected over the internet' },
   { value: 'co-op', label: 'Co-op', icon: 'Handshake', description: 'Cooperative play (online or local)' },
   { value: 'mmo', label: 'MMO', icon: 'Globe', description: 'Massively multiplayer online' },
+  { value: 'async-multiplayer', label: 'Async Multiplayer', icon: 'Clock', description: 'Turn-based async play (e.g. Words with Friends)' },
 ]
 
 export const NETWORK_MODEL_OPTIONS: GameOption[] = [
@@ -198,6 +234,15 @@ export const SYNC_TYPE_OPTIONS: GameOption[] = [
   { value: 'lockstep', label: 'Lockstep', icon: 'Lock', description: 'Deterministic synchronized frames' },
   { value: 'state-sync', label: 'State Sync', icon: 'RefreshCcw', description: 'Server authoritative state' },
   { value: 'snapshot', label: 'Snapshot Interpolation', icon: 'Camera', description: 'Periodic state snapshots' },
+]
+
+export const MATCH_DURATION_OPTIONS: GameOption[] = [
+  { value: 'micro', label: 'Micro (<2 min)', icon: 'Zap', description: 'Ultra-short matches' },
+  { value: 'short', label: 'Short (2-5 min)', icon: 'Timer', description: 'Quick casual matches' },
+  { value: 'medium', label: 'Medium (5-15 min)', icon: 'Clock', description: 'Standard match length' },
+  { value: 'long', label: 'Long (15-30 min)', icon: 'Hourglass', description: 'Extended strategic matches' },
+  { value: 'marathon', label: 'Marathon (30+ min)', icon: 'Calendar', description: 'Long-form competitive play' },
+  { value: 'variable', label: 'Variable', icon: 'Shuffle', description: 'Depends on game mode or player choice' },
 ]
 
 // ── Step 10: Core Mechanics ─────────────────────────────────────
@@ -218,6 +263,10 @@ export const CORE_MECHANICS_OPTIONS: GameOption[] = [
   { value: 'turn-based', label: 'Turn-Based', icon: 'RotateCcw', description: 'Sequential player turns' },
   { value: 'real-time-strategy', label: 'Real-Time Strategy', icon: 'Timer', description: 'Continuous strategic decisions' },
   { value: 'physics', label: 'Physics', icon: 'Circle', description: 'Physics-based interactions' },
+  { value: 'deck-building', label: 'Deck Building', icon: 'LayoutGrid', description: 'Construct and refine card decks' },
+  { value: 'hand-management', label: 'Hand Management', icon: 'Hand', description: 'Optimize card hand for best plays' },
+  { value: 'combo-chaining', label: 'Combo Chaining', icon: 'Link', description: 'Chain cards/abilities for bonus effects' },
+  { value: 'bluffing', label: 'Bluffing', icon: 'EyeOff', description: 'Hidden information and deception' },
 ]
 
 // ── Step 11: Secondary Mechanics ────────────────────────────────
@@ -237,6 +286,11 @@ export const SECONDARY_MECHANICS_OPTIONS: GameOption[] = [
   { value: 'weather-system', label: 'Weather', icon: 'Cloud', description: 'Dynamic weather affecting gameplay' },
   { value: 'day-night', label: 'Day/Night Cycle', icon: 'Sunrise', description: 'Time progression mechanic' },
   { value: 'reputation', label: 'Reputation', icon: 'Star', description: 'Faction standing and renown' },
+  { value: 'card-fusion', label: 'Card Fusion', icon: 'Merge', description: 'Combine cards to create new ones' },
+  { value: 'collection', label: 'Collection', icon: 'Library', description: 'Collect and catalog items/cards' },
+  { value: 'drafting', label: 'Drafting', icon: 'ListChecks', description: 'Pick from shared pool each round' },
+  { value: 'auctioning', label: 'Auctioning', icon: 'Gavel', description: 'Bid on cards or resources' },
+  { value: 'betting', label: 'Betting', icon: 'Dices', description: 'Wager in-game currency on outcomes' },
 ]
 
 // ── Step 12: Progression ────────────────────────────────────────
@@ -249,6 +303,9 @@ export const PROGRESSION_SYSTEM_OPTIONS: GameOption[] = [
   { value: 'story-progress', label: 'Story Progress', icon: 'BookOpen', description: 'Advance through narrative' },
   { value: 'achievement', label: 'Achievements', icon: 'Medal', description: 'Goal-based milestones' },
   { value: 'mastery', label: 'Mastery', icon: 'Star', description: 'Skill-based improvement' },
+  { value: 'collection-completion', label: 'Collection', icon: 'Library', description: 'Complete card/item sets for bonuses' },
+  { value: 'seasonal-rank', label: 'Seasonal Rank', icon: 'Calendar', description: 'Time-limited ranked seasons' },
+  { value: 'battle-pass', label: 'Battle Pass', icon: 'Ticket', description: 'Tiered reward track per season' },
 ]
 
 export const DIFFICULTY_OPTIONS: GameOption[] = [
@@ -258,6 +315,7 @@ export const DIFFICULTY_OPTIONS: GameOption[] = [
   { value: 'selectable', label: 'Selectable', icon: 'SlidersHorizontal', description: 'Player chooses difficulty' },
   { value: 'adaptive', label: 'Adaptive', icon: 'Bot', description: 'AI adjusts based on performance' },
   { value: 'scaling', label: 'Scaling', icon: 'TrendingUp', description: 'Difficulty increases over time' },
+  { value: 'mmr-based', label: 'MMR-Based', icon: 'BarChart3', description: 'Matchmaking rating determines opponents' },
 ]
 
 export const REWARD_TYPE_OPTIONS: GameOption[] = [
@@ -267,6 +325,8 @@ export const REWARD_TYPE_OPTIONS: GameOption[] = [
   { value: 'abilities', label: 'Abilities', icon: 'Zap', description: 'New skills or powers' },
   { value: 'story-content', label: 'Story Content', icon: 'BookOpen', description: 'Narrative unlocks' },
   { value: 'areas', label: 'New Areas', icon: 'Map', description: 'Access to new zones' },
+  { value: 'card-packs', label: 'Card Packs', icon: 'Package', description: 'Randomized card bundles' },
+  { value: 'wildcards', label: 'Wildcards', icon: 'Sparkles', description: 'Tokens to craft any card of a rarity' },
 ]
 
 // ── Step 13: Audio ──────────────────────────────────────────────
@@ -281,6 +341,7 @@ export const MUSIC_STYLE_OPTIONS: GameOption[] = [
   { value: 'folk', label: 'Folk/Acoustic', icon: 'Flower2', description: 'Traditional instruments' },
   { value: 'hip-hop', label: 'Hip-Hop', icon: 'Mic', description: 'Beats and urban vibes' },
   { value: 'adaptive', label: 'Adaptive/Dynamic', icon: 'Shuffle', description: 'Music changes with gameplay' },
+  { value: 'lo-fi', label: 'Lo-Fi', icon: 'Radio', description: 'Chill lo-fi beats, relaxed atmosphere' },
 ]
 
 export const SOUND_EFFECT_OPTIONS: GameOption[] = [
@@ -312,6 +373,8 @@ export const ENGINE_OPTIONS: GameOption[] = [
   { value: 'construct', label: 'Construct', icon: 'Blocks', description: 'No-code/visual scripting 2D engine' },
   { value: 'bevy', label: 'Bevy', icon: 'Settings', description: 'Rust-based ECS game engine' },
   { value: 'custom', label: 'Custom Engine', icon: 'Cog', description: 'Build your own from scratch' },
+  { value: 'react-canvas', label: 'React + Canvas', icon: 'Code', description: 'React with HTML Canvas for card/board games' },
+  { value: 'svelte-pixi', label: 'Svelte + PixiJS', icon: 'Zap', description: 'Svelte framework with PixiJS renderer' },
 ]
 
 export const TARGET_FPS_OPTIONS: GameOption[] = [
@@ -330,6 +393,10 @@ export const ADDITIONAL_TECH_OPTIONS: GameOption[] = [
   { value: 'mod-support', label: 'Mod Support', icon: 'Wrench', description: 'Community modding tools' },
   { value: 'cloud-save', label: 'Cloud Save', icon: 'Cloud', description: 'Cloud-synced progress' },
   { value: 'analytics', label: 'Analytics', icon: 'BarChart3', description: 'Telemetry and player analytics' },
+  { value: 'websockets', label: 'WebSockets', icon: 'Plug', description: 'Real-time bidirectional communication' },
+  { value: 'service-worker-offline', label: 'Service Worker', icon: 'HardDrive', description: 'Offline support via service workers' },
+  { value: 'webgl', label: 'WebGL', icon: 'Monitor', description: 'Hardware-accelerated 2D/3D rendering' },
+  { value: 'web-audio-api', label: 'Web Audio API', icon: 'Volume2', description: 'Advanced browser audio processing' },
 ]
 
 // ── Step 15: Monetization ───────────────────────────────────────
@@ -341,6 +408,7 @@ export const BUSINESS_MODEL_OPTIONS: GameOption[] = [
   { value: 'ad-supported', label: 'Ad-Supported', icon: 'Tv', description: 'Free with advertisements' },
   { value: 'donation', label: 'Donation-Based', icon: 'Heart', description: 'Pay what you want' },
   { value: 'open-source', label: 'Open Source', icon: 'Code', description: 'Free and open source' },
+  { value: 'battle-pass', label: 'Battle Pass', icon: 'Ticket', description: 'Seasonal paid reward tracks' },
 ]
 
 export const DISTRIBUTION_OPTIONS: GameOption[] = [
@@ -352,6 +420,7 @@ export const DISTRIBUTION_OPTIONS: GameOption[] = [
   { value: 'web', label: 'Web (Self-Hosted)', icon: 'Globe', description: 'Host on your own website' },
   { value: 'gog', label: 'GOG', icon: 'Shield', description: 'DRM-free distribution' },
   { value: 'console-store', label: 'Console Stores', icon: 'Joystick', description: 'PlayStation/Xbox/Nintendo stores' },
+  { value: 'pwa', label: 'PWA', icon: 'Smartphone', description: 'Installable Progressive Web App' },
 ]
 
 // ── Step 16: AI ─────────────────────────────────────────────────
@@ -362,6 +431,9 @@ export const IN_GAME_AI_OPTIONS: GameOption[] = [
   { value: 'adaptive-difficulty', label: 'Adaptive Difficulty', icon: 'TrendingUp', description: 'AI-tuned challenge level' },
   { value: 'enemy-ai', label: 'Advanced Enemy AI', icon: 'Skull', description: 'Smart enemy tactics' },
   { value: 'none', label: 'None', icon: 'X', description: 'No in-game AI features' },
+  { value: 'opponent-ai', label: 'Opponent AI', icon: 'Cpu', description: 'AI-controlled opponents for single-player' },
+  { value: 'deck-suggestion', label: 'Deck Suggestion', icon: 'Lightbulb', description: 'AI recommends optimal deck builds' },
+  { value: 'matchmaking', label: 'Matchmaking', icon: 'Users', description: 'Skill-based player matching' },
 ]
 
 export const DEV_AI_OPTIONS: GameOption[] = [
@@ -371,4 +443,79 @@ export const DEV_AI_OPTIONS: GameOption[] = [
   { value: 'balancing', label: 'Game Balancing', icon: 'Scale', description: 'AI-assisted balance tuning' },
   { value: 'localization', label: 'Localization', icon: 'Languages', description: 'AI translation of content' },
   { value: 'none', label: 'None', icon: 'X', description: 'No dev AI tools' },
+  { value: 'card-balance-simulation', label: 'Card Balance Sim', icon: 'TestTube', description: 'Simulate thousands of matches for balancing' },
+  { value: 'meta-analysis', label: 'Meta Analysis', icon: 'BarChart3', description: 'Analyze player deck/strategy trends' },
+]
+
+// ── Step 17: Card System ────────────────────────────────────────
+export const CARD_RARITY_OPTIONS: GameOption[] = [
+  { value: 'common', label: 'Common', icon: 'Circle', description: 'Base cards, widely available' },
+  { value: 'uncommon', label: 'Uncommon', icon: 'Square', description: 'Slightly harder to find' },
+  { value: 'rare', label: 'Rare', icon: 'Diamond', description: 'Notable power or uniqueness' },
+  { value: 'epic', label: 'Epic', icon: 'Gem', description: 'Powerful and sought after' },
+  { value: 'legendary', label: 'Legendary', icon: 'Crown', description: 'Most powerful and rarest' },
+  { value: 'mythic', label: 'Mythic', icon: 'Sparkles', description: 'Ultra-rare special edition' },
+]
+
+export const CARD_TYPE_OPTIONS: GameOption[] = [
+  { value: 'creature', label: 'Creature', icon: 'Bug', description: 'Summon units to the battlefield' },
+  { value: 'spell', label: 'Spell', icon: 'Wand2', description: 'One-time effect when played' },
+  { value: 'trap', label: 'Trap', icon: 'AlertTriangle', description: 'Hidden card triggered by conditions' },
+  { value: 'equipment', label: 'Equipment', icon: 'Sword', description: 'Attach to creatures for bonuses' },
+  { value: 'enchantment', label: 'Enchantment', icon: 'Sparkles', description: 'Persistent effect on the field' },
+  { value: 'land', label: 'Land/Resource', icon: 'Mountain', description: 'Generates resources each turn' },
+  { value: 'hero', label: 'Hero/Leader', icon: 'Crown', description: 'Unique powerful character card' },
+  { value: 'action', label: 'Action', icon: 'Zap', description: 'Instant response card' },
+  { value: 'artifact', label: 'Artifact', icon: 'Gem', description: 'Powerful persistent object' },
+  { value: 'token', label: 'Token', icon: 'Copy', description: 'Generated during gameplay' },
+]
+
+// ── Step 20: Tutorial Style ─────────────────────────────────────
+export const TUTORIAL_STYLE_OPTIONS: GameOption[] = [
+  { value: 'interactive', label: 'Interactive', icon: 'Gamepad2', description: 'Learn by playing guided scenarios' },
+  { value: 'tooltip', label: 'Tooltips', icon: 'MessageSquare', description: 'Contextual hints on first encounter' },
+  { value: 'video', label: 'Video', icon: 'Film', description: 'Pre-recorded tutorial videos' },
+  { value: 'manual', label: 'Manual/Wiki', icon: 'BookOpen', description: 'Reference documentation' },
+  { value: 'ai-coach', label: 'AI Coach', icon: 'Bot', description: 'AI assistant that guides the player' },
+  { value: 'none', label: 'None', icon: 'X', description: 'No tutorial — learn by doing' },
+]
+
+// ── Step 21: Social & Retention ─────────────────────────────────
+export const SOCIAL_FEATURE_OPTIONS: GameOption[] = [
+  { value: 'friends-list', label: 'Friends List', icon: 'Users', description: 'Add and manage friends' },
+  { value: 'chat', label: 'Chat', icon: 'MessageSquare', description: 'In-game text chat' },
+  { value: 'guilds', label: 'Guilds/Clans', icon: 'Shield', description: 'Player groups and organizations' },
+  { value: 'leaderboards', label: 'Leaderboards', icon: 'Trophy', description: 'Ranked player standings' },
+  { value: 'spectating', label: 'Spectating', icon: 'Eye', description: 'Watch other players live' },
+  { value: 'gifting', label: 'Gifting', icon: 'Gift', description: 'Send items/cards to friends' },
+  { value: 'emotes', label: 'Emotes', icon: 'Smile', description: 'In-game emote expressions' },
+  { value: 'tournaments', label: 'Tournaments', icon: 'Medal', description: 'Organized competitive events' },
+  { value: 'replay-sharing', label: 'Replay Sharing', icon: 'Share', description: 'Share match replays' },
+  { value: 'social-media', label: 'Social Sharing', icon: 'Share2', description: 'Share to external platforms' },
+  { value: 'profile-cards', label: 'Profile Cards', icon: 'User', description: 'Customizable player profiles' },
+]
+
+export const RETENTION_MECHANIC_OPTIONS: GameOption[] = [
+  { value: 'daily-rewards', label: 'Daily Rewards', icon: 'Calendar', description: 'Login bonuses each day' },
+  { value: 'daily-quests', label: 'Daily Quests', icon: 'Target', description: 'Refreshing daily objectives' },
+  { value: 'weekly-events', label: 'Weekly Events', icon: 'CalendarDays', description: 'Special weekly content' },
+  { value: 'seasonal-content', label: 'Seasonal Content', icon: 'Snowflake', description: 'Time-limited themed content' },
+  { value: 'streak-bonuses', label: 'Streak Bonuses', icon: 'Flame', description: 'Rewards for consecutive days' },
+  { value: 'collection-goals', label: 'Collection Goals', icon: 'Library', description: 'Long-term collection milestones' },
+  { value: 'achievement-system', label: 'Achievements', icon: 'Medal', description: 'Progressive achievement unlocks' },
+  { value: 'limited-time', label: 'Limited-Time Offers', icon: 'Clock', description: 'FOMO-driven special deals' },
+  { value: 'social-obligations', label: 'Social Obligations', icon: 'Handshake', description: 'Cooperative goals with friends' },
+]
+
+// ── Step 22: Accessibility ──────────────────────────────────────
+export const ACCESSIBILITY_FEATURE_OPTIONS: GameOption[] = [
+  { value: 'colorblind', label: 'Colorblind Mode', icon: 'Eye', description: 'Alternative color schemes' },
+  { value: 'screen-reader', label: 'Screen Reader', icon: 'AudioLines', description: 'Support for assistive technology' },
+  { value: 'remappable-controls', label: 'Remappable Controls', icon: 'Settings', description: 'Customizable key/button bindings' },
+  { value: 'subtitle-options', label: 'Subtitle Options', icon: 'Subtitles', description: 'Configurable subtitle size/style' },
+  { value: 'high-contrast', label: 'High Contrast', icon: 'Contrast', description: 'Enhanced visual contrast mode' },
+  { value: 'reduced-motion', label: 'Reduced Motion', icon: 'Minus', description: 'Minimize animations and effects' },
+  { value: 'one-handed', label: 'One-Handed Mode', icon: 'Hand', description: 'Playable with one hand' },
+  { value: 'text-scaling', label: 'Text Scaling', icon: 'Type', description: 'Adjustable text size' },
+  { value: 'audio-cues', label: 'Audio Cues', icon: 'Bell', description: 'Sound-based gameplay information' },
 ]

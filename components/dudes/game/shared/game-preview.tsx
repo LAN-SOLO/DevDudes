@@ -11,6 +11,7 @@ import {
   CORE_MECHANICS_OPTIONS,
   ENGINE_OPTIONS,
   BUSINESS_MODEL_OPTIONS,
+  isCardGame,
 } from '@/lib/game-pipeline/constants'
 
 function findLabel(options: { value: string; label: string }[], value: string) {
@@ -63,6 +64,24 @@ export function GamePreview() {
     sections.push({
       label: 'Business',
       items: [findLabel(BUSINESS_MODEL_OPTIONS, config.businessModel)],
+    })
+  }
+  if (isCardGame(config.genres)) {
+    sections.push({
+      label: 'Card System',
+      items: [`${config.cardSystem.totalCards} cards`, `${config.cardSystem.rarityDistribution.length} rarities`],
+    })
+  }
+  if (config.socialFeatures.length > 0) {
+    sections.push({
+      label: 'Social',
+      items: [`${config.socialFeatures.length} features`],
+    })
+  }
+  if (config.accessibilityFeatures.length > 0) {
+    sections.push({
+      label: 'Accessibility',
+      items: [`${config.accessibilityFeatures.length} features`],
     })
   }
 

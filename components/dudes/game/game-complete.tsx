@@ -18,6 +18,7 @@ import {
   CORE_MECHANICS_OPTIONS,
   ENGINE_OPTIONS,
   BUSINESS_MODEL_OPTIONS,
+  isCardGame,
 } from '@/lib/game-pipeline/constants'
 
 function findLabel(options: { value: string; label: string }[], value: string) {
@@ -63,6 +64,8 @@ export function GameComplete() {
     setCurrentStep(1)
   }
 
+  const hasCardGame = isCardGame(config.genres)
+
   return (
     <Card>
       <CardHeader className="text-center">
@@ -88,6 +91,9 @@ export function GameComplete() {
           {config.elevatorPitch && (
             <p className="text-sm italic">&ldquo;{config.elevatorPitch}&rdquo;</p>
           )}
+          {config.tagline && (
+            <p className="text-xs text-muted-foreground">{config.tagline}</p>
+          )}
 
           <SummaryRow label={t('game.complete.themes')} values={config.themes.map((v) => findLabel(THEME_OPTIONS, v))} />
           <SummaryRow label={t('game.complete.genres')} values={config.genres.map((v) => findLabel(GENRE_OPTIONS, v))} />
@@ -112,6 +118,37 @@ export function GameComplete() {
           </div>
 
           <SummaryRow label={t('game.complete.coreMechanics')} values={config.coreMechanics.map((v) => findLabel(CORE_MECHANICS_OPTIONS, v))} />
+
+          {/* V2 summary additions */}
+          {hasCardGame && (
+            <div className="border-t pt-3">
+              <p className="text-xs text-muted-foreground mb-1">{t('game.complete.cardSystem')}</p>
+              <p className="text-sm">
+                {config.cardSystem.totalCards} cards, {config.cardSystem.cardTypes.length} types, {config.cardSystem.rarityDistribution.length} rarities
+              </p>
+            </div>
+          )}
+
+          {config.socialFeatures.length > 0 && (
+            <div className="border-t pt-3">
+              <p className="text-xs text-muted-foreground mb-1">{t('game.complete.socialFeatures')}</p>
+              <p className="text-sm">{config.socialFeatures.length} features configured</p>
+            </div>
+          )}
+
+          {config.accessibilityFeatures.length > 0 && (
+            <div className="border-t pt-3">
+              <p className="text-xs text-muted-foreground mb-1">{t('game.complete.accessibilityFeatures')}</p>
+              <p className="text-sm">{config.accessibilityFeatures.length} features enabled</p>
+            </div>
+          )}
+
+          {config.contentPlan.mvpTimeline && (
+            <div className="border-t pt-3">
+              <p className="text-xs text-muted-foreground mb-1">{t('game.complete.contentPlan')}</p>
+              <p className="text-sm">MVP: {config.contentPlan.mvpTimeline}</p>
+            </div>
+          )}
         </div>
 
         <div className="flex flex-col sm:flex-row gap-3">

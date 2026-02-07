@@ -128,6 +128,7 @@ The pipeline is a multi-step wizard system for building applications. Located at
 |------|-------|-------------|
 | Preset | `/pipeline/preset` | 8-step business app configuration |
 | Workflow | `/pipeline/workflow` | 6-step workflow builder with rich content |
+| **Game** | `/pipeline/game-preset` | **16-step game configuration wizard** |
 | Combo | `/pipeline/combo` | AI concept generation |
 | Prepair | `/pipeline/prepair` | Environment setup |
 | Dev | `/pipeline/dev` | Interactive development |
@@ -184,6 +185,106 @@ interface WorkflowConfig {
 
 **Dependencies:**
 - `@dnd-kit/core` and `@dnd-kit/sortable` for drag-and-drop
+
+### Game Pipeline
+
+The Game Dude (`/dashboard/pipeline/game-preset`) is a 16-step wizard for configuring game projects. It generates two professional documents: an Init Prompt and a Development Concept.
+
+**Flow:** Game Preset (16 steps) → Game Analyze → Game Combo (documents) → Game Summary
+
+**16-Step Wizard:**
+
+| # | Step | Fields | Options |
+|---|------|--------|---------|
+| 1 | Import | `importedProjectId`, `importMode` | full, config-only, assets-only |
+| 2 | Theme | `themes` (max 3), `customTheme`, `elevatorPitch` | 15 themes |
+| 3 | Narrative | `narrativeFocus`, `storyStructure`, `victoryCondition` | 5 + 5 + 7 |
+| 4 | Genre | `genres` (multi) | 20 genres |
+| 5 | Platform | `platforms` (multi), `primaryPlatform` | 10 platforms |
+| 6 | Visual | `dimension`, `artStyle` | 3 + 10 |
+| 7 | Camera | `cameraStyle` | 4 (2D) / 3 (2.5D) / 6 (3D) |
+| 8 | World | `worldStructure`, `levelGeneration`, `worldScope` | 6 + 4 + 4 |
+| 9 | Player | `playerMode`, `multiplayer` (maxPlayers, networkModel, syncType) | 5 + 3 + 3 |
+| 10 | Core Mechanics | `coreMechanics` (max 3) | 16 mechanics |
+| 11 | Secondary | `secondaryMechanics` (multi) | 15 mechanics |
+| 12 | Progression | `progressionSystems`, `difficulty`, `rewardTypes` | 8 + 6 + 6 |
+| 13 | Audio | `musicStyle`, `soundEffects`, `voiceActing` | 10 + 5 + 5 |
+| 14 | Engine | `engine`, `targetFps`, `additionalTech` | 11 + 4 + 8 |
+| 15 | Monetization | `businessModel`, `distribution` | 7 + 8 |
+| 16 | AI & Notes | `aiFreetext` (7 sub-fields: inGameAi, devAi, detailedDescription, gameplayLoop, referenceGames, constraints, additionalNotes) | 6 + 6 |
+
+**Nav Categories:** Setup (1-3), Design (4-7), World (8-10), Systems (11-13), Tech (14-16)
+
+**Total: ~234 configurable options across 32 constant arrays**
+
+**Data Model:**
+```typescript
+interface GamePresetConfig {
+  importedProjectId: string | null
+  importMode: 'full' | 'config-only' | 'assets-only' | ''
+  themes: string[]
+  customTheme: string
+  elevatorPitch: string
+  narrativeFocus: string
+  storyStructure: string
+  victoryCondition: string
+  genres: string[]
+  platforms: string[]
+  primaryPlatform: string
+  dimension: string
+  artStyle: string
+  cameraStyle: string
+  worldStructure: string
+  levelGeneration: string
+  worldScope: string
+  playerMode: string
+  multiplayer: { maxPlayers: number; networkModel: string; syncType: string }
+  coreMechanics: string[]
+  secondaryMechanics: string[]
+  progressionSystems: string[]
+  difficulty: string
+  rewardTypes: string[]
+  musicStyle: string
+  soundEffects: string[]
+  voiceActing: string
+  engine: string
+  targetFps: string
+  additionalTech: string[]
+  businessModel: string
+  distribution: string[]
+  aiFreetext: AiFreetext
+}
+
+interface GeneratedGameDocs {
+  initPrompt: string          // 7-section filled-in init prompt document
+  developmentConcept: string  // 11-section filled-in dev concept document
+}
+```
+
+**Key Files:**
+- `lib/validations/game.ts` - Zod schema (`gamePresetConfigSchema`) + `defaultGamePresetConfig`
+- `lib/game-pipeline/types.ts` - TypeScript interfaces
+- `lib/game-pipeline/constants.ts` - All 32 option arrays (234 options)
+- `lib/game-pipeline/recommendations.ts` - AI recommendation engine (5 functions)
+- `lib/game-pipeline/analysis.ts` - Complexity scoring, compatibility checks, scope estimation
+- `lib/game-pipeline/prompts.ts` - `buildInitPromptDoc()` + `buildDevelopmentConceptDoc()` + engine data for 11 engines
+- `components/dudes/game/game-context.tsx` - State management (useGameWizard hook)
+- `components/dudes/game/game-wizard.tsx` - Main wizard with keyboard nav + slide transitions
+- `components/dudes/game/game-nav.tsx` - Grouped navigation (5 categories)
+- `components/dudes/game/game-complete.tsx` - Completion screen with save/export
+- `components/dudes/game/shared/` - OptionCard, OptionGrid, GamePreview
+- `components/dudes/game/steps/step-*.tsx` - 16 step components
+- `app/actions/game-pipeline.ts` - `saveGamePresetConfig()` server action
+- `app/api/game-pipeline/` - 3 API routes (projects, analyze, generate)
+
+**Engines supported (with full project structures, error patterns, anti-patterns):**
+Unity, Unreal Engine, Godot, Phaser 3, Three.js, PixiJS, GameMaker, RPG Maker, Construct, Bevy, Custom
+
+**Generated Documents:**
+1. **Init Prompt** (`buildInitPromptDoc`) - 7 sections: Context, Tech Spec, Instructions (MVP/MAX build order), Constraints (DO NOT), Error Handling, References, Agent Prompts
+2. **Development Concept** (`buildDevelopmentConceptDoc`) - 11 sections: Project Overview, Architecture, Data Model, API Design, Tech Stack, Implementation Guidelines, Security, Testing, Deployment, Component Library, DO NOT List
+
+**Database:** Uses `app_type: 'game'` + `preset_config: { type: 'game', ...config }` in projects table
 
 ### Adding a New Pipeline Variant
 

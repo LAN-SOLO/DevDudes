@@ -23,6 +23,7 @@ import {
   SOUND_EFFECT_OPTIONS,
   VOICE_ACTING_OPTIONS,
   TARGET_FPS_OPTIONS,
+  isCardGame,
 } from './constants'
 
 function findLabel(options: { value: string; label: string }[], value: string): string {
@@ -106,6 +107,44 @@ function buildConfigSummary(config: GamePresetConfig): string {
     }
     if (config.aiFreetext.additionalNotes) {
       sections.push(`- **Notes:** ${config.aiFreetext.additionalNotes}`)
+    }
+  }
+
+  // V2 sections
+  if (config.tagline) {
+    sections.push(`\n## Tagline\n- ${config.tagline}`)
+  }
+
+  if (isCardGame(config.genres)) {
+    const cs = config.cardSystem
+    sections.push(`\n## Card System`)
+    sections.push(`- **Total Cards:** ${cs.totalCards}`)
+    sections.push(`- **Card Types:** ${cs.cardTypes.join(', ') || 'Not defined'}`)
+    sections.push(`- **Rarity Tiers:** ${cs.rarityDistribution.map(r => r.rarity).join(', ')}`)
+    sections.push(`- **Deck Size:** ${cs.deckSize.min}–${cs.deckSize.max}`)
+    sections.push(`- **Starting Hand:** ${cs.startingHandSize}`)
+    if (cs.resourceSystem.name) sections.push(`- **Resource:** ${cs.resourceSystem.name}`)
+  }
+
+  if (config.socialFeatures.length > 0) {
+    sections.push(`\n## Social Features`)
+    sections.push(`- **Features:** ${config.socialFeatures.join(', ')}`)
+    sections.push(`- **Retention Mechanics:** ${config.retentionMechanics.join(', ') || 'None'}`)
+  }
+
+  if (config.accessibilityFeatures.length > 0) {
+    sections.push(`\n## Accessibility`)
+    sections.push(`- **Features:** ${config.accessibilityFeatures.join(', ')}`)
+    if (config.localization.launchLanguages.length > 0) {
+      sections.push(`- **Launch Languages:** ${config.localization.launchLanguages.join(', ')}`)
+    }
+  }
+
+  if (config.contentPlan.mvpTimeline) {
+    sections.push(`\n## Content Plan`)
+    sections.push(`- **MVP:** ${config.contentPlan.mvpTimeline} — ${config.contentPlan.mvpFeatures.join(', ') || 'TBD'}`)
+    if (config.contentPlan.fullLaunchTimeline) {
+      sections.push(`- **Full Launch:** ${config.contentPlan.fullLaunchTimeline} — ${config.contentPlan.fullLaunchFeatures.join(', ') || 'TBD'}`)
     }
   }
 
@@ -489,6 +528,91 @@ function getEngineInfo(engine: string): EngineInfo {
 ❌ DO NOT use dynamic dispatch when static dispatch works
 ❌ DO NOT ignore Bevy's change detection — avoid unnecessary writes`,
     },
+    'react-canvas': {
+      language: 'TypeScript / JSX',
+      runtime: 'Browser (Canvas API / WebGL)',
+      buildTool: 'Vite / Next.js',
+      ide: 'VS Code / WebStorm',
+      packageManager: 'npm / pnpm',
+      projectStructure: `[project-name]/
+├── src/
+│   ├── components/
+│   │   ├── Canvas.tsx          # Main canvas component
+│   │   ├── GameBoard.tsx       # Game board rendering
+│   │   └── Card.tsx            # Card rendering component
+│   ├── engine/
+│   │   ├── GameLoop.ts         # requestAnimationFrame loop
+│   │   ├── Renderer.ts         # Canvas 2D / WebGL renderer
+│   │   └── InputManager.ts     # Mouse/touch/keyboard input
+│   ├── game/
+│   │   ├── GameState.ts        # State management
+│   │   ├── CardSystem.ts       # Card logic and rules
+│   │   └── Animations.ts       # Tween and transition system
+│   ├── hooks/
+│   │   ├── useGameLoop.ts      # Custom game loop hook
+│   │   └── useCanvas.ts        # Canvas ref management
+│   └── main.tsx                # Entry point
+├── public/
+│   └── assets/                 # Images, audio, fonts
+├── vite.config.ts
+├── tsconfig.json
+└── package.json`,
+      docsUrl: 'https://react.dev/',
+      errorPatterns: `- Canvas context null → Ensure ref is mounted before getContext()
+- React re-render jank → Separate game loop from React render cycle
+- Memory leaks → Clean up animation frames in useEffect cleanup`,
+      antiPatterns: `❌ DO NOT render game graphics with React DOM — use Canvas/WebGL
+❌ DO NOT trigger React state updates on every game frame
+❌ DO NOT use React state for high-frequency game data (positions, animations)
+❌ DO NOT forget to cancel requestAnimationFrame on unmount
+❌ DO NOT mix Canvas 2D and WebGL contexts on the same canvas
+❌ DO NOT import heavy game assets synchronously — use lazy loading`,
+    },
+    'svelte-pixi': {
+      language: 'TypeScript / Svelte',
+      runtime: 'Browser (WebGL via PixiJS)',
+      buildTool: 'Vite / SvelteKit',
+      ide: 'VS Code / WebStorm',
+      packageManager: 'npm / pnpm',
+      projectStructure: `[project-name]/
+├── src/
+│   ├── lib/
+│   │   ├── engine/
+│   │   │   ├── Game.ts          # PixiJS Application wrapper
+│   │   │   ├── SceneManager.ts  # Scene transitions
+│   │   │   └── InputManager.ts  # Input handling
+│   │   ├── game/
+│   │   │   ├── CardSprite.ts    # Card visual + interaction
+│   │   │   ├── BoardLayout.ts   # Board positioning
+│   │   │   └── AnimationPool.ts # Sprite animation manager
+│   │   └── stores/
+│   │       ├── gameState.ts     # Svelte stores for game state
+│   │       └── settings.ts      # User settings store
+│   ├── routes/
+│   │   ├── +page.svelte         # Game page
+│   │   └── +layout.svelte       # App layout
+│   ├── components/
+│   │   ├── GameCanvas.svelte    # PixiJS canvas wrapper
+│   │   ├── HUD.svelte           # HTML overlay UI
+│   │   └── Menu.svelte          # Menu screens
+│   └── app.html                 # HTML template
+├── static/
+│   └── assets/                  # Images, audio, fonts
+├── svelte.config.js
+├── vite.config.ts
+├── tsconfig.json
+└── package.json`,
+      docsUrl: 'https://pixijs.com/guides',
+      errorPatterns: `- WebGL context lost → Handle pixi app.renderer "context-lost" event
+- Texture not loading → Check asset paths relative to static/ directory
+- Memory leaks → Destroy PIXI.Sprite and textures when no longer needed`,
+      antiPatterns: `❌ DO NOT create new PIXI.Application instances per component mount
+❌ DO NOT use Svelte reactive statements for per-frame game updates
+❌ DO NOT forget to call .destroy() on PIXI containers when removing
+❌ DO NOT load textures synchronously — use PIXI.Assets.load()
+❌ DO NOT mix DOM rendering and PixiJS for game visuals — use PixiJS for all game graphics
+❌ DO NOT ignore texture atlas packing — individual sprite files hurt performance`,
+    },
     custom: {
       language: 'Language of choice',
       runtime: 'Custom runtime',
@@ -581,7 +705,63 @@ export function buildInitPromptDoc(config: GamePresetConfig): string {
     : `${themes.split(',')[0].trim()} ${genres.split(',')[0].trim()} Game`
 
   const isMultiplayer = config.playerMode !== 'single-player'
-  const isWebEngine = ['phaser3', 'threejs', 'pixijs'].includes(config.engine)
+  const isWebEngine = ['phaser3', 'threejs', 'pixijs', 'react-canvas', 'svelte-pixi'].includes(config.engine)
+  const hasCards = isCardGame(config.genres)
+
+  // Pre-compute V2 card system section
+  const cardSystemSection = hasCards ? `
+
+---
+
+## Section 6.5: Card System Architecture
+
+### Card Data Model
+
+\`\`\`
+Card {
+  id: string
+  name: string
+  type: "${config.cardSystem.cardTypes.join('" | "') || 'unit | spell | trap'}"
+  cost: number       // Range: ${config.cardSystem.costRange.min}–${config.cardSystem.costRange.max}
+  power: number      // Range: ${config.cardSystem.powerRange.min}–${config.cardSystem.powerRange.max}
+  rarity: "${config.cardSystem.rarityDistribution.map(r => r.rarity).join('" | "')}"
+  keywords: string[] // ${config.cardSystem.keywords.join(', ') || 'TBD'}
+  ${config.cardSystem.elements.length > 0 ? `element: "${config.cardSystem.elements.map(e => e.name).join('" | "')}"` : '// No elements defined'}
+  description: string
+  artAsset: string
+}
+\`\`\`
+
+### Deck Rules
+
+- **Deck Size:** ${config.cardSystem.deckSize.min}–${config.cardSystem.deckSize.max} cards
+- **Max Copies Per Card:** ${config.cardSystem.maxCopiesPerCard}
+- **Starting Hand:** ${config.cardSystem.startingHandSize} cards
+- **Draw Per Turn:** ${config.cardSystem.drawPerTurn}
+- **Mulligan:** ${config.cardSystem.mulliganAllowed ? 'Yes' : 'No'}
+
+### Rarity Distribution (${config.cardSystem.totalCards} total cards)
+
+| Rarity | % of Pool | Drop Rate | Craft Cost |
+|--------|-----------|-----------|------------|
+${config.cardSystem.rarityDistribution.map(r => `| ${r.rarity} | ${r.percentage}% | ${r.dropRate} | ${r.craftCost} |`).join('\n')}
+
+### Resource System
+
+- **Resource:** ${config.cardSystem.resourceSystem.name || 'Mana'}
+- **Starting Amount:** ${config.cardSystem.resourceSystem.startingAmount}
+- **Gain Per Turn:** ${config.cardSystem.resourceSystem.gainPerTurn}
+- **Max Cap:** ${config.cardSystem.resourceSystem.maxCap}${config.cardSystem.resourceSystem.specialMechanic ? `\n- **Special:** ${config.cardSystem.resourceSystem.specialMechanic}` : ''}` : ''
+
+  // Pre-compute V2 social/accessibility section
+  const socialAccessibilitySection = (config.socialFeatures.length > 0 || config.accessibilityFeatures.length > 0) ? `
+
+### Additional Systems (V2)
+
+${config.socialFeatures.length > 0 ? `**Social Features:** ${config.socialFeatures.join(', ')}
+**Retention Mechanics:** ${config.retentionMechanics.join(', ') || 'None configured'}` : ''}
+${config.accessibilityFeatures.length > 0 ? `**Accessibility:** ${config.accessibilityFeatures.join(', ')}` : ''}
+${config.contentPlan.mvpTimeline ? `**Content Plan:** MVP in ${config.contentPlan.mvpTimeline}${config.contentPlan.fullLaunchTimeline ? `, Full Launch in ${config.contentPlan.fullLaunchTimeline}` : ''}` : ''}` : ''
 
   return `# Initialization Prompt for ${projectName}
 
@@ -809,6 +989,8 @@ ${engine.errorPatterns}
 | ${dimension} ${artStyle} Reference | Search for "${genres.toLowerCase()} ${artStyle.toLowerCase()} ${dimension} games" |${config.aiFreetext.referenceGames ? `
 | Reference Games | ${config.aiFreetext.referenceGames} |` : ''}
 
+${cardSystemSection}${socialAccessibilitySection}
+
 ---
 
 ## Section 7: Agent-Specific Prompts (MAX Scope)
@@ -918,8 +1100,9 @@ export function buildDevelopmentConceptDoc(config: GamePresetConfig): string {
   const date = new Date().toISOString().split('T')[0]
 
   const isMultiplayer = config.playerMode !== 'single-player'
-  const isWebEngine = ['phaser3', 'threejs', 'pixijs'].includes(config.engine)
+  const isWebEngine = ['phaser3', 'threejs', 'pixijs', 'react-canvas', 'svelte-pixi'].includes(config.engine)
   const isOnline = ['online-multiplayer', 'mmo'].includes(config.playerMode)
+  const hasCards = isCardGame(config.genres)
 
   const projectName = config.elevatorPitch
     ? config.elevatorPitch.split(/[.!?]/)[0].trim().slice(0, 60)
@@ -1378,7 +1561,31 @@ ${config.secondaryMechanics.map((m) => `| ${findLabel(SECONDARY_MECHANICS_OPTION
 | ${voiceActing !== 'None' ? `Voice System | ${voiceActing} voice acting playback` : 'Localization | Multi-language support'} |${isMultiplayer ? `
 | Networking | ${config.multiplayer.networkModel} with ${config.multiplayer.syncType || 'state-sync'} |
 | Matchmaking | Player lobby and match pairing |` : ''}
-${config.additionalTech.map((t) => `| ${t} | Additional technology integration |`).join('\n')}
+${config.additionalTech.map((t) => `| ${t} | Additional technology integration |`).join('\n')}${hasCards ? `
+
+### 10.3 Card System (Card Game)
+
+| Component | Description |
+|-----------|-------------|
+| Card Data Model | ${config.cardSystem.totalCards} cards, ${config.cardSystem.cardTypes.length} types, ${config.cardSystem.rarityDistribution.length} rarities |
+| Deck Builder | Min ${config.cardSystem.deckSize.min} / Max ${config.cardSystem.deckSize.max} cards, ${config.cardSystem.maxCopiesPerCard} copies limit |
+| Hand Manager | Start: ${config.cardSystem.startingHandSize}, Draw: ${config.cardSystem.drawPerTurn}/turn${config.cardSystem.mulliganAllowed ? ', Mulligan allowed' : ''} |
+| Resource System | ${config.cardSystem.resourceSystem.name || 'Mana'}: start ${config.cardSystem.resourceSystem.startingAmount}, +${config.cardSystem.resourceSystem.gainPerTurn}/turn, cap ${config.cardSystem.resourceSystem.maxCap} |
+${config.cardSystem.elements.length > 0 ? `| Element System | ${config.cardSystem.elements.map(e => e.name).join(', ')} |` : ''}` : ''}${config.socialFeatures.length > 0 ? `
+
+### 10.${hasCards ? '4' : '3'} Social & Retention
+
+| Feature | Type |
+|---------|------|
+${config.socialFeatures.map(f => `| ${f} | Social |`).join('\n')}
+${config.retentionMechanics.map(r => `| ${r} | Retention |`).join('\n')}` : ''}${config.accessibilityFeatures.length > 0 ? `
+
+### 10.${hasCards ? (config.socialFeatures.length > 0 ? '5' : '4') : (config.socialFeatures.length > 0 ? '4' : '3')} Accessibility
+
+| Feature | Priority |
+|---------|----------|
+${config.accessibilityFeatures.map(f => `| ${f} | P1 |`).join('\n')}${config.localization.launchLanguages.length > 0 ? `
+| Localization | ${config.localization.launchLanguages.join(', ')} | P2 |` : ''}` : ''}
 
 ---
 

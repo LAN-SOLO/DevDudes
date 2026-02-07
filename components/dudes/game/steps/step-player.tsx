@@ -6,12 +6,14 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Select } from '@/components/ui/select'
+import { Switch } from '@/components/ui/switch'
 import { ArrowLeft, ArrowRight } from 'lucide-react'
 import { OptionGrid } from '../shared/option-grid'
 import {
   PLAYER_MODE_OPTIONS,
   NETWORK_MODEL_OPTIONS,
   SYNC_TYPE_OPTIONS,
+  MATCH_DURATION_OPTIONS,
 } from '@/lib/game-pipeline/constants'
 
 export function StepPlayer() {
@@ -87,6 +89,48 @@ export function StepPlayer() {
                   options={syncOptions}
                   placeholder={t('game.player.selectSync')}
                 />
+              </div>
+            </div>
+          </div>
+        )}
+
+        {(config.playerMode === 'online-multiplayer' || config.playerMode === 'async-multiplayer' || config.victoryCondition === 'competitive') && (
+          <div className="space-y-4 rounded-lg border bg-muted/30 p-4">
+            <h3 className="text-sm font-medium">{t('game.player.matchStructureTitle')}</h3>
+            <div className="grid gap-4 sm:grid-cols-2">
+              <div className="space-y-2">
+                <label className="text-xs font-medium">{t('game.player.matchDuration')}</label>
+                <Select
+                  value={config.matchStructure.matchDuration}
+                  onValueChange={(v) => updateConfig({ matchStructure: { ...config.matchStructure, matchDuration: v } })}
+                  options={MATCH_DURATION_OPTIONS.map(o => ({ value: o.value, label: o.label }))}
+                  placeholder={t('game.player.selectDuration')}
+                />
+              </div>
+              <div className="space-y-2">
+                <label className="text-xs font-medium">{t('game.player.turnStructure')}</label>
+                <Input
+                  value={config.matchStructure.turnStructure}
+                  onChange={(e) => updateConfig({ matchStructure: { ...config.matchStructure, turnStructure: e.target.value } })}
+                  placeholder="e.g. Simultaneous, Sequential..."
+                />
+              </div>
+              <div className="space-y-2">
+                <label className="text-xs font-medium">{t('game.player.timePerTurn')}</label>
+                <Input
+                  type="number"
+                  min={0}
+                  max={600}
+                  value={config.matchStructure.timePerTurn}
+                  onChange={(e) => updateConfig({ matchStructure: { ...config.matchStructure, timePerTurn: parseInt(e.target.value) || 60 } })}
+                />
+              </div>
+              <div className="flex items-center gap-2">
+                <Switch
+                  checked={config.matchStructure.ropeTimer}
+                  onCheckedChange={(v) => updateConfig({ matchStructure: { ...config.matchStructure, ropeTimer: v } })}
+                />
+                <label className="text-xs font-medium">{t('game.player.ropeTimer')}</label>
               </div>
             </div>
           </div>

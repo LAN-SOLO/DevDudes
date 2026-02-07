@@ -1,4 +1,5 @@
 import type { GamePresetConfig, GameAnalysisReport, AnalysisWarning } from './types'
+import { isCardGame } from './constants'
 
 /**
  * Rule-based game analysis that evaluates the configuration
@@ -32,12 +33,23 @@ export function analyzeGameConfig(config: GamePresetConfig): GameAnalysisReport 
   if (config.genres.includes('simulation')) complexityPoints += 1
   if (config.genres.length > 3) complexityPoints += 1
 
+  // Card game complexity
+  if (isCardGame(config.genres)) {
+    complexityPoints += 2
+    const cs = config.cardSystem
+    if (cs.totalCards > 200) complexityPoints += 1
+    if (cs.rarityDistribution.length > 4) complexityPoints += 1
+    if (cs.keywords.length > 10) complexityPoints += 1
+  }
+
   // Multiplayer
   if (config.playerMode === 'online-multiplayer' || config.playerMode === 'mmo') {
     complexityPoints += 3
     if (config.playerMode === 'mmo') complexityPoints += 2
   } else if (config.playerMode === 'local-multiplayer' || config.playerMode === 'co-op') {
     complexityPoints += 1
+  } else if (config.playerMode === 'async-multiplayer') {
+    complexityPoints += 2
   }
 
   // World scope
@@ -56,8 +68,16 @@ export function analyzeGameConfig(config: GamePresetConfig): GameAnalysisReport 
   // Voice acting
   if (config.voiceActing === 'full') complexityPoints += 1
 
+  // Social features add minor complexity
+  complexityPoints += Math.min(Math.floor(config.socialFeatures.length / 3), 2)
+
+  // Content plan affects scope
+  if (config.contentPlan.mvpTimeline || config.contentPlan.fullLaunchTimeline) {
+    complexityPoints += 1
+  }
+
   // Cap at 10
-  const complexityScore = Math.min(Math.max(Math.round(complexityPoints * 10 / 25), 1), 10)
+  const complexityScore = Math.min(Math.max(Math.round(complexityPoints * 10 / 30), 1), 10)
 
   // ── Complexity Label ──────────────────────────────────────
 
@@ -169,6 +189,35 @@ export function analyzeGameConfig(config: GamePresetConfig): GameAnalysisReport 
 
   if (config.aiFreetext.inGameAi.length > 0 && !config.additionalTech.includes('ai-navigation')) {
     suggestions.push('If using in-game AI features, consider adding "AI Navigation" to your tech stack.')
+  }
+
+  // V2 warnings
+  if (isCardGame(config.genres) && config.cardSystem.deckSize.min === 0 && config.cardSystem.deckSize.max === 0) {
+    warnings.push({
+      severity: 'warning',
+      message: 'Card game detected but no deck rules configured. Define min/max deck size for balanced gameplay.',
+      field: 'cardSystem',
+    })
+  }
+
+  if (config.victoryCondition === 'competitive' && !config.aiFreetext.inGameAi.includes('matchmaking')) {
+    suggestions.push('Competitive games benefit from matchmaking AI. Consider adding "Matchmaking" to your in-game AI options.')
+  }
+
+  if (['free-to-play', 'freemium', 'battle-pass'].includes(config.businessModel) && config.retentionMechanics.length === 0) {
+    suggestions.push('F2P/freemium games rely on retention mechanics (daily rewards, season pass, etc.). Consider configuring retention features.')
+  }
+
+  if (config.playerMode === 'async-multiplayer' && !config.additionalTech.includes('websockets')) {
+    suggestions.push('Async multiplayer typically requires WebSockets for real-time communication. Consider adding it to your tech stack.')
+  }
+
+  if (config.pwaSupport && !config.additionalTech.includes('service-worker-offline')) {
+    suggestions.push('PWA support works best with service workers for offline capability. Consider adding "Service Worker / Offline" to your tech stack.')
+  }
+
+  if (config.accessibilityFeatures.length >= 5) {
+    suggestions.push('Good accessibility coverage detected. Consider documenting your accessibility features for marketing and compliance.')
   }
 
   // ── Scope Estimate ────────────────────────────────────────

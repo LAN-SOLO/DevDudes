@@ -5,12 +5,14 @@ import { useTranslation } from '@/lib/i18n/language-provider'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Textarea } from '@/components/ui/textarea'
+import { Input } from '@/components/ui/input'
+import { Switch } from '@/components/ui/switch'
 import { ArrowLeft, Check } from 'lucide-react'
 import { OptionGrid } from '../shared/option-grid'
-import { IN_GAME_AI_OPTIONS, DEV_AI_OPTIONS } from '@/lib/game-pipeline/constants'
+import { IN_GAME_AI_OPTIONS, DEV_AI_OPTIONS, isCardGame } from '@/lib/game-pipeline/constants'
 
 export function StepAiFreetext() {
-  const { config, updateAiFreetext, setCurrentStep, setIsComplete } = useGameWizard()
+  const { config, updateConfig, updateAiFreetext, setCurrentStep, setIsComplete } = useGameWizard()
   const { t } = useTranslation()
 
   const handleInGameAi = (value: string) => {
@@ -111,6 +113,38 @@ export function StepAiFreetext() {
             rows={3}
           />
         </div>
+
+        {(isCardGame(config.genres) || config.victoryCondition === 'competitive') && (
+          <div className="space-y-4 rounded-lg border bg-muted/30 p-4">
+            <h3 className="text-sm font-medium">{t('game.aiFreetext.aiOpponentTitle')}</h3>
+            <div className="grid gap-4 sm:grid-cols-2">
+              <div className="space-y-2">
+                <label className="text-xs font-medium">{t('game.aiFreetext.aiOpponentDifficulty')}</label>
+                <Input
+                  value={config.aiOpponent.difficultyTiers}
+                  onChange={(e) => updateConfig({ aiOpponent: { ...config.aiOpponent, difficultyTiers: e.target.value } })}
+                  placeholder="e.g. Easy, Medium, Hard, Expert"
+                />
+              </div>
+              <div className="space-y-2">
+                <label className="text-xs font-medium">{t('game.aiFreetext.aiOpponentPersonality')}</label>
+                <Textarea
+                  value={config.aiOpponent.personality}
+                  onChange={(e) => updateConfig({ aiOpponent: { ...config.aiOpponent, personality: e.target.value } })}
+                  placeholder={t('game.aiFreetext.aiOpponentPersonalityPlaceholder')}
+                  rows={2}
+                />
+              </div>
+            </div>
+            <div className="flex items-center gap-2">
+              <Switch
+                checked={config.aiOpponent.cheatingEnabled}
+                onCheckedChange={(v) => updateConfig({ aiOpponent: { ...config.aiOpponent, cheatingEnabled: v } })}
+              />
+              <label className="text-xs font-medium">{t('game.aiFreetext.aiOpponentCheating')}</label>
+            </div>
+          </div>
+        )}
 
         <div className="flex justify-between">
           <Button variant="outline" onClick={() => setCurrentStep(15)}>

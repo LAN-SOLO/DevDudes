@@ -21,6 +21,14 @@ import { StepAudio } from './steps/step-audio'
 import { StepEngine } from './steps/step-engine'
 import { StepMonetization } from './steps/step-monetization'
 import { StepAiFreetext } from './steps/step-ai-freetext'
+import { StepCardSystem } from './steps/step-card-system'
+import { StepMatchTurns } from './steps/step-match-turns'
+import { StepCardVisual } from './steps/step-card-visual'
+import { StepAudience } from './steps/step-audience'
+import { StepSocial } from './steps/step-social'
+import { StepAccessibility } from './steps/step-accessibility'
+import { StepContentPlan } from './steps/step-content-plan'
+import { StepAdvanced } from './steps/step-advanced'
 import { cn } from '@/lib/utils'
 import type { GamePresetConfig } from '@/lib/game-pipeline/types'
 
@@ -45,10 +53,18 @@ const STEP_COMPONENTS: Record<number, React.FC> = {
   14: StepEngine,
   15: StepMonetization,
   16: StepAiFreetext,
+  17: StepCardSystem,
+  18: StepMatchTurns,
+  19: StepCardVisual,
+  20: StepAudience,
+  21: StepSocial,
+  22: StepAccessibility,
+  23: StepContentPlan,
+  24: StepAdvanced,
 }
 
 const WizardContentInner = forwardRef<GameWizardHandle>(function WizardContentInner(_, ref) {
-  const { currentStep, isComplete, importConfig, setCurrentStep, totalSteps } = useGameWizard()
+  const { currentStep, isComplete, importConfig, setCurrentStep, visibleSteps, nextStep, prevStep } = useGameWizard()
   const [slideDirection, setSlideDirection] = useState<'left' | 'right' | null>(null)
   const [isTransitioning, setIsTransitioning] = useState(false)
   const prevStepRef = useRef(currentStep)
@@ -66,20 +82,25 @@ const WizardContentInner = forwardRef<GameWizardHandle>(function WizardContentIn
     }
   }, [currentStep])
 
-  // Keyboard navigation
+  // Keyboard navigation using visible steps
   const handleKeyDown = useCallback((e: KeyboardEvent) => {
-    // Don't navigate if typing in an input/textarea
     const tag = (e.target as HTMLElement).tagName
     if (tag === 'INPUT' || tag === 'TEXTAREA' || tag === 'SELECT') return
 
-    if (e.key === 'ArrowRight' && currentStep < totalSteps && !isComplete) {
-      e.preventDefault()
-      setCurrentStep(currentStep + 1)
-    } else if (e.key === 'ArrowLeft' && currentStep > 1 && !isComplete) {
-      e.preventDefault()
-      setCurrentStep(currentStep - 1)
+    if (e.key === 'ArrowRight' && !isComplete) {
+      const next = nextStep(currentStep)
+      if (next) {
+        e.preventDefault()
+        setCurrentStep(next)
+      }
+    } else if (e.key === 'ArrowLeft' && !isComplete) {
+      const prev = prevStep(currentStep)
+      if (prev) {
+        e.preventDefault()
+        setCurrentStep(prev)
+      }
     }
-  }, [currentStep, totalSteps, isComplete, setCurrentStep])
+  }, [currentStep, isComplete, setCurrentStep, nextStep, prevStep])
 
   useEffect(() => {
     window.addEventListener('keydown', handleKeyDown)

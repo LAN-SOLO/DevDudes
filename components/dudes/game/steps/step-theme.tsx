@@ -65,6 +65,19 @@ export function StepTheme() {
           </p>
         </div>
 
+        <div className="space-y-2">
+          <label className="text-sm font-medium">{t('game.theme.tagline')}</label>
+          <Input
+            value={config.tagline}
+            onChange={(e) => updateConfig({ tagline: e.target.value })}
+            placeholder={t('game.theme.taglinePlaceholder')}
+            maxLength={60}
+          />
+          <p className="text-xs text-muted-foreground text-right">
+            {config.tagline.length}/60
+          </p>
+        </div>
+
         <div className="flex justify-between">
           <Button variant="outline" onClick={() => setCurrentStep(1)}>
             <ArrowLeft className="mr-2 h-4 w-4" />

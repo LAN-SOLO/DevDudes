@@ -6,7 +6,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Button } from '@/components/ui/button'
 import { ArrowLeft, ArrowRight } from 'lucide-react'
 import { OptionGrid } from '../shared/option-grid'
-import { DIMENSION_OPTIONS, ART_STYLE_OPTIONS } from '@/lib/game-pipeline/constants'
+import { DIMENSION_OPTIONS, ART_STYLE_OPTIONS, ANIMATION_INTENSITY_OPTIONS } from '@/lib/game-pipeline/constants'
 
 export function StepVisual() {
   const { config, updateConfig, setCurrentStep } = useGameWizard()
@@ -44,6 +44,16 @@ export function StepVisual() {
             options={ART_STYLE_OPTIONS}
             selected={config.artStyle}
             onSelect={(v) => handleSingleSelect('artStyle', v)}
+            mode="single"
+          />
+        </div>
+
+        <div className="space-y-3">
+          <h3 className="text-sm font-medium">{t('game.visual.animationLabel')}</h3>
+          <OptionGrid
+            options={ANIMATION_INTENSITY_OPTIONS}
+            selected={config.animationIntensity}
+            onSelect={(v) => updateConfig({ animationIntensity: config.animationIntensity === v ? '' : v })}
             mode="single"
           />
         </div>

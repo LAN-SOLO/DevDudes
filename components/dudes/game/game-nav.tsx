@@ -1,5 +1,6 @@
 'use client'
 
+import { useMemo } from 'react'
 import { useGameWizard } from './game-context'
 import { useTranslation } from '@/lib/i18n/language-provider'
 import { Check } from 'lucide-react'
@@ -7,18 +8,28 @@ import { cn } from '@/lib/utils'
 import { STEP_CATEGORIES, STEP_LABELS } from '@/lib/game-pipeline/constants'
 
 export function GameNav() {
-  const { currentStep, setCurrentStep } = useGameWizard()
+  const { currentStep, setCurrentStep, visibleSteps } = useGameWizard()
   const { t } = useTranslation()
 
+  // Filter categories to only show visible steps
+  const filteredCategories = useMemo(() => {
+    return STEP_CATEGORIES
+      .map((cat) => ({
+        ...cat,
+        steps: cat.steps.filter((s) => visibleSteps.includes(s)),
+      }))
+      .filter((cat) => cat.steps.length > 0)
+  }, [visibleSteps])
+
   // Determine which category the current step belongs to
-  const activeCategory = STEP_CATEGORIES.find((cat) =>
+  const activeCategory = filteredCategories.find((cat) =>
     cat.steps.includes(currentStep)
   )
 
   return (
     <nav className="mb-8">
       <div className="flex flex-wrap gap-2">
-        {STEP_CATEGORIES.map((category) => {
+        {filteredCategories.map((category) => {
           const isActive = category.id === activeCategory?.id
           const completedSteps = category.steps.filter((s) => s < currentStep).length
           const totalSteps = category.steps.length
