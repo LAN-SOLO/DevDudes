@@ -44,7 +44,7 @@ export function StepTheme() {
             value={config.customTheme}
             onChange={(e) => updateConfig({ customTheme: e.target.value })}
             placeholder={t('game.theme.customThemePlaceholder')}
-            maxLength={100}
+            maxLength={200}
           />
           <p className="text-xs text-muted-foreground">
             {t('game.theme.customThemeHint')}
@@ -57,11 +57,11 @@ export function StepTheme() {
             value={config.elevatorPitch}
             onChange={(e) => updateConfig({ elevatorPitch: e.target.value })}
             placeholder={t('game.theme.elevatorPitchPlaceholder')}
-            maxLength={500}
+            maxLength={1000}
             rows={3}
           />
           <p className="text-xs text-muted-foreground text-right">
-            {config.elevatorPitch.length}/500
+            {config.elevatorPitch.length}/1000
           </p>
         </div>
 
@@ -71,10 +71,10 @@ export function StepTheme() {
             value={config.tagline}
             onChange={(e) => updateConfig({ tagline: e.target.value })}
             placeholder={t('game.theme.taglinePlaceholder')}
-            maxLength={60}
+            maxLength={120}
           />
           <p className="text-xs text-muted-foreground text-right">
-            {config.tagline.length}/60
+            {config.tagline.length}/120
           </p>
         </div>
 

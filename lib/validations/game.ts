@@ -247,9 +247,9 @@ export const gamePresetConfigSchema = z.object({
   importMode: z.enum(['full', 'config-only', 'assets-only', '']).default(''),
   // Step 2
   themes: z.array(z.string()).max(3).default([]),
-  customTheme: z.string().max(100).default(''),
-  elevatorPitch: z.string().max(500).default(''),
-  tagline: z.string().max(60).default(''),
+  customTheme: z.string().max(200).default(''),
+  elevatorPitch: z.string().max(1000).default(''),
+  tagline: z.string().max(120).default(''),
   // Step 3
   narrativeFocus: z.string().default(''),
   storyStructure: z.string().default(''),
