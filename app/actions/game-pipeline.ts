@@ -5,6 +5,23 @@ import { revalidatePath } from 'next/cache'
 import { gamePresetConfigSchema } from '@/lib/validations/game'
 import type { GamePresetConfig } from '@/lib/game-pipeline/types'
 
+/** Recursively fix plain objects with numeric keys back into arrays */
+function fixArrays(obj: unknown): unknown {
+  if (obj === null || obj === undefined || typeof obj !== 'object') return obj
+  if (Array.isArray(obj)) return obj.map(fixArrays)
+  const record = obj as Record<string, unknown>
+  const keys = Object.keys(record)
+  // Detect object-as-array: all keys are sequential numeric strings
+  if (keys.length > 0 && keys.every((k, i) => k === String(i))) {
+    return keys.map((k) => fixArrays(record[k]))
+  }
+  const result: Record<string, unknown> = {}
+  for (const key of keys) {
+    result[key] = fixArrays(record[key])
+  }
+  return result
+}
+
 export async function saveGamePresetConfig(
   projectId: string | null,
   config: GamePresetConfig
@@ -16,9 +33,9 @@ export async function saveGamePresetConfig(
     return { error: 'Not authenticated', projectId: null }
   }
 
-  // Re-parse through JSON to fix serialization issues (e.g., arrays sent as objects
-  // across the server action boundary)
-  const sanitized = JSON.parse(JSON.stringify(config))
+  // Re-parse through JSON and fix any arrays that were serialized as objects
+  // (e.g., {0: "a", 1: "b"} → ["a", "b"]) across the server action boundary
+  const sanitized = fixArrays(JSON.parse(JSON.stringify(config)))
   const result = gamePresetConfigSchema.safeParse(sanitized)
   if (!result.success) {
     const issue = result.error.issues[0]
