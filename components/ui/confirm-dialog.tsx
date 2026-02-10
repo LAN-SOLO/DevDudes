@@ -11,7 +11,6 @@ import {
   DialogTitle,
 } from '@/components/ui/dialog'
 import { Button } from '@/components/ui/button'
-import { cn } from '@/lib/utils'
 
 interface ConfirmDialogProps {
   open: boolean
@@ -117,12 +116,12 @@ export function useConfirm() {
   const handleConfirm = React.useCallback(() => {
     state.resolve?.(true)
     setState({ open: false, options: null, resolve: null })
-  }, [state.resolve])
+  }, [state])
 
   const handleCancel = React.useCallback(() => {
     state.resolve?.(false)
     setState({ open: false, options: null, resolve: null })
-  }, [state.resolve])
+  }, [state])
 
   const ConfirmDialogComponent = React.useCallback(() => {
     if (!state.options) return null

@@ -40,11 +40,12 @@ let translationsLoaded = false
 
 function loadTranslations() {
   if (translationsLoaded) return
-  // eslint-disable-next-line @typescript-eslint/no-require-imports
+  /* eslint-disable @typescript-eslint/no-require-imports */
   translations = {
     en: require('./locales/en.json'),
     de: require('./locales/de.json'),
   }
+  /* eslint-enable @typescript-eslint/no-require-imports */
   translationsLoaded = true
 }
 

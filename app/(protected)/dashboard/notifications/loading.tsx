@@ -1,4 +1,4 @@
-import { Skeleton, SkeletonList } from '@/components/ui/skeleton'
+import { Skeleton } from '@/components/ui/skeleton'
 
 export default function NotificationsLoading() {
   return (

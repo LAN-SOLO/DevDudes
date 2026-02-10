@@ -247,7 +247,7 @@ export const gamePresetConfigSchema = z.object({
   importMode: z.enum(['full', 'config-only', 'assets-only', '']).default(''),
   // Step 2
   themes: z.array(z.string()).max(3).default([]),
-  customTheme: z.string().max(200).default(''),
+  customTheme: z.string().max(1000).default(''),
   elevatorPitch: z.string().max(1000).default(''),
   tagline: z.string().max(120).default(''),
   // Step 3

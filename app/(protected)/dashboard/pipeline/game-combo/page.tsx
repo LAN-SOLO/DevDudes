@@ -108,7 +108,8 @@ export default function GameComboPage() {
           return
         }
 
-        const { type: _, ...config } = presetConfig
+        const { type: _type, ...config } = presetConfig as Record<string, unknown>
+        void _type
         const gameConfig: GamePresetConfig = {
           ...defaultGamePresetConfig,
           ...config,

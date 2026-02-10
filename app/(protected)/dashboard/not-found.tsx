@@ -3,7 +3,7 @@
 import Link from 'next/link'
 import { Card, CardContent } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
-import { Home, Search, ArrowLeft, FolderOpen } from 'lucide-react'
+import { Home, Search, FolderOpen } from 'lucide-react'
 import { useTranslation } from '@/lib/i18n/language-provider'
 
 export default function DashboardNotFound() {

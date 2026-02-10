@@ -1,6 +1,6 @@
 'use client'
 
-import { forwardRef, useImperativeHandle, useRef, useEffect, useState, useCallback } from 'react'
+import { forwardRef, useImperativeHandle, useRef, useEffect, useCallback } from 'react'
 import { GameWizardProvider, useGameWizard } from './game-context'
 import { GameNav } from './game-nav'
 import { GamePreview } from './shared/game-preview'
@@ -29,7 +29,6 @@ import { StepSocial } from './steps/step-social'
 import { StepAccessibility } from './steps/step-accessibility'
 import { StepContentPlan } from './steps/step-content-plan'
 import { StepAdvanced } from './steps/step-advanced'
-import { cn } from '@/lib/utils'
 import type { GamePresetConfig } from '@/lib/game-pipeline/types'
 
 export interface GameWizardHandle {
@@ -64,21 +63,25 @@ const STEP_COMPONENTS: Record<number, React.FC> = {
 }
 
 const WizardContentInner = forwardRef<GameWizardHandle>(function WizardContentInner(_, ref) {
-  const { currentStep, isComplete, importConfig, setCurrentStep, visibleSteps, nextStep, prevStep } = useGameWizard()
-  const [slideDirection, setSlideDirection] = useState<'left' | 'right' | null>(null)
-  const [isTransitioning, setIsTransitioning] = useState(false)
+  const { currentStep, isComplete, importConfig, setCurrentStep, nextStep, prevStep } = useGameWizard()
   const prevStepRef = useRef(currentStep)
+  const containerRef = useRef<HTMLDivElement>(null)
 
   useImperativeHandle(ref, () => ({ importConfig }), [importConfig])
 
-  // Track step changes for slide direction
+  // Track step changes for slide animation via DOM (external system — appropriate for effects)
   useEffect(() => {
-    if (prevStepRef.current !== currentStep) {
-      setSlideDirection(currentStep > prevStepRef.current ? 'left' : 'right')
-      setIsTransitioning(true)
-      const timer = setTimeout(() => setIsTransitioning(false), 300)
-      prevStepRef.current = currentStep
-      return () => clearTimeout(timer)
+    const el = containerRef.current
+    if (!el || prevStepRef.current === currentStep) return
+
+    const direction = currentStep > prevStepRef.current ? 'right' : 'left'
+    const cls = `animate-slide-in-${direction}`
+    el.classList.add(cls)
+    const timer = setTimeout(() => el.classList.remove(cls), 300)
+    prevStepRef.current = currentStep
+    return () => {
+      clearTimeout(timer)
+      el.classList.remove('animate-slide-in-right', 'animate-slide-in-left')
     }
   }, [currentStep])
 
@@ -119,11 +122,8 @@ const WizardContentInner = forwardRef<GameWizardHandle>(function WizardContentIn
       <div className="flex gap-6">
         <div className="flex-1 min-w-0">
           <div
-            className={cn(
-              'transition-all duration-300 ease-in-out',
-              isTransitioning && slideDirection === 'left' && 'animate-slide-in-right',
-              isTransitioning && slideDirection === 'right' && 'animate-slide-in-left',
-            )}
+            ref={containerRef}
+            className="transition-all duration-300 ease-in-out"
           >
             {StepComponent && <StepComponent />}
           </div>

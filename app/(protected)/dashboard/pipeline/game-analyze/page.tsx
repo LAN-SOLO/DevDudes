@@ -80,7 +80,8 @@ export default function GameAnalyzePage() {
           return
         }
 
-        const { type: _, ...config } = presetConfig
+        const { type: _type, ...config } = presetConfig as Record<string, unknown>
+        void _type
         const mergedConfig: GamePresetConfig = {
           ...defaultGamePresetConfig,
           ...config,

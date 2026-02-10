@@ -33,8 +33,6 @@ export function GameNav() {
           const isActive = category.id === activeCategory?.id
           const completedSteps = category.steps.filter((s) => s < currentStep).length
           const totalSteps = category.steps.length
-          const allComplete = completedSteps === totalSteps
-
           return (
             <div key={category.id} className="flex flex-col gap-1">
               {/* Category label */}

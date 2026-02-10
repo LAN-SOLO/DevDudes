@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useSyncExternalStore } from 'react'
 import { Globe } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import {
@@ -11,13 +11,11 @@ import {
 } from '@/components/ui/dropdown-menu'
 import { useTranslation } from '@/lib/i18n/language-provider'
 
+const emptySubscribe = () => () => {}
+
 export function LanguageSwitcher() {
   const { locale, setLocale, t } = useTranslation()
-  const [mounted, setMounted] = useState(false)
-
-  useEffect(() => {
-    setMounted(true)
-  }, [])
+  const mounted = useSyncExternalStore(emptySubscribe, () => true, () => false)
 
   return (
     <DropdownMenu>
