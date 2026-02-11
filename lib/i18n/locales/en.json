@@ -1569,7 +1569,8 @@
       "development": "Development",
       "communication": "Communication",
       "productivity": "Productivity",
-      "analytics": "Analytics"
+      "analytics": "Analytics",
+      "admin": "M365 Admin"
     },
     "toasts": {
       "connected": "Connected",
@@ -1612,7 +1613,12 @@
     "useTemplate": "Use Template",
     "features": "Features",
     "dataModels": "Data Models",
-    "includes": "Includes"
+    "includes": "Includes",
+    "searchPlaceholder": "Search templates...",
+    "allCategories": "All",
+    "noResults": "No templates found",
+    "noResultsHint": "Try a different search term or clear your filters",
+    "clearFilters": "Clear Filters"
   },
   "whatsNew": {
     "title": "What's New",

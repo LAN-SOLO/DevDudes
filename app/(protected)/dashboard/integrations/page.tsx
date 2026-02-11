@@ -24,6 +24,23 @@ import {
   Loader2,
   Zap,
   Lock,
+  Video,
+  HardDrive,
+  Share2,
+  Workflow,
+  ShieldCheck,
+  Smartphone,
+  BarChart3,
+  Users,
+  Table,
+  BookOpen,
+  GitBranch,
+  Compass,
+  ClipboardList,
+  LifeBuoy,
+  Kanban,
+  FlaskConical,
+  Database,
 } from 'lucide-react'
 
 interface Integration {
@@ -31,7 +48,7 @@ interface Integration {
   name: string
   description: string
   icon: typeof Github
-  category: 'development' | 'communication' | 'productivity' | 'analytics'
+  category: 'development' | 'communication' | 'productivity' | 'analytics' | 'admin'
   connected: boolean
   premium?: boolean
   comingSoon?: boolean
@@ -52,7 +69,7 @@ const integrations: Integration[] = [
     description: 'Deploy apps with zero configuration',
     icon: Cloud,
     category: 'development',
-    connected: true,
+    connected: false,
   },
   {
     id: 'slack',
@@ -96,6 +113,216 @@ const integrations: Integration[] = [
     connected: false,
     premium: true,
   },
+  // ── Microsoft 365 Office ──────────────────────────────────
+  {
+    id: 'ms-teams',
+    name: 'Microsoft Teams',
+    description: 'Chat, meetings, and collaboration with your team',
+    icon: Video,
+    category: 'communication',
+    connected: false,
+  },
+  {
+    id: 'outlook',
+    name: 'Outlook',
+    description: 'Email, calendar, and contacts from Microsoft 365',
+    icon: Mail,
+    category: 'communication',
+    connected: false,
+  },
+  {
+    id: 'onedrive',
+    name: 'OneDrive',
+    description: 'Store, sync, and share project files in the cloud',
+    icon: HardDrive,
+    category: 'productivity',
+    connected: false,
+  },
+  {
+    id: 'sharepoint',
+    name: 'SharePoint',
+    description: 'Document libraries, team sites, and intranet pages',
+    icon: Share2,
+    category: 'productivity',
+    connected: false,
+  },
+  {
+    id: 'excel-online',
+    name: 'Excel Online',
+    description: 'Import data models and generate schemas from spreadsheets',
+    icon: Table,
+    category: 'productivity',
+    connected: false,
+  },
+  {
+    id: 'power-automate',
+    name: 'Power Automate',
+    description: 'Automate workflows between your apps and services',
+    icon: Workflow,
+    category: 'productivity',
+    connected: false,
+  },
+  {
+    id: 'power-bi',
+    name: 'Power BI',
+    description: 'Embed dashboards and analytics in your projects',
+    icon: BarChart3,
+    category: 'analytics',
+    connected: false,
+  },
+  {
+    id: 'ms-planner',
+    name: 'Microsoft Planner',
+    description: 'Manage tasks and track project progress across teams',
+    icon: BookOpen,
+    category: 'productivity',
+    connected: false,
+  },
+  // ── Microsoft 365 Admin ───────────────────────────────────
+  {
+    id: 'entra-id',
+    name: 'Entra ID',
+    description: 'Identity and access management with Azure Active Directory',
+    icon: ShieldCheck,
+    category: 'admin',
+    connected: false,
+  },
+  {
+    id: 'intune',
+    name: 'Microsoft Intune',
+    description: 'Device management, compliance policies, and app deployment',
+    icon: Smartphone,
+    category: 'admin',
+    connected: false,
+  },
+  {
+    id: 'ms-purview',
+    name: 'Microsoft Purview',
+    description: 'Data governance, compliance, and information protection',
+    icon: ShieldCheck,
+    category: 'admin',
+    connected: false,
+    premium: true,
+  },
+  {
+    id: 'exchange-admin',
+    name: 'Exchange Admin',
+    description: 'Manage mailboxes, distribution groups, and mail flow rules',
+    icon: Mail,
+    category: 'admin',
+    connected: false,
+    premium: true,
+  },
+  {
+    id: 'ms-defender',
+    name: 'Microsoft Defender',
+    description: 'Threat protection, security alerts, and vulnerability management',
+    icon: ShieldCheck,
+    category: 'admin',
+    connected: false,
+    premium: true,
+  },
+  {
+    id: 'ms-admin-center',
+    name: 'M365 Admin Center',
+    description: 'User management, licenses, service health, and billing',
+    icon: Users,
+    category: 'admin',
+    connected: false,
+  },
+  // ── Atlassian ─────────────────────────────────────────────
+  {
+    id: 'jira',
+    name: 'Jira',
+    description: 'Plan, track, and manage agile software development projects',
+    icon: ClipboardList,
+    category: 'productivity',
+    connected: false,
+  },
+  {
+    id: 'confluence',
+    name: 'Confluence',
+    description: 'Create, collaborate on, and organize team documentation',
+    icon: BookOpen,
+    category: 'productivity',
+    connected: false,
+  },
+  {
+    id: 'bitbucket',
+    name: 'Bitbucket',
+    description: 'Git repository hosting with CI/CD pipelines',
+    icon: GitBranch,
+    category: 'development',
+    connected: false,
+  },
+  {
+    id: 'trello-atlassian',
+    name: 'Trello',
+    description: 'Visual boards for organizing tasks and workflows',
+    icon: Kanban,
+    category: 'productivity',
+    connected: false,
+  },
+  {
+    id: 'atlassian-compass',
+    name: 'Compass',
+    description: 'Developer experience platform for tracking services and components',
+    icon: Compass,
+    category: 'development',
+    connected: false,
+  },
+  {
+    id: 'jira-service-mgmt',
+    name: 'Jira Service Management',
+    description: 'IT service desk with incident, problem, and change management',
+    icon: LifeBuoy,
+    category: 'productivity',
+    connected: false,
+  },
+  {
+    id: 'statuspage',
+    name: 'Statuspage',
+    description: 'Communicate real-time service status to users and stakeholders',
+    icon: BarChart3,
+    category: 'analytics',
+    connected: false,
+  },
+  {
+    id: 'opsgenie',
+    name: 'Opsgenie',
+    description: 'On-call scheduling, alerting, and incident response management',
+    icon: Zap,
+    category: 'admin',
+    connected: false,
+  },
+  {
+    id: 'bamboo',
+    name: 'Bamboo',
+    description: 'Continuous integration and deployment server for build automation',
+    icon: FlaskConical,
+    category: 'development',
+    connected: false,
+    premium: true,
+  },
+  {
+    id: 'atlassian-guard',
+    name: 'Atlassian Guard',
+    description: 'Organization-wide security policies, SSO, and audit logs',
+    icon: ShieldCheck,
+    category: 'admin',
+    connected: false,
+    premium: true,
+  },
+  {
+    id: 'atlassian-analytics',
+    name: 'Atlassian Analytics',
+    description: 'Cross-product data visualization and custom reporting',
+    icon: BarChart3,
+    category: 'analytics',
+    connected: false,
+    premium: true,
+  },
+  // ── Other ─────────────────────────────────────────────────
   {
     id: 'analytics',
     name: 'Google Analytics',
@@ -135,10 +362,11 @@ export default function IntegrationsPage() {
     { id: 'communication', label: t('integrations.categories.communication') },
     { id: 'productivity', label: t('integrations.categories.productivity') },
     { id: 'analytics', label: t('integrations.categories.analytics') },
+    { id: 'admin', label: t('integrations.categories.admin') },
   ]
   const [selectedCategory, setSelectedCategory] = useState('all')
   const [connectingId, setConnectingId] = useState<string | null>(null)
-  const [connectedIntegrations, setConnectedIntegrations] = useState<string[]>(['vercel'])
+  const [connectedIntegrations, setConnectedIntegrations] = useState<string[]>([])
   const [disconnectTarget, setDisconnectTarget] = useState<Integration | null>(null)
 
   const filteredIntegrations = integrations.filter(

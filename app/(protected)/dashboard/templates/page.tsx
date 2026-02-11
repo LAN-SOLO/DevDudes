@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useMemo } from 'react'
 import { useTranslation } from '@/lib/i18n/language-provider'
 import { useRouter } from 'next/navigation'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
@@ -16,7 +16,7 @@ import {
   DialogTitle,
 } from '@/components/ui/dialog'
 import { useToast } from '@/components/ui/toast'
-import { FileCode, ArrowRight, Sparkles, Eye, Check, Loader2 } from 'lucide-react'
+import { FileCode, ArrowRight, Sparkles, Eye, Check, Loader2, Search, LayoutGrid, X } from 'lucide-react'
 import { savePresetConfig } from '@/app/actions/pipeline'
 
 // Templates use v1 flat config format - auto-migrated to v2 by savePresetConfig
@@ -362,6 +362,605 @@ const templates: Template[] = [
       theme: 'light',
       primaryColor: '#0ea5e9',
       integrations: ['email', 'slack'],
+      deployTarget: 'vercel',
+      region: 'auto',
+    },
+  },
+  // ── Accounting ─────────────────────────────────────────────
+  {
+    id: 'general-ledger',
+    name: 'General Ledger',
+    description: 'Chart of accounts, journal entries, trial balance, and financial statements',
+    features: ['Chart of Accounts', 'Journal Entries', 'Trial Balance', 'Balance Sheet', 'P&L Report'],
+    category: 'Accounting',
+    presetConfig: {
+      appType: 'dashboard',
+      industry: 'Finance & Accounting',
+      features: ['authentication', 'dashboard', 'search', 'export', 'reports', 'notifications'],
+      targetUsers: ['accountant', 'controller', 'admin'],
+      entities: [
+        { name: 'Account', fields: [
+          { name: 'code', type: 'text', required: true },
+          { name: 'name', type: 'text', required: true },
+          { name: 'type', type: 'select', required: true },
+          { name: 'parentAccount', type: 'text', required: false },
+          { name: 'balance', type: 'number', required: false },
+          { name: 'isActive', type: 'boolean', required: true },
+        ]},
+        { name: 'JournalEntry', fields: [
+          { name: 'entryNumber', type: 'text', required: true },
+          { name: 'date', type: 'date', required: true },
+          { name: 'description', type: 'text', required: true },
+          { name: 'debitAccount', type: 'text', required: true },
+          { name: 'creditAccount', type: 'text', required: true },
+          { name: 'amount', type: 'number', required: true },
+          { name: 'status', type: 'select', required: true },
+          { name: 'postedBy', type: 'text', required: false },
+        ]},
+        { name: 'FiscalPeriod', fields: [
+          { name: 'name', type: 'text', required: true },
+          { name: 'startDate', type: 'date', required: true },
+          { name: 'endDate', type: 'date', required: true },
+          { name: 'status', type: 'select', required: true },
+          { name: 'isClosed', type: 'boolean', required: false },
+        ]},
+      ],
+      authMethods: ['email', 'microsoft'],
+      roles: ['admin', 'controller', 'accountant', 'viewer'],
+      layout: 'sidebar',
+      theme: 'light',
+      primaryColor: '#059669',
+      integrations: ['export'],
+      deployTarget: 'vercel',
+      region: 'auto',
+    },
+  },
+  {
+    id: 'accounts-payable',
+    name: 'Accounts Payable',
+    description: 'Vendor bills, payment scheduling, aging reports, and approval workflows',
+    features: ['Vendor Bills', 'Payment Runs', 'Aging Report', 'Approvals', 'Bank Reconciliation'],
+    category: 'Accounting',
+    presetConfig: {
+      appType: 'dashboard',
+      industry: 'Finance & Accounting',
+      features: ['authentication', 'dashboard', 'notifications', 'export', 'reports', 'search'],
+      targetUsers: ['accountant', 'manager', 'admin'],
+      entities: [
+        { name: 'Vendor', fields: [
+          { name: 'name', type: 'text', required: true },
+          { name: 'email', type: 'email', required: true },
+          { name: 'taxId', type: 'text', required: false },
+          { name: 'paymentTerms', type: 'number', required: false },
+          { name: 'bankAccount', type: 'text', required: false },
+          { name: 'address', type: 'text', required: false },
+        ]},
+        { name: 'Bill', fields: [
+          { name: 'billNumber', type: 'text', required: true },
+          { name: 'vendor', type: 'text', required: true },
+          { name: 'amount', type: 'number', required: true },
+          { name: 'tax', type: 'number', required: false },
+          { name: 'dueDate', type: 'date', required: true },
+          { name: 'status', type: 'select', required: true },
+          { name: 'approvedBy', type: 'text', required: false },
+          { name: 'glAccount', type: 'text', required: false },
+        ]},
+        { name: 'Payment', fields: [
+          { name: 'paymentRef', type: 'text', required: true },
+          { name: 'amount', type: 'number', required: true },
+          { name: 'method', type: 'select', required: true },
+          { name: 'paidAt', type: 'date', required: true },
+          { name: 'bankReference', type: 'text', required: false },
+        ]},
+      ],
+      authMethods: ['email', 'microsoft'],
+      roles: ['admin', 'ap-clerk', 'approver', 'viewer'],
+      layout: 'sidebar',
+      theme: 'light',
+      primaryColor: '#7c3aed',
+      integrations: ['email'],
+      deployTarget: 'vercel',
+      region: 'auto',
+    },
+  },
+  {
+    id: 'accounts-receivable',
+    name: 'Accounts Receivable',
+    description: 'Customer invoices, payment tracking, aging analysis, and dunning management',
+    features: ['Invoices', 'Payments', 'Aging Analysis', 'Dunning', 'Credit Limits'],
+    category: 'Accounting',
+    presetConfig: {
+      appType: 'dashboard',
+      industry: 'Finance & Accounting',
+      features: ['authentication', 'dashboard', 'notifications', 'export', 'reports', 'search'],
+      targetUsers: ['accountant', 'manager', 'admin'],
+      entities: [
+        { name: 'Customer', fields: [
+          { name: 'name', type: 'text', required: true },
+          { name: 'email', type: 'email', required: true },
+          { name: 'taxId', type: 'text', required: false },
+          { name: 'creditLimit', type: 'number', required: false },
+          { name: 'paymentTerms', type: 'number', required: false },
+          { name: 'outstandingBalance', type: 'number', required: false },
+        ]},
+        { name: 'Invoice', fields: [
+          { name: 'invoiceNumber', type: 'text', required: true },
+          { name: 'customer', type: 'text', required: true },
+          { name: 'amount', type: 'number', required: true },
+          { name: 'tax', type: 'number', required: false },
+          { name: 'issueDate', type: 'date', required: true },
+          { name: 'dueDate', type: 'date', required: true },
+          { name: 'status', type: 'select', required: true },
+          { name: 'dunningLevel', type: 'number', required: false },
+        ]},
+        { name: 'Payment', fields: [
+          { name: 'receiptNumber', type: 'text', required: true },
+          { name: 'amount', type: 'number', required: true },
+          { name: 'method', type: 'select', required: true },
+          { name: 'receivedAt', type: 'date', required: true },
+          { name: 'bankReference', type: 'text', required: false },
+        ]},
+        { name: 'DunningNotice', fields: [
+          { name: 'level', type: 'number', required: true },
+          { name: 'sentAt', type: 'date', required: true },
+          { name: 'totalOverdue', type: 'number', required: true },
+          { name: 'response', type: 'select', required: false },
+        ]},
+      ],
+      authMethods: ['email', 'microsoft'],
+      roles: ['admin', 'ar-clerk', 'manager', 'viewer'],
+      layout: 'sidebar',
+      theme: 'light',
+      primaryColor: '#0891b2',
+      integrations: ['email', 'stripe'],
+      deployTarget: 'vercel',
+      region: 'auto',
+    },
+  },
+  {
+    id: 'payroll',
+    name: 'Payroll Manager',
+    description: 'Employee payroll processing, tax deductions, pay stubs, and pay run history',
+    features: ['Pay Runs', 'Deductions', 'Tax Calc', 'Pay Stubs', 'Year-End Reports'],
+    category: 'Accounting',
+    presetConfig: {
+      appType: 'dashboard',
+      industry: 'Finance & Accounting',
+      features: ['authentication', 'dashboard', 'notifications', 'export', 'reports'],
+      targetUsers: ['payroll-admin', 'hr', 'admin'],
+      entities: [
+        { name: 'Employee', fields: [
+          { name: 'name', type: 'text', required: true },
+          { name: 'employeeId', type: 'text', required: true },
+          { name: 'email', type: 'email', required: true },
+          { name: 'department', type: 'text', required: true },
+          { name: 'baseSalary', type: 'number', required: true },
+          { name: 'payFrequency', type: 'select', required: true },
+          { name: 'taxBracket', type: 'text', required: false },
+          { name: 'bankAccount', type: 'text', required: false },
+        ]},
+        { name: 'PayRun', fields: [
+          { name: 'period', type: 'text', required: true },
+          { name: 'runDate', type: 'date', required: true },
+          { name: 'totalGross', type: 'number', required: true },
+          { name: 'totalDeductions', type: 'number', required: true },
+          { name: 'totalNet', type: 'number', required: true },
+          { name: 'status', type: 'select', required: true },
+          { name: 'employeeCount', type: 'number', required: true },
+        ]},
+        { name: 'PayStub', fields: [
+          { name: 'employee', type: 'text', required: true },
+          { name: 'grossPay', type: 'number', required: true },
+          { name: 'tax', type: 'number', required: true },
+          { name: 'socialSecurity', type: 'number', required: false },
+          { name: 'otherDeductions', type: 'number', required: false },
+          { name: 'netPay', type: 'number', required: true },
+        ]},
+        { name: 'Deduction', fields: [
+          { name: 'name', type: 'text', required: true },
+          { name: 'type', type: 'select', required: true },
+          { name: 'amount', type: 'number', required: true },
+          { name: 'isPercentage', type: 'boolean', required: true },
+          { name: 'isPreTax', type: 'boolean', required: true },
+        ]},
+      ],
+      authMethods: ['email', 'microsoft'],
+      roles: ['admin', 'payroll-admin', 'hr', 'viewer'],
+      layout: 'sidebar',
+      theme: 'light',
+      primaryColor: '#d946ef',
+      integrations: ['email'],
+      deployTarget: 'vercel',
+      region: 'auto',
+    },
+  },
+  {
+    id: 'fixed-assets',
+    name: 'Fixed Asset Register',
+    description: 'Track company assets, calculate depreciation, and manage asset lifecycle',
+    features: ['Asset Register', 'Depreciation', 'Disposal', 'Revaluation', 'Reports'],
+    category: 'Accounting',
+    presetConfig: {
+      appType: 'dashboard',
+      industry: 'Finance & Accounting',
+      features: ['authentication', 'dashboard', 'search', 'export', 'reports', 'notifications'],
+      targetUsers: ['accountant', 'admin'],
+      entities: [
+        { name: 'Asset', fields: [
+          { name: 'assetTag', type: 'text', required: true },
+          { name: 'name', type: 'text', required: true },
+          { name: 'category', type: 'select', required: true },
+          { name: 'purchaseDate', type: 'date', required: true },
+          { name: 'purchaseCost', type: 'number', required: true },
+          { name: 'usefulLife', type: 'number', required: true },
+          { name: 'depreciationMethod', type: 'select', required: true },
+          { name: 'residualValue', type: 'number', required: false },
+          { name: 'currentBookValue', type: 'number', required: false },
+          { name: 'location', type: 'text', required: false },
+          { name: 'status', type: 'select', required: true },
+        ]},
+        { name: 'DepreciationSchedule', fields: [
+          { name: 'period', type: 'text', required: true },
+          { name: 'openingValue', type: 'number', required: true },
+          { name: 'depreciationAmount', type: 'number', required: true },
+          { name: 'closingValue', type: 'number', required: true },
+          { name: 'isPosted', type: 'boolean', required: false },
+        ]},
+        { name: 'Disposal', fields: [
+          { name: 'disposalDate', type: 'date', required: true },
+          { name: 'salePrice', type: 'number', required: false },
+          { name: 'bookValueAtDisposal', type: 'number', required: true },
+          { name: 'gainLoss', type: 'number', required: true },
+          { name: 'reason', type: 'select', required: true },
+        ]},
+      ],
+      authMethods: ['email', 'microsoft'],
+      roles: ['admin', 'accountant', 'viewer'],
+      layout: 'sidebar',
+      theme: 'light',
+      primaryColor: '#ca8a04',
+      integrations: ['export'],
+      deployTarget: 'vercel',
+      region: 'auto',
+    },
+  },
+  {
+    id: 'tax-filing',
+    name: 'Tax Filing Manager',
+    description: 'Track tax obligations, filing deadlines, document management, and compliance',
+    features: ['Tax Calendar', 'Filings', 'Documents', 'Compliance', 'Deadline Alerts'],
+    category: 'Accounting',
+    presetConfig: {
+      appType: 'dashboard',
+      industry: 'Finance & Accounting',
+      features: ['authentication', 'dashboard', 'file-uploads', 'notifications', 'search', 'export'],
+      targetUsers: ['accountant', 'tax-advisor', 'admin'],
+      entities: [
+        { name: 'TaxObligation', fields: [
+          { name: 'name', type: 'text', required: true },
+          { name: 'taxType', type: 'select', required: true },
+          { name: 'jurisdiction', type: 'text', required: true },
+          { name: 'frequency', type: 'select', required: true },
+          { name: 'nextDueDate', type: 'date', required: true },
+          { name: 'estimatedAmount', type: 'number', required: false },
+          { name: 'status', type: 'select', required: true },
+        ]},
+        { name: 'Filing', fields: [
+          { name: 'filingRef', type: 'text', required: true },
+          { name: 'taxType', type: 'select', required: true },
+          { name: 'period', type: 'text', required: true },
+          { name: 'filedDate', type: 'date', required: false },
+          { name: 'amountDue', type: 'number', required: true },
+          { name: 'amountPaid', type: 'number', required: false },
+          { name: 'status', type: 'select', required: true },
+          { name: 'confirmationNumber', type: 'text', required: false },
+        ]},
+        { name: 'TaxDocument', fields: [
+          { name: 'name', type: 'text', required: true },
+          { name: 'type', type: 'select', required: true },
+          { name: 'taxYear', type: 'text', required: true },
+          { name: 'fileUrl', type: 'text', required: true },
+          { name: 'expiresAt', type: 'date', required: false },
+        ]},
+      ],
+      authMethods: ['email', 'microsoft'],
+      roles: ['admin', 'tax-advisor', 'accountant', 'viewer'],
+      layout: 'sidebar',
+      theme: 'light',
+      primaryColor: '#dc2626',
+      integrations: ['calendar', 'email'],
+      deployTarget: 'vercel',
+      region: 'auto',
+    },
+  },
+  {
+    id: 'budget-planner',
+    name: 'Budget Planner',
+    description: 'Department budgets, forecasting, variance analysis, and spending controls',
+    features: ['Budgets', 'Forecasts', 'Variance Analysis', 'Approvals', 'Spend Tracking'],
+    category: 'Finance',
+    presetConfig: {
+      appType: 'dashboard',
+      industry: 'Finance & Accounting',
+      features: ['authentication', 'dashboard', 'reports', 'export', 'notifications'],
+      targetUsers: ['finance', 'manager', 'admin'],
+      entities: [
+        { name: 'Budget', fields: [
+          { name: 'name', type: 'text', required: true },
+          { name: 'department', type: 'text', required: true },
+          { name: 'fiscalYear', type: 'text', required: true },
+          { name: 'totalAllocated', type: 'number', required: true },
+          { name: 'totalSpent', type: 'number', required: false },
+          { name: 'status', type: 'select', required: true },
+        ]},
+        { name: 'BudgetLine', fields: [
+          { name: 'category', type: 'text', required: true },
+          { name: 'planned', type: 'number', required: true },
+          { name: 'actual', type: 'number', required: false },
+          { name: 'variance', type: 'number', required: false },
+          { name: 'notes', type: 'text', required: false },
+        ]},
+        { name: 'Forecast', fields: [
+          { name: 'period', type: 'text', required: true },
+          { name: 'projectedRevenue', type: 'number', required: true },
+          { name: 'projectedExpenses', type: 'number', required: true },
+          { name: 'confidence', type: 'select', required: false },
+          { name: 'assumptions', type: 'text', required: false },
+        ]},
+      ],
+      authMethods: ['email', 'microsoft'],
+      roles: ['admin', 'finance', 'department-head', 'viewer'],
+      layout: 'sidebar',
+      theme: 'light',
+      primaryColor: '#2563eb',
+      integrations: ['export'],
+      deployTarget: 'vercel',
+      region: 'auto',
+    },
+  },
+  {
+    id: 'cash-flow',
+    name: 'Cash Flow Tracker',
+    description: 'Monitor cash inflows and outflows, projections, and bank reconciliation',
+    features: ['Cash Flow', 'Projections', 'Bank Reconciliation', 'Categories', 'Reports'],
+    category: 'Finance',
+    presetConfig: {
+      appType: 'dashboard',
+      industry: 'Finance & Accounting',
+      features: ['authentication', 'dashboard', 'reports', 'export', 'notifications'],
+      targetUsers: ['accountant', 'cfo', 'admin'],
+      entities: [
+        { name: 'CashTransaction', fields: [
+          { name: 'description', type: 'text', required: true },
+          { name: 'amount', type: 'number', required: true },
+          { name: 'type', type: 'select', required: true },
+          { name: 'category', type: 'select', required: true },
+          { name: 'date', type: 'date', required: true },
+          { name: 'bankAccount', type: 'text', required: true },
+          { name: 'reference', type: 'text', required: false },
+          { name: 'isReconciled', type: 'boolean', required: false },
+        ]},
+        { name: 'BankAccount', fields: [
+          { name: 'name', type: 'text', required: true },
+          { name: 'accountNumber', type: 'text', required: true },
+          { name: 'bank', type: 'text', required: true },
+          { name: 'balance', type: 'number', required: true },
+          { name: 'currency', type: 'text', required: true },
+          { name: 'lastReconciled', type: 'date', required: false },
+        ]},
+        { name: 'CashProjection', fields: [
+          { name: 'period', type: 'text', required: true },
+          { name: 'expectedInflow', type: 'number', required: true },
+          { name: 'expectedOutflow', type: 'number', required: true },
+          { name: 'netCash', type: 'number', required: true },
+          { name: 'runningBalance', type: 'number', required: true },
+        ]},
+      ],
+      authMethods: ['email', 'microsoft'],
+      roles: ['admin', 'treasurer', 'accountant', 'viewer'],
+      layout: 'sidebar',
+      theme: 'light',
+      primaryColor: '#0d9488',
+      integrations: ['export'],
+      deployTarget: 'vercel',
+      region: 'auto',
+    },
+  },
+  // ── Office ────────────────────────────────────────────────
+  {
+    id: 'purchase-requisition',
+    name: 'Purchase Requisition',
+    description: 'Internal purchase requests with multi-level approvals and PO generation',
+    features: ['Requisitions', 'Approvals', 'PO Generation', 'Budget Check', 'Vendor Select'],
+    category: 'Backoffice',
+    presetConfig: {
+      appType: 'dashboard',
+      industry: 'Procurement',
+      features: ['authentication', 'dashboard', 'notifications', 'search', 'export'],
+      targetUsers: ['internal'],
+      entities: [
+        { name: 'Requisition', fields: [
+          { name: 'reqNumber', type: 'text', required: true },
+          { name: 'title', type: 'text', required: true },
+          { name: 'department', type: 'text', required: true },
+          { name: 'totalAmount', type: 'number', required: true },
+          { name: 'urgency', type: 'select', required: true },
+          { name: 'status', type: 'select', required: true },
+          { name: 'requestedBy', type: 'text', required: true },
+          { name: 'approvedBy', type: 'text', required: false },
+        ]},
+        { name: 'LineItem', fields: [
+          { name: 'description', type: 'text', required: true },
+          { name: 'quantity', type: 'number', required: true },
+          { name: 'unitPrice', type: 'number', required: true },
+          { name: 'preferredVendor', type: 'text', required: false },
+          { name: 'glAccount', type: 'text', required: false },
+        ]},
+        { name: 'PurchaseOrder', fields: [
+          { name: 'poNumber', type: 'text', required: true },
+          { name: 'vendor', type: 'text', required: true },
+          { name: 'totalAmount', type: 'number', required: true },
+          { name: 'status', type: 'select', required: true },
+          { name: 'deliveryDate', type: 'date', required: false },
+        ]},
+      ],
+      authMethods: ['email', 'microsoft'],
+      roles: ['admin', 'requester', 'approver', 'procurement'],
+      layout: 'sidebar',
+      theme: 'light',
+      primaryColor: '#ea580c',
+      integrations: ['email'],
+      deployTarget: 'vercel',
+      region: 'auto',
+    },
+  },
+  {
+    id: 'travel-reimbursement',
+    name: 'Travel & Reimbursement',
+    description: 'Travel requests, booking management, per diem, and reimbursement claims',
+    features: ['Travel Requests', 'Bookings', 'Per Diem', 'Receipts', 'Reimbursement'],
+    category: 'Backoffice',
+    presetConfig: {
+      appType: 'dashboard',
+      industry: 'Finance & Accounting',
+      features: ['authentication', 'dashboard', 'file-uploads', 'notifications', 'export', 'reports'],
+      targetUsers: ['employee', 'manager', 'admin'],
+      entities: [
+        { name: 'TravelRequest', fields: [
+          { name: 'destination', type: 'text', required: true },
+          { name: 'purpose', type: 'text', required: true },
+          { name: 'departureDate', type: 'date', required: true },
+          { name: 'returnDate', type: 'date', required: true },
+          { name: 'estimatedCost', type: 'number', required: true },
+          { name: 'status', type: 'select', required: true },
+          { name: 'approvedBy', type: 'text', required: false },
+        ]},
+        { name: 'Booking', fields: [
+          { name: 'type', type: 'select', required: true },
+          { name: 'provider', type: 'text', required: true },
+          { name: 'confirmationNumber', type: 'text', required: false },
+          { name: 'cost', type: 'number', required: true },
+          { name: 'date', type: 'date', required: true },
+        ]},
+        { name: 'Reimbursement', fields: [
+          { name: 'description', type: 'text', required: true },
+          { name: 'amount', type: 'number', required: true },
+          { name: 'category', type: 'select', required: true },
+          { name: 'receiptUrl', type: 'text', required: false },
+          { name: 'date', type: 'date', required: true },
+          { name: 'status', type: 'select', required: true },
+        ]},
+      ],
+      authMethods: ['email', 'google', 'microsoft'],
+      roles: ['admin', 'manager', 'employee'],
+      layout: 'sidebar',
+      theme: 'light',
+      primaryColor: '#0284c7',
+      integrations: ['calendar', 'email'],
+      deployTarget: 'vercel',
+      region: 'auto',
+    },
+  },
+  {
+    id: 'time-attendance',
+    name: 'Time & Attendance',
+    description: 'Employee clock in/out, timesheets, overtime tracking, and leave management',
+    features: ['Clock In/Out', 'Timesheets', 'Overtime', 'Leave Balances', 'Shift Planning'],
+    category: 'Human Resources',
+    presetConfig: {
+      appType: 'dashboard',
+      industry: 'Human Resources',
+      features: ['authentication', 'dashboard', 'notifications', 'reports', 'export'],
+      targetUsers: ['employee', 'manager', 'admin'],
+      entities: [
+        { name: 'TimeEntry', fields: [
+          { name: 'employee', type: 'text', required: true },
+          { name: 'clockIn', type: 'date', required: true },
+          { name: 'clockOut', type: 'date', required: false },
+          { name: 'totalHours', type: 'number', required: false },
+          { name: 'overtimeHours', type: 'number', required: false },
+          { name: 'status', type: 'select', required: true },
+          { name: 'notes', type: 'text', required: false },
+        ]},
+        { name: 'Shift', fields: [
+          { name: 'name', type: 'text', required: true },
+          { name: 'startTime', type: 'text', required: true },
+          { name: 'endTime', type: 'text', required: true },
+          { name: 'breakMinutes', type: 'number', required: false },
+          { name: 'daysOfWeek', type: 'text', required: true },
+        ]},
+        { name: 'LeaveBalance', fields: [
+          { name: 'employee', type: 'text', required: true },
+          { name: 'leaveType', type: 'select', required: true },
+          { name: 'totalDays', type: 'number', required: true },
+          { name: 'usedDays', type: 'number', required: true },
+          { name: 'remainingDays', type: 'number', required: true },
+          { name: 'year', type: 'text', required: true },
+        ]},
+      ],
+      authMethods: ['email', 'microsoft'],
+      roles: ['admin', 'hr', 'manager', 'employee'],
+      layout: 'sidebar',
+      theme: 'light',
+      primaryColor: '#e11d48',
+      integrations: ['calendar', 'email'],
+      deployTarget: 'vercel',
+      region: 'auto',
+    },
+  },
+  {
+    id: 'fleet-management',
+    name: 'Fleet Management',
+    description: 'Company vehicles, mileage logs, maintenance schedules, and fuel tracking',
+    features: ['Vehicles', 'Mileage Logs', 'Maintenance', 'Fuel Tracking', 'Assignments'],
+    category: 'Backoffice',
+    presetConfig: {
+      appType: 'dashboard',
+      industry: 'Facility Management',
+      features: ['authentication', 'dashboard', 'notifications', 'search', 'reports', 'export'],
+      targetUsers: ['internal'],
+      entities: [
+        { name: 'Vehicle', fields: [
+          { name: 'licensePlate', type: 'text', required: true },
+          { name: 'make', type: 'text', required: true },
+          { name: 'model', type: 'text', required: true },
+          { name: 'year', type: 'number', required: true },
+          { name: 'mileage', type: 'number', required: true },
+          { name: 'status', type: 'select', required: true },
+          { name: 'assignedTo', type: 'text', required: false },
+          { name: 'insuranceExpiry', type: 'date', required: false },
+        ]},
+        { name: 'MileageLog', fields: [
+          { name: 'vehicle', type: 'text', required: true },
+          { name: 'driver', type: 'text', required: true },
+          { name: 'startMileage', type: 'number', required: true },
+          { name: 'endMileage', type: 'number', required: true },
+          { name: 'purpose', type: 'text', required: true },
+          { name: 'date', type: 'date', required: true },
+        ]},
+        { name: 'MaintenanceRecord', fields: [
+          { name: 'type', type: 'select', required: true },
+          { name: 'description', type: 'text', required: true },
+          { name: 'cost', type: 'number', required: true },
+          { name: 'performedAt', type: 'date', required: true },
+          { name: 'nextDue', type: 'date', required: false },
+          { name: 'vendor', type: 'text', required: false },
+        ]},
+        { name: 'FuelEntry', fields: [
+          { name: 'vehicle', type: 'text', required: true },
+          { name: 'liters', type: 'number', required: true },
+          { name: 'cost', type: 'number', required: true },
+          { name: 'mileage', type: 'number', required: true },
+          { name: 'date', type: 'date', required: true },
+          { name: 'station', type: 'text', required: false },
+        ]},
+      ],
+      authMethods: ['email'],
+      roles: ['admin', 'fleet-manager', 'driver'],
+      layout: 'sidebar',
+      theme: 'light',
+      primaryColor: '#475569',
+      integrations: ['email'],
       deployTarget: 'vercel',
       region: 'auto',
     },
@@ -796,8 +1395,22 @@ const categoryColors: Record<string, string> = {
   'Product Management': 'bg-orange-100 text-orange-700 dark:bg-orange-950 dark:text-orange-300',
   'Human Resources': 'bg-pink-100 text-pink-700 dark:bg-pink-950 dark:text-pink-300',
   'Support': 'bg-cyan-100 text-cyan-700 dark:bg-cyan-950 dark:text-cyan-300',
+  'Accounting': 'bg-emerald-100 text-emerald-700 dark:bg-emerald-950 dark:text-emerald-300',
   'Backoffice': 'bg-slate-100 text-slate-700 dark:bg-slate-800 dark:text-slate-300',
 }
+
+// Stable category order
+const CATEGORY_ORDER = [
+  'Accounting',
+  'Finance',
+  'Human Resources',
+  'Backoffice',
+  'Operations',
+  'Sales',
+  'Support',
+  'Project Management',
+  'Product Management',
+] as const
 
 export default function TemplatesPage() {
   const router = useRouter()
@@ -806,6 +1419,42 @@ export default function TemplatesPage() {
   const [selectedTemplate, setSelectedTemplate] = useState<Template | null>(null)
   const [projectName, setProjectName] = useState('')
   const [isCreating, setIsCreating] = useState(false)
+  const [activeCategory, setActiveCategory] = useState<string | null>(null)
+  const [searchQuery, setSearchQuery] = useState('')
+
+  // Derive category counts
+  const categoryCounts = useMemo(() => {
+    const counts: Record<string, number> = {}
+    for (const tmpl of templates) {
+      counts[tmpl.category] = (counts[tmpl.category] || 0) + 1
+    }
+    return counts
+  }, [])
+
+  // Ordered categories that actually have templates
+  const categories = useMemo(
+    () => CATEGORY_ORDER.filter((c) => categoryCounts[c]),
+    [categoryCounts],
+  )
+
+  // Filter templates
+  const filteredTemplates = useMemo(() => {
+    let result = templates
+    if (activeCategory) {
+      result = result.filter((t) => t.category === activeCategory)
+    }
+    if (searchQuery.trim()) {
+      const q = searchQuery.toLowerCase()
+      result = result.filter(
+        (t) =>
+          t.name.toLowerCase().includes(q) ||
+          t.description.toLowerCase().includes(q) ||
+          t.features.some((f) => f.toLowerCase().includes(q)) ||
+          t.category.toLowerCase().includes(q),
+      )
+    }
+    return result
+  }, [activeCategory, searchQuery])
 
   const handleCloseModal = () => {
     setSelectedTemplate(null)
@@ -848,67 +1497,142 @@ export default function TemplatesPage() {
 
   return (
     <div className="space-y-6">
-      <div>
-        <h2 className="text-2xl font-bold tracking-tight">{t('templates.title')}</h2>
-        <p className="text-muted-foreground">
-          {t('templates.subtitle')}
+      {/* Header */}
+      <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
+        <div>
+          <h2 className="text-2xl font-bold tracking-tight">{t('templates.title')}</h2>
+          <p className="text-muted-foreground">
+            {t('templates.subtitle')}
+          </p>
+        </div>
+        <p className="text-sm text-muted-foreground tabular-nums">
+          {filteredTemplates.length} / {templates.length} {t('templates.title').toLowerCase()}
         </p>
       </div>
 
-      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-        {templates.map((template) => (
-          <Card key={template.id} className="flex flex-col hover:shadow-md transition-shadow">
-            <CardHeader>
-              <div className="flex items-center justify-between mb-2">
-                <FileCode className="h-5 w-5 text-primary" />
-                <span className={`text-xs px-2 py-0.5 rounded-full ${categoryColors[template.category]}`}>
-                  {template.category}
-                </span>
-              </div>
-              <CardTitle className="text-lg">{template.name}</CardTitle>
-              <CardDescription>{template.description}</CardDescription>
-            </CardHeader>
-            <CardContent className="flex-1">
-              <div className="flex flex-wrap gap-2 mb-4">
-                {template.features.map((feature) => (
-                  <span
-                    key={feature}
-                    className="text-xs bg-muted px-2 py-1 rounded"
-                  >
-                    {feature}
-                  </span>
-                ))}
-              </div>
-              <div className="text-xs text-muted-foreground space-y-1">
-                <p>{template.presetConfig.entities?.length || 0} {t('templates.dataModels')}</p>
-                <p>{template.presetConfig.features?.length || 0} {t('templates.includes')}</p>
-              </div>
-            </CardContent>
-            <div className="p-6 pt-0 flex gap-2">
-              <Button
-                variant="outline"
-                size="sm"
-                className="flex-1"
-                onClick={() => setSelectedTemplate(template)}
-              >
-                <Eye className="mr-1 h-4 w-4" />
-                {t('templates.preview')}
-              </Button>
-              <Button
-                size="sm"
-                className="flex-1"
-                onClick={() => {
-                  setSelectedTemplate(template)
-                  setProjectName(template.name)
-                }}
-              >
-                <Sparkles className="mr-1 h-4 w-4" />
-                Use
-              </Button>
-            </div>
-          </Card>
-        ))}
+      {/* Search + Category Filters */}
+      <div className="space-y-3">
+        {/* Search */}
+        <div className="relative max-w-sm">
+          <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+          <Input
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            placeholder={t('templates.searchPlaceholder')}
+            className="pl-9 pr-9"
+          />
+          {searchQuery && (
+            <button
+              onClick={() => setSearchQuery('')}
+              className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
+            >
+              <X className="h-4 w-4" />
+            </button>
+          )}
+        </div>
+
+        {/* Category pills */}
+        <div className="flex flex-wrap gap-2">
+          <button
+            onClick={() => setActiveCategory(null)}
+            className={`inline-flex items-center gap-1.5 rounded-full px-3 py-1.5 text-xs font-medium transition-colors ${
+              activeCategory === null
+                ? 'bg-primary text-primary-foreground'
+                : 'bg-muted text-muted-foreground hover:bg-muted/80'
+            }`}
+          >
+            <LayoutGrid className="h-3 w-3" />
+            {t('templates.allCategories')}
+            <span className="ml-0.5 tabular-nums">({templates.length})</span>
+          </button>
+          {categories.map((cat) => (
+            <button
+              key={cat}
+              onClick={() => setActiveCategory(activeCategory === cat ? null : cat)}
+              className={`inline-flex items-center gap-1.5 rounded-full px-3 py-1.5 text-xs font-medium transition-colors ${
+                activeCategory === cat
+                  ? 'bg-primary text-primary-foreground'
+                  : `${categoryColors[cat]} hover:opacity-80`
+              }`}
+            >
+              {cat}
+              <span className="tabular-nums">({categoryCounts[cat]})</span>
+            </button>
+          ))}
+        </div>
       </div>
+
+      {/* Template Grid */}
+      {filteredTemplates.length === 0 ? (
+        <div className="flex flex-col items-center justify-center rounded-lg border border-dashed p-12 text-center">
+          <Search className="h-10 w-10 text-muted-foreground/50 mb-3" />
+          <p className="text-sm font-medium">{t('templates.noResults')}</p>
+          <p className="text-xs text-muted-foreground mt-1">{t('templates.noResultsHint')}</p>
+          <Button
+            variant="outline"
+            size="sm"
+            className="mt-4"
+            onClick={() => { setActiveCategory(null); setSearchQuery('') }}
+          >
+            {t('templates.clearFilters')}
+          </Button>
+        </div>
+      ) : (
+        <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+          {filteredTemplates.map((template) => (
+            <Card key={template.id} className="flex flex-col hover:shadow-md transition-shadow">
+              <CardHeader>
+                <div className="flex items-center justify-between mb-2">
+                  <FileCode className="h-5 w-5 text-primary" />
+                  <span className={`text-xs px-2 py-0.5 rounded-full ${categoryColors[template.category]}`}>
+                    {template.category}
+                  </span>
+                </div>
+                <CardTitle className="text-lg">{template.name}</CardTitle>
+                <CardDescription>{template.description}</CardDescription>
+              </CardHeader>
+              <CardContent className="flex-1">
+                <div className="flex flex-wrap gap-2 mb-4">
+                  {template.features.map((feature) => (
+                    <span
+                      key={feature}
+                      className="text-xs bg-muted px-2 py-1 rounded"
+                    >
+                      {feature}
+                    </span>
+                  ))}
+                </div>
+                <div className="text-xs text-muted-foreground space-y-1">
+                  <p>{template.presetConfig.entities?.length || 0} {t('templates.dataModels')}</p>
+                  <p>{template.presetConfig.features?.length || 0} {t('templates.includes')}</p>
+                </div>
+              </CardContent>
+              <div className="p-6 pt-0 flex gap-2">
+                <Button
+                  variant="outline"
+                  size="sm"
+                  className="flex-1"
+                  onClick={() => setSelectedTemplate(template)}
+                >
+                  <Eye className="mr-1 h-4 w-4" />
+                  {t('templates.preview')}
+                </Button>
+                <Button
+                  size="sm"
+                  className="flex-1"
+                  onClick={() => {
+                    setSelectedTemplate(template)
+                    setProjectName(template.name)
+                  }}
+                >
+                  <Sparkles className="mr-1 h-4 w-4" />
+                  Use
+                </Button>
+              </div>
+            </Card>
+          ))}
+        </div>
+      )}
 
       {/* Template Dialog */}
       <Dialog open={!!selectedTemplate} onOpenChange={(open) => !open && handleCloseModal()}>
@@ -919,6 +1643,11 @@ export default function TemplatesPage() {
           </DialogHeader>
           {selectedTemplate && (
             <div className="space-y-4 py-4">
+              {/* Category badge */}
+              <span className={`inline-block text-xs px-2 py-0.5 rounded-full ${categoryColors[selectedTemplate.category]}`}>
+                {selectedTemplate.category}
+              </span>
+
               {/* Features */}
               <div>
                 <p className="text-sm font-medium mb-2">{t('templates.features')}</p>

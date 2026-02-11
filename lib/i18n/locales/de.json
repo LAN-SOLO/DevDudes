@@ -1569,7 +1569,8 @@
       "development": "Entwicklung",
       "communication": "Kommunikation",
       "productivity": "Produktivität",
-      "analytics": "Analysen"
+      "analytics": "Analysen",
+      "admin": "M365 Admin"
     },
     "toasts": {
       "connected": "Verbunden",
@@ -1612,7 +1613,12 @@
     "useTemplate": "Vorlage verwenden",
     "features": "Funktionen",
     "dataModels": "Datenmodelle",
-    "includes": "Enthält"
+    "includes": "Enthält",
+    "searchPlaceholder": "Vorlagen durchsuchen...",
+    "allCategories": "Alle",
+    "noResults": "Keine Vorlagen gefunden",
+    "noResultsHint": "Versuchen Sie einen anderen Suchbegriff oder setzen Sie die Filter zurück",
+    "clearFilters": "Filter zurücksetzen"
   },
   "whatsNew": {
     "title": "Neuigkeiten",
