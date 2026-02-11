@@ -14,7 +14,7 @@ import {
   sortableKeyboardCoordinates,
   verticalListSortingStrategy,
 } from '@dnd-kit/sortable'
-import { Plus, ArrowRight } from 'lucide-react'
+import { Plus } from 'lucide-react'
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { StepCard } from '../step-card'
@@ -23,7 +23,7 @@ import { useTranslation } from '@/lib/i18n/language-provider'
 
 export function StepBuilder() {
   const { t } = useTranslation()
-  const { config, addStep, reorderSteps, setCurrentStep } = useWorkflowWizard()
+  const { config, addStep, reorderSteps, nextStep, prevStep } = useWorkflowWizard()
 
   const sensors = useSensors(
     useSensor(PointerSensor),
@@ -34,7 +34,6 @@ export function StepBuilder() {
 
   const handleDragEnd = (event: DragEndEvent) => {
     const { active, over } = event
-
     if (over && active.id !== over.id) {
       reorderSteps(active.id as string, over.id as string)
     }
@@ -85,10 +84,12 @@ export function StepBuilder() {
           </Button>
         )}
 
-        <div className="flex justify-end pt-4">
-          <Button onClick={() => setCurrentStep(2)} disabled={!canContinue}>
+        <div className="flex justify-between pt-4">
+          <Button variant="outline" onClick={prevStep}>
+            {t('workflow.common.back')}
+          </Button>
+          <Button onClick={nextStep} disabled={!canContinue}>
             {t('workflow.common.continue')}
-            <ArrowRight className="ml-2 h-4 w-4" />
           </Button>
         </div>
       </CardContent>

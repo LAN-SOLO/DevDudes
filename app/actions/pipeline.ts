@@ -3,36 +3,16 @@
 import { createClient } from '@/lib/supabase/server'
 import { revalidatePath } from 'next/cache'
 import { z } from 'zod'
-import { workflowConfigSchema, type WorkflowConfig } from '@/lib/validations/workflow'
+import {
+  workflowConfigV2Schema,
+  isV1WorkflowConfig,
+  migrateWorkflowV1toV2,
+} from '@/lib/validations/workflow'
+import type { WorkflowConfigV2 } from '@/lib/workflow-pipeline/types'
+import { presetConfigV2Schema, isV1Config, migrateV1toV2 } from '@/lib/validations/preset'
+import type { PresetConfigV2 } from '@/lib/preset-pipeline/types'
 
-// Preset configuration schema
-const presetConfigSchema = z.object({
-  businessName: z.string().min(1),
-  industry: z.string(),
-  description: z.string(),
-  appType: z.string(),
-  targetUsers: z.array(z.string()),
-  features: z.array(z.string()),
-  customFeatures: z.string(),
-  entities: z.array(z.object({
-    name: z.string(),
-    fields: z.array(z.object({
-      name: z.string(),
-      type: z.string(),
-      required: z.boolean(),
-    })),
-  })),
-  authMethods: z.array(z.string()),
-  roles: z.array(z.string()),
-  theme: z.enum(['light', 'dark', 'system']),
-  primaryColor: z.string(),
-  layout: z.enum(['sidebar', 'topnav', 'minimal']),
-  integrations: z.array(z.string()),
-  deployTarget: z.string(),
-  region: z.string(),
-})
-
-export type PresetConfig = z.infer<typeof presetConfigSchema>
+export type PresetConfig = PresetConfigV2
 
 // Generated concept structure
 export interface GeneratedConcept {
@@ -66,7 +46,7 @@ export interface GeneratedConcept {
   estimatedComplexity: 'simple' | 'moderate' | 'complex'
 }
 
-export async function savePresetConfig(projectId: string | null, config: PresetConfig) {
+export async function savePresetConfig(projectId: string | null, rawConfig: PresetConfigV2 | Record<string, unknown>) {
   const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()
 
@@ -74,10 +54,22 @@ export async function savePresetConfig(projectId: string | null, config: PresetC
     return { error: 'Not authenticated', projectId: null }
   }
 
-  const result = presetConfigSchema.safeParse(config)
-  if (!result.success) {
-    return { error: result.error.issues[0]?.message || 'Invalid configuration', projectId: null }
+  // Auto-migrate v1 configs
+  let config: PresetConfigV2
+  if (isV1Config(rawConfig as Record<string, unknown>)) {
+    config = migrateV1toV2(rawConfig as Record<string, string>)
+  } else {
+    const result = presetConfigV2Schema.safeParse(rawConfig)
+    if (!result.success) {
+      return { error: result.error.issues[0]?.message || 'Invalid configuration', projectId: null }
+    }
+    config = result.data as PresetConfigV2
   }
+
+  const presetData = { type: 'preset', version: '2.0.0', ...config } as unknown as Record<string, unknown>
+  const name = config.meta.businessName || 'Untitled Project'
+  const description = config.meta.description || ''
+  const appType = config.app.appType || 'custom'
 
   // If no project ID, create a new project
   if (!projectId) {
@@ -85,11 +77,11 @@ export async function savePresetConfig(projectId: string | null, config: PresetC
       .from('projects')
       .insert({
         user_id: user.id,
-        name: config.businessName,
-        description: config.description,
-        app_type: config.appType,
+        name,
+        description,
+        app_type: appType,
         status: 'configuring',
-        preset_config: config as unknown as Record<string, unknown>,
+        preset_config: presetData,
       })
       .select()
       .single()
@@ -107,11 +99,11 @@ export async function savePresetConfig(projectId: string | null, config: PresetC
   const { error } = await supabase
     .from('projects')
     .update({
-      name: config.businessName,
-      description: config.description,
-      app_type: config.appType,
+      name,
+      description,
+      app_type: appType,
       status: 'configuring',
-      preset_config: config as unknown as Record<string, unknown>,
+      preset_config: presetData,
     })
     .eq('id', projectId)
     .eq('user_id', user.id)
@@ -204,7 +196,7 @@ export async function saveGeneratedConcept(projectId: string, concept: Generated
 }
 
 // Workflow configuration save
-export async function saveWorkflowConfig(projectId: string | null, config: WorkflowConfig) {
+export async function saveWorkflowConfig(projectId: string | null, rawConfig: WorkflowConfigV2 | Record<string, unknown>) {
   const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()
 
@@ -212,14 +204,21 @@ export async function saveWorkflowConfig(projectId: string | null, config: Workf
     return { error: 'Not authenticated', projectId: null }
   }
 
-  const result = workflowConfigSchema.safeParse(config)
-  if (!result.success) {
-    return { error: result.error.issues[0]?.message || 'Invalid configuration', projectId: null }
+  // Auto-migrate v1 configs
+  let config: WorkflowConfigV2
+  if (isV1WorkflowConfig(rawConfig as Record<string, unknown>)) {
+    config = migrateWorkflowV1toV2(rawConfig as Record<string, unknown>)
+  } else {
+    const result = workflowConfigV2Schema.safeParse(rawConfig)
+    if (!result.success) {
+      return { error: result.error.issues[0]?.message || 'Invalid configuration', projectId: null }
+    }
+    config = result.data as WorkflowConfigV2
   }
 
-  // Generate a name from the first step or use a default
-  const workflowName = config.steps[0]?.title || 'Untitled Workflow'
-  const workflowDescription = config.steps.map((s) => s.title).join(' -> ')
+  const workflowData = { type: 'workflow', version: '2.0.0', ...config } as unknown as Record<string, unknown>
+  const workflowName = config.meta.name || config.steps[0]?.title || 'Untitled Workflow'
+  const workflowDescription = config.meta.description || config.steps.map((s) => s.title).join(' -> ')
 
   // If no project ID, create a new project
   if (!projectId) {
@@ -231,7 +230,7 @@ export async function saveWorkflowConfig(projectId: string | null, config: Workf
         description: workflowDescription,
         app_type: 'workflow',
         status: 'configuring',
-        preset_config: { type: 'workflow', ...config } as unknown as Record<string, unknown>,
+        preset_config: workflowData,
       })
       .select()
       .single()
@@ -253,7 +252,7 @@ export async function saveWorkflowConfig(projectId: string | null, config: Workf
       description: workflowDescription,
       app_type: 'workflow',
       status: 'configuring',
-      preset_config: { type: 'workflow', ...config } as unknown as Record<string, unknown>,
+      preset_config: workflowData,
     })
     .eq('id', projectId)
     .eq('user_id', user.id)

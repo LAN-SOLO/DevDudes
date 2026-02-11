@@ -38,7 +38,7 @@ export function WorkflowComplete() {
     const url = URL.createObjectURL(blob)
     const a = document.createElement('a')
     a.href = url
-    a.download = 'workflow-config.json'
+    a.download = `${config.meta.name || 'workflow'}-config.json`
     a.click()
     URL.revokeObjectURL(url)
   }
@@ -48,7 +48,7 @@ export function WorkflowComplete() {
     setCurrentStep(1)
   }
 
-  const enabledIntegrations = config.aiIntegrations.filter((i) => i.enabled)
+  const enabledAiProviders = config.aiIntegrations.providers.filter((p) => p.enabled)
 
   return (
     <Card>
@@ -75,59 +75,82 @@ export function WorkflowComplete() {
 
         {/* Config Summary */}
         <div className="rounded-lg bg-muted p-4 space-y-3">
+          {/* Meta */}
+          {config.meta.name && (
+            <div>
+              <p className="text-xs text-muted-foreground mb-1">{t('workflow.complete.projectName')}</p>
+              <p className="text-sm font-medium">{config.meta.name} <span className="text-muted-foreground">v{config.meta.version}</span></p>
+              {config.meta.description && (
+                <p className="text-xs text-muted-foreground mt-1">{config.meta.description}</p>
+              )}
+            </div>
+          )}
+
           {/* Workflow Steps */}
-          <div>
+          <div className="border-t pt-3">
             <p className="text-xs text-muted-foreground mb-2">{t('workflow.complete.workflowSteps')}</p>
             <div className="space-y-1">
-              {config.steps.map((step, index) => (
+              {config.steps.length > 0 ? config.steps.map((step, index) => (
                 <div key={step.id} className="flex items-center gap-2 text-sm">
                   <span className="flex h-5 w-5 items-center justify-center rounded-full bg-primary/10 text-primary text-xs">
                     {index + 1}
                   </span>
                   <span className="font-medium">{step.title || t('workflow.complete.untitledStep')}</span>
+                  <span className="text-xs rounded bg-background px-1.5 py-0.5">{step.type}</span>
                   <span className="text-muted-foreground text-xs">
                     ({step.templates.length} {t('workflow.complete.templates')}, {step.links.length} {t('workflow.complete.links')}, {step.services.length} {t('workflow.complete.services')})
                   </span>
                 </div>
-              ))}
-            </div>
-          </div>
-
-          <div className="border-t pt-3">
-            <p className="text-xs text-muted-foreground mb-2">{t('workflow.complete.selectedFeatures')}</p>
-            <div className="flex flex-wrap gap-1">
-              {config.features.length > 0 ? (
-                config.features.map((f) => (
-                  <span key={f} className="rounded bg-background px-2 py-0.5 text-xs">
-                    {f}
-                  </span>
-                ))
-              ) : (
-                <span className="text-xs text-muted-foreground">{t('workflow.complete.noFeatures')}</span>
+              )) : (
+                <span className="text-xs text-muted-foreground">{t('workflow.complete.noSteps')}</span>
               )}
             </div>
           </div>
 
-          <div className="border-t pt-3 grid gap-3 sm:grid-cols-3">
+          {/* Key Config Summary Grid */}
+          <div className="border-t pt-3 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+            <div>
+              <p className="text-xs text-muted-foreground">{t('workflow.complete.triggers')}</p>
+              <p className="text-sm">{config.triggers.triggers.length} {t('workflow.complete.configured')}</p>
+            </div>
+            <div>
+              <p className="text-xs text-muted-foreground">{t('workflow.complete.orchestration')}</p>
+              <p className="text-sm capitalize">{config.orchestration.mode}</p>
+            </div>
+            <div>
+              <p className="text-xs text-muted-foreground">{t('workflow.complete.dataConnectors')}</p>
+              <p className="text-sm">{config.dataConnectors.connectors.length} {t('workflow.complete.configured')}</p>
+            </div>
+            <div>
+              <p className="text-xs text-muted-foreground">{t('workflow.complete.aiProviders')}</p>
+              <p className="text-sm">
+                {enabledAiProviders.length > 0
+                  ? enabledAiProviders.map((p) => p.provider).join(', ')
+                  : t('workflow.complete.none')}
+              </p>
+            </div>
+          </div>
+
+          <div className="border-t pt-3 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
             <div>
               <p className="text-xs text-muted-foreground">{t('workflow.complete.authentication')}</p>
               <p className="text-sm">
-                {config.authEnabled
-                  ? `${config.authMethods.length} ${t('workflow.complete.methods')}`
+                {config.auth.enabled
+                  ? `${config.auth.methods.length} ${t('workflow.complete.methods')}`
                   : t('workflow.complete.disabled')}
               </p>
             </div>
             <div>
-              <p className="text-xs text-muted-foreground">{t('workflow.complete.aiIntegrations')}</p>
-              <p className="text-sm">
-                {enabledIntegrations.length > 0
-                  ? enabledIntegrations.map((i) => i.provider).join(', ')
-                  : t('workflow.complete.none')}
-              </p>
+              <p className="text-xs text-muted-foreground">{t('workflow.complete.selectedFeatures')}</p>
+              <p className="text-sm">{config.features.featureIds.length} {t('workflow.common.selected')}</p>
             </div>
             <div>
               <p className="text-xs text-muted-foreground">{t('workflow.complete.deployTarget')}</p>
-              <p className="text-sm capitalize">{config.deployTarget || t('workflow.complete.notSet')}</p>
+              <p className="text-sm capitalize">{config.deployment.target || t('workflow.complete.notSet')}</p>
+            </div>
+            <div>
+              <p className="text-xs text-muted-foreground">{t('workflow.complete.testing')}</p>
+              <p className="text-sm capitalize">{config.testing.unitFramework}</p>
             </div>
           </div>
         </div>

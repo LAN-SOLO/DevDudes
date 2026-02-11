@@ -4,12 +4,16 @@ import { useRef } from 'react'
 import { WorkflowWizard, WorkflowWizardHandle } from '@/components/dudes/workflow/workflow-wizard'
 import { useTranslation } from '@/lib/i18n/language-provider'
 import { Button } from '@/components/ui/button'
-import { Upload } from 'lucide-react'
+import { Upload, Download } from 'lucide-react'
 
 export default function WorkflowPage() {
   const { t } = useTranslation()
   const wizardRef = useRef<WorkflowWizardHandle>(null)
   const fileInputRef = useRef<HTMLInputElement>(null)
+
+  const handleExport = () => {
+    wizardRef.current?.exportConfig()
+  }
 
   const handleImport = () => {
     fileInputRef.current?.click()
@@ -39,7 +43,7 @@ export default function WorkflowPage() {
           <h2 className="text-2xl font-bold tracking-tight">{t('pipeline.dudes.workflow.name')}</h2>
           <p className="text-muted-foreground">{t('pipeline.dudes.workflow.description')}</p>
         </div>
-        <div>
+        <div className="flex gap-2">
           <input
             ref={fileInputRef}
             type="file"
@@ -47,6 +51,10 @@ export default function WorkflowPage() {
             className="hidden"
             onChange={handleFileChange}
           />
+          <Button variant="outline" onClick={handleExport}>
+            <Download className="mr-2 h-4 w-4" />
+            {t('workflow.common.exportConfig')}
+          </Button>
           <Button variant="outline" onClick={handleImport}>
             <Upload className="mr-2 h-4 w-4" />
             {t('workflow.common.importConfig')}

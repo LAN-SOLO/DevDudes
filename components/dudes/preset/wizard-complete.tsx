@@ -2,16 +2,21 @@
 
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
-import { useWizard } from './wizard-context'
+import { usePresetWizard } from './wizard-context'
 import { useTranslation } from '@/lib/i18n/language-provider'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
+import { Badge } from '@/components/ui/badge'
 import { Check, Loader2, ArrowRight, Download, Edit, AlertCircle } from 'lucide-react'
 import { savePresetConfig } from '@/app/actions/pipeline'
 
+function findLabel(options: { value: string; label: string }[], value: string) {
+  return options.find((o) => o.value === value)?.label ?? value
+}
+
 export function WizardComplete() {
   const router = useRouter()
-  const { config, setIsComplete, setCurrentStep } = useWizard()
+  const { config, setIsComplete, setCurrentStep } = usePresetWizard()
   const { t } = useTranslation()
   const [isSaving, setIsSaving] = useState(false)
   const [error, setError] = useState<string | null>(null)
@@ -29,7 +34,6 @@ export function WizardComplete() {
     }
 
     setIsSaving(false)
-    // Navigate to combo dude for AI generation with the project ID
     router.push(`/dashboard/pipeline/combo?project=${result.projectId}`)
   }
 
@@ -39,7 +43,7 @@ export function WizardComplete() {
     const url = URL.createObjectURL(blob)
     const a = document.createElement('a')
     a.href = url
-    a.download = `${config.businessName || 'devdudes'}-config.json`
+    a.download = `${config.meta.businessName || 'devdudes'}-config.json`
     a.click()
     URL.revokeObjectURL(url)
   }
@@ -49,6 +53,8 @@ export function WizardComplete() {
     setCurrentStep(1)
   }
 
+  const enabledProviders = config.auth.providers.filter((p) => p.enabled)
+
   return (
     <Card>
       <CardHeader className="text-center">
@@ -56,12 +62,9 @@ export function WizardComplete() {
           <Check className="h-8 w-8 text-green-600" />
         </div>
         <CardTitle className="text-2xl">{t('preset.complete.title')}</CardTitle>
-        <CardDescription>
-          {t('preset.complete.description')}
-        </CardDescription>
+        <CardDescription>{t('preset.complete.description')}</CardDescription>
       </CardHeader>
       <CardContent className="space-y-6">
-        {/* Error Display */}
         {error && (
           <div className="rounded-lg bg-destructive/10 border border-destructive/20 p-4 flex items-start gap-3">
             <AlertCircle className="h-5 w-5 text-destructive flex-shrink-0 mt-0.5" />
@@ -72,66 +75,76 @@ export function WizardComplete() {
           </div>
         )}
 
-        {/* Config Summary */}
         <div className="rounded-lg bg-muted p-4 space-y-3">
+          {/* Meta & App */}
           <div className="grid gap-3 sm:grid-cols-2">
             <div>
               <p className="text-xs text-muted-foreground">{t('preset.complete.businessName')}</p>
-              <p className="font-medium">{config.businessName}</p>
+              <p className="font-medium">{config.meta.businessName || '—'}</p>
             </div>
             <div>
               <p className="text-xs text-muted-foreground">{t('preset.complete.industry')}</p>
-              <p className="font-medium">{config.industry}</p>
+              <p className="font-medium capitalize">{config.meta.industry || '—'}</p>
             </div>
             <div>
               <p className="text-xs text-muted-foreground">{t('preset.complete.appType')}</p>
-              <p className="font-medium capitalize">{config.appType}</p>
+              <p className="font-medium capitalize">{config.app.appType || '—'}</p>
             </div>
             <div>
-              <p className="text-xs text-muted-foreground">{t('preset.complete.targetUsers')}</p>
-              <p className="font-medium">{config.targetUsers.join(', ')}</p>
+              <p className="text-xs text-muted-foreground">{t('preset.complete.framework')}</p>
+              <p className="font-medium capitalize">{config.app.framework || '—'}</p>
             </div>
           </div>
 
-          <div className="border-t pt-3">
-            <p className="text-xs text-muted-foreground mb-2">{t('preset.complete.selectedFeatures')}</p>
-            <div className="flex flex-wrap gap-1">
-              {config.features.map((f) => (
-                <span key={f} className="rounded bg-background px-2 py-0.5 text-xs">
-                  {f}
-                </span>
-              ))}
+          {/* Features */}
+          {config.features.coreFeatures.length > 0 && (
+            <div className="border-t pt-3">
+              <p className="text-xs text-muted-foreground mb-1">{t('preset.complete.selectedFeatures')}</p>
+              <div className="flex flex-wrap gap-1">
+                {config.features.coreFeatures.map((f) => (
+                  <Badge key={f} variant="secondary" className="text-xs">{f}</Badge>
+                ))}
+              </div>
             </div>
-          </div>
+          )}
 
-          <div className="border-t pt-3">
-            <p className="text-xs text-muted-foreground mb-2">{t('preset.complete.dataEntities')}</p>
-            <div className="flex flex-wrap gap-1">
-              {config.entities.map((e) => (
-                <span key={e.name} className="rounded bg-background px-2 py-0.5 text-xs">
-                  {e.name} ({e.fields.length} {t('preset.data.fields')})
-                </span>
-              ))}
-            </div>
-          </div>
-
+          {/* Database & API */}
           <div className="border-t pt-3 grid gap-3 sm:grid-cols-3">
             <div>
-              <p className="text-xs text-muted-foreground">{t('preset.complete.authMethods')}</p>
-              <p className="text-sm">{config.authMethods.length} {t('preset.common.selected')}</p>
+              <p className="text-xs text-muted-foreground">{t('preset.complete.database')}</p>
+              <p className="text-sm capitalize">{config.database.enabled ? config.database.provider : 'Disabled'}</p>
             </div>
             <div>
-              <p className="text-xs text-muted-foreground">{t('preset.complete.integrations')}</p>
-              <p className="text-sm">{config.integrations.length} {t('preset.common.selected')}</p>
+              <p className="text-xs text-muted-foreground">{t('preset.complete.api')}</p>
+              <p className="text-sm uppercase">{config.api.enabled ? config.api.style : 'Disabled'}</p>
+            </div>
+            <div>
+              <p className="text-xs text-muted-foreground">{t('preset.complete.authMethods')}</p>
+              <p className="text-sm">{enabledProviders.length} {t('preset.common.selected')}</p>
+            </div>
+          </div>
+
+          {/* Optional blocks status */}
+          <div className="border-t pt-3 grid gap-3 sm:grid-cols-4">
+            <div>
+              <p className="text-xs text-muted-foreground">{t('preset.complete.storage')}</p>
+              <p className="text-sm">{config.storage.enabled ? findLabel([{ value: config.storage.provider, label: config.storage.provider }], config.storage.provider) : 'Off'}</p>
+            </div>
+            <div>
+              <p className="text-xs text-muted-foreground">{t('preset.complete.notifications')}</p>
+              <p className="text-sm">{config.notifications.enabled ? 'On' : 'Off'}</p>
+            </div>
+            <div>
+              <p className="text-xs text-muted-foreground">{t('preset.complete.payments')}</p>
+              <p className="text-sm">{config.payments.enabled ? config.payments.provider : 'Off'}</p>
             </div>
             <div>
               <p className="text-xs text-muted-foreground">{t('preset.complete.deployTarget')}</p>
-              <p className="text-sm capitalize">{config.deployTarget}</p>
+              <p className="text-sm capitalize">{config.deploy.target}</p>
             </div>
           </div>
         </div>
 
-        {/* Actions */}
         <div className="flex flex-col sm:flex-row gap-3">
           <Button
             onClick={handleSaveAndContinue}

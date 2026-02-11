@@ -18,7 +18,26 @@ import {
 import { useToast } from '@/components/ui/toast'
 import { FileCode, ArrowRight, Sparkles, Eye, Check, Loader2 } from 'lucide-react'
 import { savePresetConfig } from '@/app/actions/pipeline'
-import type { PresetConfig } from '@/app/actions/pipeline'
+
+// Templates use v1 flat config format - auto-migrated to v2 by savePresetConfig
+interface TemplatePresetConfig {
+  appType?: string
+  industry?: string
+  features?: string[]
+  targetUsers?: string[]
+  entities?: Array<{ name: string; fields: Array<{ name: string; type: string; required: boolean }> }>
+  authMethods?: string[]
+  roles?: string[]
+  layout?: string
+  theme?: string
+  primaryColor?: string
+  integrations?: string[]
+  deployTarget?: string
+  region?: string
+  customFeatures?: string
+  businessName?: string
+  description?: string
+}
 
 interface Template {
   id: string
@@ -26,7 +45,7 @@ interface Template {
   description: string
   features: string[]
   category: string
-  presetConfig: Partial<PresetConfig>
+  presetConfig: TemplatePresetConfig
 }
 
 const templates: Template[] = [
@@ -798,12 +817,12 @@ export default function TemplatesPage() {
 
     setIsCreating(true)
 
-    const config: PresetConfig = {
+    const config = {
       businessName: projectName,
       description: selectedTemplate.description,
       ...selectedTemplate.presetConfig,
       customFeatures: '',
-    } as PresetConfig
+    } as Record<string, unknown>
 
     const result = await savePresetConfig(null, config)
 

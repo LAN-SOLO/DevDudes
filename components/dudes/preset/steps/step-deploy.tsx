@@ -1,61 +1,50 @@
 'use client'
 
-import { useWizard } from '../wizard-context'
+import { useState } from 'react'
+import { usePresetWizard } from '../wizard-context'
 import { useTranslation } from '@/lib/i18n/language-provider'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
-import { ArrowLeft, Sparkles, Globe, Cloud, Server } from 'lucide-react'
+import { Input } from '@/components/ui/input'
+import { Label } from '@/components/ui/label'
+import { Switch } from '@/components/ui/switch'
+import { ArrowLeft, Sparkles, Plus, X } from 'lucide-react'
+import { DEPLOY_TARGET_OPTIONS, REGION_OPTIONS, SCALING_OPTIONS } from '@/lib/preset-pipeline/constants'
 
 export function StepDeploy() {
-  const { config, updateConfig, setCurrentStep, setIsComplete } = useWizard()
+  const { config, updateDeploy, setCurrentStep, setIsComplete } = usePresetWizard()
   const { t } = useTranslation()
+  const [newDomain, setNewDomain] = useState('')
 
-  const deployTargets = [
-    { id: 'vercel', label: t('preset.deploy.targets.vercel'), description: t('preset.deploy.targets.vercelDesc'), icon: Globe },
-    { id: 'aws', label: t('preset.deploy.targets.aws'), description: t('preset.deploy.targets.awsDesc'), icon: Cloud },
-    { id: 'gcp', label: t('preset.deploy.targets.gcp'), description: t('preset.deploy.targets.gcpDesc'), icon: Cloud },
-    { id: 'docker', label: t('preset.deploy.targets.docker'), description: t('preset.deploy.targets.dockerDesc'), icon: Server },
-    { id: 'self-host', label: t('preset.deploy.targets.selfHost'), description: t('preset.deploy.targets.selfHostDesc'), icon: Server },
-  ]
+  const deploy = config.deploy
 
-  const regions = [
-    { id: 'auto', label: t('preset.deploy.regions.auto'), description: t('preset.deploy.regions.autoDesc') },
-    { id: 'us-east', label: t('preset.deploy.regions.usEast'), description: t('preset.deploy.regions.usEastDesc') },
-    { id: 'us-west', label: t('preset.deploy.regions.usWest'), description: t('preset.deploy.regions.usWestDesc') },
-    { id: 'eu-west', label: t('preset.deploy.regions.euWest'), description: t('preset.deploy.regions.euWestDesc') },
-    { id: 'ap-south', label: t('preset.deploy.regions.apSouth'), description: t('preset.deploy.regions.apSouthDesc') },
-  ]
+  const addDomain = () => {
+    if (!newDomain.trim()) return
+    if (deploy.domains.includes(newDomain.trim())) return
+    updateDeploy({ domains: [...deploy.domains, newDomain.trim()] })
+    setNewDomain('')
+  }
 
-  const handleComplete = () => {
-    setIsComplete(true)
+  const removeDomain = (domain: string) => {
+    updateDeploy({ domains: deploy.domains.filter((d) => d !== domain) })
   }
 
   return (
     <Card>
       <CardHeader>
         <CardTitle>{t('preset.deploy.title')}</CardTitle>
-        <CardDescription>
-          {t('preset.deploy.description')}
-        </CardDescription>
+        <CardDescription>{t('preset.deploy.description')}</CardDescription>
       </CardHeader>
       <CardContent className="space-y-6">
         {/* Deploy Target */}
         <div className="space-y-2">
-          <p className="text-sm font-medium">{t('preset.deploy.deploymentTarget')}</p>
-          <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
-            {deployTargets.map((target) => (
-              <button
-                key={target.id}
-                onClick={() => updateConfig({ deployTarget: target.id })}
-                className={`flex flex-col items-center gap-2 rounded-lg border p-4 transition-colors ${
-                  config.deployTarget === target.id
-                    ? 'border-primary bg-primary/5'
-                    : 'border-border hover:border-primary/50'
-                }`}
-              >
-                <target.icon className="h-6 w-6" />
-                <span className="font-medium text-sm">{target.label}</span>
-                <span className="text-xs text-muted-foreground">{target.description}</span>
+          <Label>{t('preset.deploy.deploymentTarget')}</Label>
+          <div className="grid gap-2 sm:grid-cols-2 lg:grid-cols-3">
+            {DEPLOY_TARGET_OPTIONS.map((opt) => (
+              <button key={opt.value} onClick={() => updateDeploy({ target: opt.value })}
+                className={`rounded-lg border p-3 text-left text-sm transition-colors ${deploy.target === opt.value ? 'border-primary bg-primary/5' : 'border-border hover:border-primary/50'}`}>
+                <span className="font-medium">{opt.label}</span>
+                {opt.description && <p className="text-xs text-muted-foreground">{opt.description}</p>}
               </button>
             ))}
           </div>
@@ -63,44 +52,83 @@ export function StepDeploy() {
 
         {/* Region */}
         <div className="space-y-2">
-          <p className="text-sm font-medium">{t('preset.deploy.region')}</p>
+          <Label>{t('preset.deploy.region')}</Label>
           <div className="grid gap-2 sm:grid-cols-2">
-            {regions.map((region) => (
-              <button
-                key={region.id}
-                onClick={() => updateConfig({ region: region.id })}
-                className={`rounded-lg border p-3 text-left transition-colors ${
-                  config.region === region.id
-                    ? 'border-primary bg-primary/5'
-                    : 'border-border hover:border-primary/50'
-                }`}
-              >
-                <span className="font-medium text-sm">{region.label}</span>
-                <p className="text-xs text-muted-foreground">{region.description}</p>
+            {REGION_OPTIONS.map((opt) => (
+              <button key={opt.value} onClick={() => updateDeploy({ region: opt.value })}
+                className={`rounded-lg border p-3 text-left text-sm transition-colors ${deploy.region === opt.value ? 'border-primary bg-primary/5' : 'border-border hover:border-primary/50'}`}>
+                <span className="font-medium">{opt.label}</span>
+                {opt.description && <p className="text-xs text-muted-foreground">{opt.description}</p>}
               </button>
             ))}
           </div>
         </div>
 
-        {/* Summary */}
-        <div className="rounded-lg bg-muted p-4 space-y-2">
-          <p className="font-medium">{t('preset.deploy.configSummary')}</p>
-          <div className="text-sm space-y-1">
-            <p><span className="text-muted-foreground">{t('preset.deploy.summary.business')}:</span> {config.businessName || t('preset.deploy.notSet')}</p>
-            <p><span className="text-muted-foreground">{t('preset.deploy.summary.appType')}:</span> {config.appType || t('preset.deploy.notSet')}</p>
-            <p><span className="text-muted-foreground">{t('preset.deploy.summary.features')}:</span> {config.features.length} {t('preset.common.selected')}</p>
-            <p><span className="text-muted-foreground">{t('preset.deploy.summary.entities')}:</span> {config.entities.length} {t('preset.deploy.summary.defined')}</p>
-            <p><span className="text-muted-foreground">{t('preset.deploy.summary.auth')}:</span> {config.authMethods.join(', ')}</p>
-            <p><span className="text-muted-foreground">{t('preset.deploy.summary.integrations')}:</span> {config.integrations.length} {t('preset.common.selected')}</p>
+        {/* Domains */}
+        <div className="space-y-2">
+          <Label>{t('preset.deploy.domains')}</Label>
+          {deploy.domains.length > 0 && (
+            <div className="flex flex-wrap gap-2">
+              {deploy.domains.map((domain) => (
+                <span key={domain} className="inline-flex items-center gap-1 rounded-full bg-muted px-3 py-1 text-sm">
+                  {domain}
+                  <button onClick={() => removeDomain(domain)} className="ml-1 hover:text-destructive">
+                    <X className="h-3 w-3" />
+                  </button>
+                </span>
+              ))}
+            </div>
+          )}
+          <div className="flex gap-2">
+            <Input placeholder="example.com" value={newDomain}
+              onChange={(e) => setNewDomain(e.target.value)}
+              onKeyDown={(e) => e.key === 'Enter' && addDomain()} />
+            <Button onClick={addDomain}><Plus className="h-4 w-4" /></Button>
+          </div>
+        </div>
+
+        {/* Scaling */}
+        <div className="space-y-2">
+          <Label>{t('preset.deploy.scaling')}</Label>
+          <div className="flex gap-2">
+            {SCALING_OPTIONS.map((opt) => (
+              <button key={opt.value} onClick={() => updateDeploy({ scaling: opt.value })}
+                className={`rounded-lg border px-4 py-2 text-sm transition-colors ${deploy.scaling === opt.value ? 'border-primary bg-primary/5' : 'border-border hover:border-primary/50'}`}>
+                {opt.label}
+              </button>
+            ))}
+          </div>
+        </div>
+
+        {/* Toggles */}
+        <div className="flex flex-col gap-4">
+          <div className="flex items-center justify-between">
+            <Label>{t('preset.deploy.docker')}</Label>
+            <Switch checked={deploy.docker} onCheckedChange={(v) => updateDeploy({ docker: v })} />
+          </div>
+          <div className="flex items-center justify-between">
+            <Label>{t('preset.deploy.envVars')}</Label>
+            <Switch checked={deploy.envVars} onCheckedChange={(v) => updateDeploy({ envVars: v })} />
+          </div>
+          <div className="flex items-center justify-between">
+            <Label>{t('preset.deploy.i18nSupport')}</Label>
+            <Switch checked={deploy.i18n} onCheckedChange={(v) => updateDeploy({ i18n: v })} />
+          </div>
+          <div className="flex items-center justify-between">
+            <Label>{t('preset.deploy.accessibility')}</Label>
+            <Switch checked={deploy.accessibility} onCheckedChange={(v) => updateDeploy({ accessibility: v })} />
+          </div>
+          <div className="flex items-center justify-between">
+            <Label>{t('preset.deploy.seo')}</Label>
+            <Switch checked={deploy.seo} onCheckedChange={(v) => updateDeploy({ seo: v })} />
           </div>
         </div>
 
         <div className="flex justify-between">
-          <Button variant="outline" onClick={() => setCurrentStep(7)}>
-            <ArrowLeft className="mr-2 h-4 w-4" />
-            {t('preset.common.back')}
+          <Button variant="outline" onClick={() => setCurrentStep(15)}>
+            <ArrowLeft className="mr-2 h-4 w-4" />{t('preset.common.back')}
           </Button>
-          <Button onClick={handleComplete} className="gap-2">
+          <Button onClick={() => setIsComplete(true)} className="gap-2">
             <Sparkles className="h-4 w-4" />
             {t('preset.deploy.completeConfig')}
           </Button>

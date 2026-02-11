@@ -18,60 +18,197 @@ import {
   Play,
   Workflow,
   ListChecks,
-  ToggleRight,
   Shield,
   Palette,
   Brain,
-  Cloud,
   Gamepad2,
   Layers,
   Globe,
   Cpu,
   Settings2,
   BarChart3,
+  Database,
+  Zap,
 } from 'lucide-react'
 import { useTranslation } from '@/lib/i18n/language-provider'
 
 export default function PipelinePage() {
   const { t } = useTranslation()
 
-  // Workflow Pipeline internal steps
+  // Workflow Pipeline internal steps (displayed in desktop stepper)
   const workflowSteps = [
+    { id: 'define', name: t('workflow.nav.categories.define'), icon: ListChecks, color: 'bg-indigo-100 text-indigo-600' },
+    { id: 'data', name: t('workflow.nav.categories.data'), icon: Database, color: 'bg-green-100 text-green-600' },
+    { id: 'intelligence', name: t('workflow.nav.categories.intelligence'), icon: Brain, color: 'bg-purple-100 text-purple-600' },
+    { id: 'secure', name: t('workflow.nav.categories.secure'), icon: Shield, color: 'bg-amber-100 text-amber-600' },
+    { id: 'ship', name: t('workflow.nav.categories.ship'), icon: Rocket, color: 'bg-cyan-100 text-cyan-600' },
+  ]
+
+  // App Pipeline category groups with individual steps
+  const appCategories = [
     {
-      id: 'steps',
-      name: t('workflow.nav.steps'),
+      id: 'configure',
+      name: t('pipeline.appCat.configure'),
+      icon: Settings2,
+      color: 'bg-blue-100 text-blue-600',
+      dotColor: 'bg-blue-500',
+      steps: [
+        { num: 1, label: 'Preset' },
+        { num: 2, label: 'Combo' },
+      ],
+    },
+    {
+      id: 'build',
+      name: t('pipeline.appCat.build'),
+      icon: Code2,
+      color: 'bg-green-100 text-green-600',
+      dotColor: 'bg-green-500',
+      steps: [
+        { num: 3, label: 'Prepair' },
+        { num: 4, label: 'Dev' },
+      ],
+    },
+    {
+      id: 'ship',
+      name: t('pipeline.appCat.ship'),
+      icon: Rocket,
+      color: 'bg-red-100 text-red-600',
+      dotColor: 'bg-red-500',
+      steps: [
+        { num: 5, label: 'Test' },
+        { num: 6, label: 'Deploy' },
+        { num: 7, label: 'Docu' },
+      ],
+    },
+  ]
+
+  // Preset Wizard 16-step categories
+  const presetCategories = [
+    {
+      id: 'configure',
+      name: t('preset.nav.categories.configure'),
+      icon: Settings2,
+      color: 'bg-blue-100 text-blue-600',
+      dotColor: 'bg-blue-500',
+      steps: [
+        { num: 1, label: 'Meta & Business' },
+        { num: 2, label: 'App Shell' },
+        { num: 3, label: 'Auth & Security' },
+      ],
+    },
+    {
+      id: 'data',
+      name: t('preset.nav.categories.data'),
+      icon: Database,
+      color: 'bg-green-100 text-green-600',
+      dotColor: 'bg-green-500',
+      steps: [
+        { num: 4, label: 'Database' },
+        { num: 5, label: 'API Layer' },
+        { num: 6, label: 'Features' },
+      ],
+    },
+    {
+      id: 'design',
+      name: t('preset.nav.categories.design'),
+      icon: Palette,
+      color: 'bg-violet-100 text-violet-600',
+      dotColor: 'bg-violet-500',
+      steps: [
+        { num: 7, label: 'UI & Theme' },
+        { num: 8, label: 'Pages' },
+        { num: 9, label: 'Storage' },
+      ],
+    },
+    {
+      id: 'services',
+      name: t('preset.nav.categories.services'),
+      icon: Zap,
+      color: 'bg-amber-100 text-amber-600',
+      dotColor: 'bg-amber-500',
+      steps: [
+        { num: 10, label: 'Notifications' },
+        { num: 11, label: 'AI & Search' },
+        { num: 12, label: 'Payments' },
+        { num: 13, label: 'Real-time' },
+      ],
+    },
+    {
+      id: 'ship',
+      name: t('preset.nav.categories.ship'),
+      icon: Rocket,
+      color: 'bg-red-100 text-red-600',
+      dotColor: 'bg-red-500',
+      steps: [
+        { num: 14, label: 'Testing & CI/CD' },
+        { num: 15, label: 'Integrations' },
+        { num: 16, label: 'Deploy' },
+      ],
+    },
+  ]
+
+  // Workflow Pipeline category groups with individual steps (v2: 5 categories, 16 steps)
+  const workflowCategories = [
+    {
+      id: 'define',
+      name: t('pipeline.workflowCat.define'),
       icon: ListChecks,
       color: 'bg-indigo-100 text-indigo-600',
+      dotColor: 'bg-indigo-500',
+      steps: [
+        { num: 1, label: 'Meta & Info' },
+        { num: 2, label: 'Steps Builder' },
+        { num: 3, label: 'Triggers' },
+      ],
     },
     {
-      id: 'features',
-      name: t('workflow.nav.features'),
-      icon: ToggleRight,
+      id: 'data',
+      name: t('pipeline.workflowCat.data'),
+      icon: Database,
       color: 'bg-green-100 text-green-600',
+      dotColor: 'bg-green-500',
+      steps: [
+        { num: 4, label: 'Connectors' },
+        { num: 5, label: 'Variables' },
+        { num: 6, label: 'Storage' },
+      ],
     },
     {
-      id: 'auth',
-      name: t('workflow.nav.auth'),
-      icon: Shield,
-      color: 'bg-amber-100 text-amber-600',
-    },
-    {
-      id: 'ui',
-      name: t('workflow.nav.ui'),
-      icon: Palette,
-      color: 'bg-pink-100 text-pink-600',
-    },
-    {
-      id: 'ai',
-      name: t('workflow.nav.ai'),
+      id: 'intelligence',
+      name: t('pipeline.workflowCat.intelligence'),
       icon: Brain,
       color: 'bg-purple-100 text-purple-600',
+      dotColor: 'bg-purple-500',
+      steps: [
+        { num: 7, label: 'AI' },
+        { num: 8, label: 'Features' },
+        { num: 9, label: 'Middleware' },
+      ],
     },
     {
-      id: 'deploy',
-      name: t('workflow.nav.deploy'),
-      icon: Cloud,
+      id: 'secure',
+      name: t('pipeline.workflowCat.secure'),
+      icon: Shield,
+      color: 'bg-amber-100 text-amber-600',
+      dotColor: 'bg-amber-500',
+      steps: [
+        { num: 10, label: 'Auth' },
+        { num: 11, label: 'Security' },
+        { num: 12, label: 'Notifications' },
+      ],
+    },
+    {
+      id: 'ship',
+      name: t('pipeline.workflowCat.ship'),
+      icon: Rocket,
       color: 'bg-cyan-100 text-cyan-600',
+      dotColor: 'bg-cyan-500',
+      steps: [
+        { num: 13, label: 'Monitoring' },
+        { num: 14, label: 'Testing' },
+        { num: 15, label: 'Deploy' },
+        { num: 16, label: 'UI & Docs' },
+      ],
     },
   ]
 
@@ -338,6 +475,50 @@ export default function PipelinePage() {
               </Link>
             ))}
           </div>
+
+          {/* 16-Step Preset Wizard Overview */}
+          <div className="border-t border-primary/10 pt-4 mt-4">
+            <p className="text-xs text-muted-foreground uppercase tracking-wider mb-3 font-medium">
+              {t('pipeline.appPresetSteps')}
+            </p>
+            <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-5">
+              {presetCategories.map((cat) => (
+                <div key={cat.id} className="rounded-lg border bg-background/50 p-3">
+                  <div className="flex items-center gap-2 mb-2">
+                    <div className={`p-1.5 rounded-md ${cat.color}`}>
+                      <cat.icon className="h-3.5 w-3.5" />
+                    </div>
+                    <span className="text-xs font-semibold">{cat.name}</span>
+                  </div>
+                  <div className="space-y-1">
+                    {cat.steps.map((step) => (
+                      <Link
+                        key={step.num}
+                        href="/dashboard/pipeline/preset"
+                        className="flex items-center gap-2 rounded-md px-2 py-1 text-xs hover:bg-muted transition-colors group"
+                      >
+                        <span className={`h-1.5 w-1.5 rounded-full ${cat.dotColor} flex-shrink-0`} />
+                        <span className="text-muted-foreground group-hover:text-foreground transition-colors">
+                          {step.num}. {step.label}
+                        </span>
+                      </Link>
+                    ))}
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* Start Application Pipeline Button */}
+          <div className="mt-4 pt-4 border-t border-primary/10 flex justify-center">
+            <Link href="/dashboard/pipeline/preset">
+              <Button variant="outline" className="border-primary/30 hover:bg-primary/10 hover:text-primary">
+                <Sparkles className="mr-2 h-4 w-4" />
+                {t('pipeline.startAppPipeline')}
+                <ArrowRight className="ml-2 h-4 w-4" />
+              </Button>
+            </Link>
+          </div>
         </div>
       </Card>
 
@@ -382,8 +563,8 @@ export default function PipelinePage() {
           </div>
 
           {/* Mobile Stepper */}
-          <div className="lg:hidden grid grid-cols-3 gap-2">
-            {workflowSteps.slice(0, 3).map((step) => (
+          <div className="lg:hidden grid grid-cols-5 gap-2">
+            {workflowSteps.map((step) => (
               <Link
                 key={step.id}
                 href="/dashboard/pipeline/workflow"
@@ -396,19 +577,38 @@ export default function PipelinePage() {
               </Link>
             ))}
           </div>
-          <div className="lg:hidden grid grid-cols-3 gap-2 mt-2">
-            {workflowSteps.slice(3).map((step) => (
-              <Link
-                key={step.id}
-                href="/dashboard/pipeline/workflow"
-                className="flex flex-col items-center gap-1 p-2 rounded-lg hover:bg-background/50 transition-colors"
-              >
-                <div className={`p-2 rounded-full ${step.color}`}>
-                  <step.icon className="h-4 w-4" />
+
+          {/* 16-Step Detail by Category */}
+          <div className="border-t border-indigo-500/10 pt-4 mt-4">
+            <p className="text-xs text-muted-foreground uppercase tracking-wider mb-3 font-medium">
+              {t('pipeline.workflowPresetSteps')}
+            </p>
+            <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-5">
+              {workflowCategories.map((cat) => (
+                <div key={cat.id} className="rounded-lg border bg-background/50 p-3">
+                  <div className="flex items-center gap-2 mb-2">
+                    <div className={`p-1.5 rounded-md ${cat.color}`}>
+                      <cat.icon className="h-3.5 w-3.5" />
+                    </div>
+                    <span className="text-xs font-semibold">{cat.name}</span>
+                  </div>
+                  <div className="space-y-1">
+                    {cat.steps.map((step) => (
+                      <Link
+                        key={step.num}
+                        href="/dashboard/pipeline/workflow"
+                        className="flex items-center gap-2 rounded-md px-2 py-1 text-xs hover:bg-muted transition-colors group"
+                      >
+                        <span className={`h-1.5 w-1.5 rounded-full ${cat.dotColor} flex-shrink-0`} />
+                        <span className="text-muted-foreground group-hover:text-foreground transition-colors">
+                          {step.num}. {step.label}
+                        </span>
+                      </Link>
+                    ))}
+                  </div>
                 </div>
-                <span className="text-xs text-center">{step.name}</span>
-              </Link>
-            ))}
+              ))}
+            </div>
           </div>
 
           {/* Start Workflow Button */}

@@ -4,12 +4,16 @@ import { useRef } from 'react'
 import { PresetWizard, PresetWizardHandle } from '@/components/dudes/preset/preset-wizard'
 import { useTranslation } from '@/lib/i18n/language-provider'
 import { Button } from '@/components/ui/button'
-import { Upload } from 'lucide-react'
+import { Upload, Download } from 'lucide-react'
 
 export default function PresetDudePage() {
   const { t } = useTranslation()
   const wizardRef = useRef<PresetWizardHandle>(null)
   const fileInputRef = useRef<HTMLInputElement>(null)
+
+  const handleExport = () => {
+    wizardRef.current?.exportConfig()
+  }
 
   const handleImport = () => {
     fileInputRef.current?.click()
@@ -42,7 +46,7 @@ export default function PresetDudePage() {
             {t('pipeline.dudes.preset.description')}
           </p>
         </div>
-        <div>
+        <div className="flex gap-2">
           <input
             ref={fileInputRef}
             type="file"
@@ -50,6 +54,10 @@ export default function PresetDudePage() {
             className="hidden"
             onChange={handleFileChange}
           />
+          <Button variant="outline" onClick={handleExport}>
+            <Download className="mr-2 h-4 w-4" />
+            {t('preset.common.exportConfig')}
+          </Button>
           <Button variant="outline" onClick={handleImport}>
             <Upload className="mr-2 h-4 w-4" />
             {t('preset.common.importConfig')}

@@ -2,7 +2,7 @@
 
 import { useState } from 'react'
 import { useSortable } from '@dnd-kit/sortable'
-import { GripVertical, Trash2, ChevronDown, Plus, X, FileText, Link2, Server } from 'lucide-react'
+import { GripVertical, Trash2, ChevronDown, Plus, X, FileText, Link2, Server, Settings2 } from 'lucide-react'
 import { Card, CardContent } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
 import { Textarea } from '@/components/ui/textarea'
@@ -10,13 +10,15 @@ import { Button } from '@/components/ui/button'
 import { Label } from '@/components/ui/label'
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs'
 import { Select } from '@/components/ui/select'
+import { Switch } from '@/components/ui/switch'
 import { cn } from '@/lib/utils'
 import { useWorkflowWizard } from './workflow-context'
-import type { WorkflowStep, WorkflowTemplate, WorkflowLink, WorkflowService } from '@/lib/validations/workflow'
+import type { WorkflowStepV2, WorkflowTemplate, WorkflowLink, WorkflowService } from '@/lib/validations/workflow'
 import { useTranslation } from '@/lib/i18n/language-provider'
+import { STEP_TYPE_OPTIONS, ERROR_HANDLING_OPTIONS } from '@/lib/workflow-pipeline/constants'
 
 interface StepCardProps {
-  step: WorkflowStep
+  step: WorkflowStepV2
   stepNumber: number
 }
 
@@ -63,9 +65,9 @@ export function StepCard({ step, stepNumber }: StepCardProps) {
     transition,
   }
 
-  // New item forms state
   const [newLink, setNewLink] = useState({ label: '', url: '', type: 'reference' as WorkflowLink['type'] })
   const [newService, setNewService] = useState({ name: '', type: 'rest' as WorkflowService['type'], endpoint: '', authType: 'none' as WorkflowService['authType'] })
+  const [showAdvanced, setShowAdvanced] = useState(false)
 
   const handleAddTemplate = (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = e.target.files
@@ -134,6 +136,8 @@ export function StepCard({ step, stepNumber }: StepCardProps) {
           className="flex-1 font-medium"
         />
 
+        <span className="text-xs rounded bg-muted px-2 py-1 text-muted-foreground">{step.type}</span>
+
         <Button
           variant="ghost"
           size="icon"
@@ -196,42 +200,26 @@ export function StepCard({ step, stepNumber }: StepCardProps) {
               {step.templates.length > 0 && (
                 <div className="space-y-2">
                   {step.templates.map((template) => (
-                    <div
-                      key={template.id}
-                      className="flex items-center justify-between rounded-lg border p-2"
-                    >
+                    <div key={template.id} className="flex items-center justify-between rounded-lg border p-2">
                       <div className="flex items-center gap-2">
                         <FileText className="h-4 w-4 text-muted-foreground" />
                         <span className="text-sm">{template.name}</span>
                         {template.size && (
-                          <span className="text-xs text-muted-foreground">
-                            ({formatBytes(template.size)})
-                          </span>
+                          <span className="text-xs text-muted-foreground">({formatBytes(template.size)})</span>
                         )}
                       </div>
-                      <Button
-                        variant="ghost"
-                        size="icon"
-                        className="h-6 w-6"
-                        onClick={() => removeTemplate(step.id, template.id)}
-                      >
+                      <Button variant="ghost" size="icon" className="h-6 w-6" onClick={() => removeTemplate(step.id, template.id)}>
                         <X className="h-3 w-3" />
                       </Button>
                     </div>
                   ))}
                 </div>
               )}
-
               <div className="flex items-center justify-center rounded-lg border border-dashed p-4">
                 <label className="flex cursor-pointer flex-col items-center gap-2 text-sm text-muted-foreground hover:text-foreground">
                   <Plus className="h-5 w-5" />
                   <span>{t('workflow.stepBuilder.addTemplate')}</span>
-                  <input
-                    type="file"
-                    multiple
-                    className="hidden"
-                    onChange={handleAddTemplate}
-                  />
+                  <input type="file" multiple className="hidden" onChange={handleAddTemplate} />
                 </label>
               </div>
             </TabsContent>
@@ -241,57 +229,26 @@ export function StepCard({ step, stepNumber }: StepCardProps) {
               {step.links.length > 0 && (
                 <div className="space-y-2">
                   {step.links.map((link) => (
-                    <div
-                      key={link.id}
-                      className="flex items-center justify-between rounded-lg border p-2"
-                    >
+                    <div key={link.id} className="flex items-center justify-between rounded-lg border p-2">
                       <div className="flex items-center gap-2 overflow-hidden">
                         <Link2 className="h-4 w-4 flex-shrink-0 text-muted-foreground" />
                         <span className="text-sm font-medium">{link.label}</span>
-                        <span className="text-xs text-muted-foreground truncate">
-                          {link.url}
-                        </span>
-                        <span className="text-xs rounded bg-muted px-1.5 py-0.5">
-                          {link.type}
-                        </span>
+                        <span className="text-xs text-muted-foreground truncate">{link.url}</span>
+                        <span className="text-xs rounded bg-muted px-1.5 py-0.5">{link.type}</span>
                       </div>
-                      <Button
-                        variant="ghost"
-                        size="icon"
-                        className="h-6 w-6"
-                        onClick={() => removeLink(step.id, link.id)}
-                      >
+                      <Button variant="ghost" size="icon" className="h-6 w-6" onClick={() => removeLink(step.id, link.id)}>
                         <X className="h-3 w-3" />
                       </Button>
                     </div>
                   ))}
                 </div>
               )}
-
               <div className="grid gap-2 sm:grid-cols-4">
-                <Input
-                  placeholder={t('workflow.stepBuilder.linkLabel')}
-                  value={newLink.label}
-                  onChange={(e) => setNewLink({ ...newLink, label: e.target.value })}
-                  className="sm:col-span-1"
-                />
-                <Input
-                  placeholder={t('workflow.stepBuilder.linkUrl')}
-                  value={newLink.url}
-                  onChange={(e) => setNewLink({ ...newLink, url: e.target.value })}
-                  className="sm:col-span-2"
-                  onKeyDown={(e) => e.key === 'Enter' && handleAddLink()}
-                />
+                <Input placeholder={t('workflow.stepBuilder.linkLabel')} value={newLink.label} onChange={(e) => setNewLink({ ...newLink, label: e.target.value })} className="sm:col-span-1" />
+                <Input placeholder={t('workflow.stepBuilder.linkUrl')} value={newLink.url} onChange={(e) => setNewLink({ ...newLink, url: e.target.value })} className="sm:col-span-2" onKeyDown={(e) => e.key === 'Enter' && handleAddLink()} />
                 <div className="flex gap-2">
-                  <Select
-                    value={newLink.type}
-                    onValueChange={(value) => setNewLink({ ...newLink, type: value as WorkflowLink['type'] })}
-                    options={linkTypeOptions}
-                    className="flex-1"
-                  />
-                  <Button size="icon" onClick={handleAddLink}>
-                    <Plus className="h-4 w-4" />
-                  </Button>
+                  <Select value={newLink.type} onValueChange={(value) => setNewLink({ ...newLink, type: value as WorkflowLink['type'] })} options={linkTypeOptions} className="flex-1" />
+                  <Button size="icon" onClick={handleAddLink}><Plus className="h-4 w-4" /></Button>
                 </div>
               </div>
             </TabsContent>
@@ -301,77 +258,134 @@ export function StepCard({ step, stepNumber }: StepCardProps) {
               {step.services.length > 0 && (
                 <div className="space-y-2">
                   {step.services.map((service) => (
-                    <div
-                      key={service.id}
-                      className="flex items-center justify-between rounded-lg border p-2"
-                    >
+                    <div key={service.id} className="flex items-center justify-between rounded-lg border p-2">
                       <div className="flex items-center gap-2 overflow-hidden">
                         <Server className="h-4 w-4 flex-shrink-0 text-muted-foreground" />
                         <span className="text-sm font-medium">{service.name}</span>
-                        <span className="text-xs rounded bg-muted px-1.5 py-0.5">
-                          {service.type}
-                        </span>
-                        <span className="text-xs rounded bg-muted px-1.5 py-0.5">
-                          {service.authType}
-                        </span>
-                        {service.endpoint && (
-                          <span className="text-xs text-muted-foreground truncate">
-                            {service.endpoint}
-                          </span>
-                        )}
+                        <span className="text-xs rounded bg-muted px-1.5 py-0.5">{service.type}</span>
+                        <span className="text-xs rounded bg-muted px-1.5 py-0.5">{service.authType}</span>
+                        {service.endpoint && <span className="text-xs text-muted-foreground truncate">{service.endpoint}</span>}
                       </div>
-                      <Button
-                        variant="ghost"
-                        size="icon"
-                        className="h-6 w-6"
-                        onClick={() => removeService(step.id, service.id)}
-                      >
+                      <Button variant="ghost" size="icon" className="h-6 w-6" onClick={() => removeService(step.id, service.id)}>
                         <X className="h-3 w-3" />
                       </Button>
                     </div>
                   ))}
                 </div>
               )}
-
               <div className="grid gap-2 sm:grid-cols-5">
-                <Input
-                  placeholder={t('workflow.stepBuilder.serviceName')}
-                  value={newService.name}
-                  onChange={(e) => setNewService({ ...newService, name: e.target.value })}
-                />
-                <Select
-                  value={newService.type}
-                  onValueChange={(value) => setNewService({ ...newService, type: value as WorkflowService['type'] })}
-                  options={serviceTypeOptions}
-                />
-                <Input
-                  placeholder={t('workflow.stepBuilder.serviceEndpoint')}
-                  value={newService.endpoint}
-                  onChange={(e) => setNewService({ ...newService, endpoint: e.target.value })}
-                  className="sm:col-span-2"
-                  onKeyDown={(e) => e.key === 'Enter' && handleAddService()}
-                />
+                <Input placeholder={t('workflow.stepBuilder.serviceName')} value={newService.name} onChange={(e) => setNewService({ ...newService, name: e.target.value })} />
+                <Select value={newService.type} onValueChange={(value) => setNewService({ ...newService, type: value as WorkflowService['type'] })} options={serviceTypeOptions} />
+                <Input placeholder={t('workflow.stepBuilder.serviceEndpoint')} value={newService.endpoint} onChange={(e) => setNewService({ ...newService, endpoint: e.target.value })} className="sm:col-span-2" onKeyDown={(e) => e.key === 'Enter' && handleAddService()} />
                 <div className="flex gap-2">
-                  <Select
-                    value={newService.authType}
-                    onValueChange={(value) => setNewService({ ...newService, authType: value as WorkflowService['authType'] })}
-                    options={authTypeOptions}
-                    className="flex-1"
-                  />
-                  <Button size="icon" onClick={handleAddService}>
-                    <Plus className="h-4 w-4" />
-                  </Button>
+                  <Select value={newService.authType} onValueChange={(value) => setNewService({ ...newService, authType: value as WorkflowService['authType'] })} options={authTypeOptions} className="flex-1" />
+                  <Button size="icon" onClick={handleAddService}><Plus className="h-4 w-4" /></Button>
                 </div>
               </div>
             </TabsContent>
           </Tabs>
+
+          {/* Advanced v2 Section */}
+          <div className="border-t pt-3">
+            <button
+              onClick={() => setShowAdvanced(!showAdvanced)}
+              className="flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors"
+            >
+              <Settings2 className="h-4 w-4" />
+              <span>{t('workflow.stepBuilder.advanced')}</span>
+              <ChevronDown className={cn('h-3 w-3 transition-transform', showAdvanced && 'rotate-180')} />
+            </button>
+
+            {showAdvanced && (
+              <div className="mt-3 space-y-4">
+                <div className="grid gap-3 sm:grid-cols-2">
+                  <div className="space-y-2">
+                    <Label>{t('workflow.stepBuilder.stepType')}</Label>
+                    <Select
+                      value={step.type}
+                      onValueChange={(value) => updateStep(step.id, { type: value as WorkflowStepV2['type'] })}
+                      options={STEP_TYPE_OPTIONS.map((o) => ({ value: o.value, label: o.label }))}
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <Label>{t('workflow.stepBuilder.errorHandling')}</Label>
+                    <Select
+                      value={step.errorHandling}
+                      onValueChange={(value) => updateStep(step.id, { errorHandling: value as WorkflowStepV2['errorHandling'] })}
+                      options={ERROR_HANDLING_OPTIONS.map((o) => ({ value: o.value, label: o.label }))}
+                    />
+                  </div>
+                </div>
+
+                {step.type === 'condition' && (
+                  <div className="space-y-2">
+                    <Label>{t('workflow.stepBuilder.condition')}</Label>
+                    <Input
+                      value={step.condition}
+                      onChange={(e) => updateStep(step.id, { condition: e.target.value })}
+                      placeholder="e.g., output.status === 'success'"
+                    />
+                  </div>
+                )}
+
+                <div className="grid gap-3 sm:grid-cols-3">
+                  <div className="space-y-2">
+                    <Label>{t('workflow.stepBuilder.retries')}</Label>
+                    <Input
+                      type="number"
+                      min={0}
+                      value={step.retries}
+                      onChange={(e) => updateStep(step.id, { retries: parseInt(e.target.value) || 0 })}
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <Label>{t('workflow.stepBuilder.timeout')}</Label>
+                    <Input
+                      type="number"
+                      min={0}
+                      value={step.timeout}
+                      onChange={(e) => updateStep(step.id, { timeout: parseInt(e.target.value) || 30000 })}
+                    />
+                  </div>
+                  {step.errorHandling === 'fallback' && (
+                    <div className="space-y-2">
+                      <Label>{t('workflow.stepBuilder.fallbackStepId')}</Label>
+                      <Input
+                        value={step.fallbackStepId}
+                        onChange={(e) => updateStep(step.id, { fallbackStepId: e.target.value })}
+                        placeholder="Step ID"
+                      />
+                    </div>
+                  )}
+                </div>
+
+                <div className="grid gap-3 sm:grid-cols-2">
+                  <div className="space-y-2">
+                    <Label>{t('workflow.stepBuilder.inputMapping')}</Label>
+                    <Input
+                      value={step.inputMapping}
+                      onChange={(e) => updateStep(step.id, { inputMapping: e.target.value })}
+                      placeholder="e.g., { data: prev.output }"
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <Label>{t('workflow.stepBuilder.outputMapping')}</Label>
+                    <Input
+                      value={step.outputMapping}
+                      onChange={(e) => updateStep(step.id, { outputMapping: e.target.value })}
+                      placeholder="e.g., { result: response.data }"
+                    />
+                  </div>
+                </div>
+              </div>
+            )}
+          </div>
         </CardContent>
       )}
     </Card>
   )
 }
 
-// Helper functions
 function getFileType(filename: string): WorkflowTemplate['type'] {
   const ext = filename.split('.').pop()?.toLowerCase() || ''
   if (['doc', 'docx', 'pdf', 'txt', 'md'].includes(ext)) return 'document'

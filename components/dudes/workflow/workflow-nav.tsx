@@ -4,61 +4,84 @@ import { useWorkflowWizard } from './workflow-context'
 import { useTranslation } from '@/lib/i18n/language-provider'
 import { Check } from 'lucide-react'
 import { cn } from '@/lib/utils'
+import { WORKFLOW_STEP_CATEGORIES, WORKFLOW_STEP_LABELS } from '@/lib/workflow-pipeline/constants'
 
 export function WorkflowNav() {
   const { currentStep, setCurrentStep } = useWorkflowWizard()
   const { t } = useTranslation()
 
-  const steps = [
-    { id: 1, name: t('workflow.nav.steps') },
-    { id: 2, name: t('workflow.nav.features') },
-    { id: 3, name: t('workflow.nav.auth') },
-    { id: 4, name: t('workflow.nav.ui') },
-    { id: 5, name: t('workflow.nav.ai') },
-    { id: 6, name: t('workflow.nav.deploy') },
-  ]
+  const activeCategory = WORKFLOW_STEP_CATEGORIES.find((cat) =>
+    cat.steps.includes(currentStep)
+  )
 
   return (
     <nav className="mb-8">
-      <ol className="flex items-center justify-between">
-        {steps.map((step, index) => (
-          <li key={step.id} className="flex items-center">
-            <button
-              onClick={() => setCurrentStep(step.id)}
-              className={cn(
-                'flex items-center gap-2 text-sm font-medium transition-colors',
-                currentStep === step.id && 'text-primary',
-                currentStep > step.id && 'text-primary',
-                currentStep < step.id && 'text-muted-foreground'
-              )}
-            >
+      <div className="flex flex-wrap gap-2">
+        {WORKFLOW_STEP_CATEGORIES.map((category) => {
+          const isActive = category.id === activeCategory?.id
+          const completedSteps = category.steps.filter((s) => s < currentStep).length
+          const totalSteps = category.steps.length
+          return (
+            <div key={category.id} className="flex flex-col gap-1">
               <span
                 className={cn(
-                  'flex h-8 w-8 items-center justify-center rounded-full text-xs font-medium transition-colors',
-                  currentStep === step.id && 'bg-primary text-primary-foreground',
-                  currentStep > step.id && 'bg-primary text-primary-foreground',
-                  currentStep < step.id && 'bg-muted text-muted-foreground'
+                  'text-[10px] font-medium uppercase tracking-wider px-1',
+                  isActive ? 'text-primary' : 'text-muted-foreground'
                 )}
               >
-                {currentStep > step.id ? (
-                  <Check className="h-4 w-4" />
-                ) : (
-                  step.id
+                {t(`workflow.nav.categories.${category.id}`)}
+                {!isActive && (
+                  <span className="ml-1 text-muted-foreground">
+                    {completedSteps}/{totalSteps}
+                  </span>
                 )}
               </span>
-              <span className="hidden sm:inline">{step.name}</span>
-            </button>
-            {index < steps.length - 1 && (
-              <div
-                className={cn(
-                  'mx-2 h-0.5 w-8 sm:w-12',
-                  currentStep > step.id ? 'bg-primary' : 'bg-muted'
-                )}
-              />
-            )}
-          </li>
-        ))}
-      </ol>
+
+              <div className="flex items-center gap-1">
+                {category.steps.map((stepNum, idx) => {
+                  const isStepActive = currentStep === stepNum
+                  const isStepComplete = currentStep > stepNum
+
+                  return (
+                    <div key={stepNum} className="flex items-center">
+                      <button
+                        onClick={() => setCurrentStep(stepNum)}
+                        title={WORKFLOW_STEP_LABELS[stepNum]}
+                        className={cn(
+                          'flex h-7 w-7 items-center justify-center rounded-full text-[10px] font-medium transition-colors',
+                          isStepActive && 'bg-primary text-primary-foreground',
+                          isStepComplete && 'bg-primary/80 text-primary-foreground',
+                          !isStepActive && !isStepComplete && 'bg-muted text-muted-foreground hover:bg-muted/80'
+                        )}
+                      >
+                        {isStepComplete ? (
+                          <Check className="h-3 w-3" />
+                        ) : (
+                          stepNum
+                        )}
+                      </button>
+                      {idx < category.steps.length - 1 && (
+                        <div
+                          className={cn(
+                            'h-0.5 w-2',
+                            isStepComplete ? 'bg-primary/60' : 'bg-muted'
+                          )}
+                        />
+                      )}
+                    </div>
+                  )
+                })}
+              </div>
+
+              {isActive && (
+                <span className="text-xs text-primary font-medium px-1 truncate max-w-[120px]">
+                  {WORKFLOW_STEP_LABELS[currentStep]}
+                </span>
+              )}
+            </div>
+          )
+        })}
+      </div>
     </nav>
   )
 }
