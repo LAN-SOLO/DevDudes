@@ -5,11 +5,13 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Button } from '@/components/ui/button'
 import { useToast } from '@/components/ui/toast'
 import { useTranslation } from '@/lib/i18n/language-provider'
+import { usePlan } from '@/lib/hooks/use-plan'
 import {
   Check,
   Zap,
   Building2,
   Rocket,
+  Crown,
   CreditCard,
   Download,
   Calendar,
@@ -44,10 +46,10 @@ const plans: Plan[] = [
     descriptionKey: 'billing.plans.free.description',
     icon: Zap,
     featureKeys: [
-      'billing.planFeatures.threeProjects',
+      'billing.planFeatures.3projects',
       'billing.planFeatures.basicTemplates',
       'billing.planFeatures.communitySupport',
-      'billing.planFeatures.oneDatabase',
+      'billing.planFeatures.1dbConnection',
       'billing.planFeatures.manualDeployment',
     ],
   },
@@ -63,10 +65,10 @@ const plans: Plan[] = [
       'billing.planFeatures.unlimitedProjects',
       'billing.planFeatures.allTemplates',
       'billing.planFeatures.prioritySupport',
-      'billing.planFeatures.fiveDatabases',
+      'billing.planFeatures.5dbConnections',
       'billing.planFeatures.autoDeployment',
       'billing.planFeatures.customDomains',
-      'billing.planFeatures.teamCollab',
+      'billing.planFeatures.teamCollaboration',
       'billing.planFeatures.apiAccess',
     ],
   },
@@ -88,6 +90,22 @@ const plans: Plan[] = [
       'billing.planFeatures.ssoSaml',
     ],
   },
+  {
+    id: 'super',
+    nameKey: 'billing.plans.super.name',
+    price: 0,
+    periodKey: 'billing.plans.super.period',
+    descriptionKey: 'billing.plans.super.description',
+    icon: Crown,
+    featureKeys: [
+      'billing.planFeatures.everythingInEnterprise',
+      'billing.planFeatures.unlimitedEverything',
+      'billing.planFeatures.allPipelines',
+      'billing.planFeatures.fullApiAccess',
+      'billing.planFeatures.priorityTesting',
+      'billing.planFeatures.adminTools',
+    ],
+  },
 ]
 
 const invoices: Invoice[] = [
@@ -97,7 +115,7 @@ const invoices: Invoice[] = [
 export default function BillingPage() {
   const { addToast } = useToast()
   const { t } = useTranslation()
-  const [currentPlan] = useState('free')
+  const { plan: currentPlan, limits } = usePlan()
   const [isProcessing, setIsProcessing] = useState<string | null>(null)
 
   const handleUpgrade = async (planId: string) => {
@@ -149,16 +167,18 @@ export default function BillingPage() {
               <div>
                 <p className="font-semibold text-lg">{currentPlanData ? t(currentPlanData.nameKey) : ''} Plan</p>
                 <p className="text-sm text-muted-foreground">
-                  {currentPlanData?.price === 0
-                    ? t('billing.freeForever')
-                    : `$${currentPlanData?.price}/${currentPlanData ? t(currentPlanData.periodKey) : ''}`}
+                  {currentPlan === 'super'
+                    ? t('billing.plans.super.period')
+                    : currentPlanData?.price === 0
+                      ? t('billing.freeForever')
+                      : `$${currentPlanData?.price}/${currentPlanData ? t(currentPlanData.periodKey) : ''}`}
                 </p>
               </div>
             </div>
             <div className="text-right">
               <p className="text-sm font-medium text-green-600">Active</p>
               <p className="text-xs text-muted-foreground">
-                {currentPlan === 'free' ? t('billing.noBillingCycle') : 'Renews Jan 15, 2025'}
+                {currentPlan === 'free' ? t('billing.noBillingCycle') : currentPlan === 'super' ? t('billing.noBillingCycle') : 'Renews Jan 15, 2025'}
               </p>
             </div>
           </div>
@@ -176,7 +196,9 @@ export default function BillingPage() {
             <div className="rounded-lg border p-4">
               <div className="flex items-center justify-between mb-2">
                 <p className="text-sm font-medium">Projects</p>
-                <p className="text-sm text-muted-foreground">0 / 3</p>
+                <p className="text-sm text-muted-foreground">
+                  {limits.projects === Infinity ? '0 / Unlimited' : `0 / ${limits.projects}`}
+                </p>
               </div>
               <div className="h-2 rounded-full bg-muted overflow-hidden">
                 <div className="h-full bg-primary rounded-full" style={{ width: '0%' }} />
@@ -185,16 +207,23 @@ export default function BillingPage() {
             <div className="rounded-lg border p-4">
               <div className="flex items-center justify-between mb-2">
                 <p className="text-sm font-medium">Connections</p>
-                <p className="text-sm text-muted-foreground">1 / 1</p>
+                <p className="text-sm text-muted-foreground">
+                  {limits.connections === Infinity ? '1 / Unlimited' : `1 / ${limits.connections}`}
+                </p>
               </div>
               <div className="h-2 rounded-full bg-muted overflow-hidden">
-                <div className="h-full bg-yellow-500 rounded-full" style={{ width: '100%' }} />
+                <div
+                  className={`h-full rounded-full ${limits.connections === Infinity ? 'bg-primary' : 'bg-yellow-500'}`}
+                  style={{ width: limits.connections === Infinity ? '0%' : '100%' }}
+                />
               </div>
             </div>
             <div className="rounded-lg border p-4">
               <div className="flex items-center justify-between mb-2">
                 <p className="text-sm font-medium">API Calls</p>
-                <p className="text-sm text-muted-foreground">0 / 1,000</p>
+                <p className="text-sm text-muted-foreground">
+                  {limits.apiCalls === Infinity ? '0 / Unlimited' : `0 / ${limits.apiCalls.toLocaleString()}`}
+                </p>
               </div>
               <div className="h-2 rounded-full bg-muted overflow-hidden">
                 <div className="h-full bg-primary rounded-full" style={{ width: '0%' }} />
@@ -215,7 +244,7 @@ export default function BillingPage() {
       {/* Pricing Plans */}
       <div>
         <h3 className="text-lg font-semibold mb-4">{t('billing.availablePlans')}</h3>
-        <div className="grid gap-4 md:grid-cols-3">
+        <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
           {plans.map((plan) => (
             <Card
               key={plan.id}
@@ -237,7 +266,7 @@ export default function BillingPage() {
                 </div>
                 <div className="flex items-baseline gap-1">
                   <span className="text-3xl font-bold">
-                    {plan.price === 0 ? t('billing.plans.free.name') : `$${plan.price}`}
+                    {plan.id === 'super' ? t('billing.plans.super.period') : plan.price === 0 ? t('billing.plans.free.name') : `$${plan.price}`}
                   </span>
                   {plan.price > 0 && (
                     <span className="text-muted-foreground">/{t(plan.periodKey)}</span>

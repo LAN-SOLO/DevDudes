@@ -2,6 +2,7 @@
 
 import { useState } from 'react'
 import { useTranslation } from '@/lib/i18n/language-provider'
+import { usePlan } from '@/lib/hooks/use-plan'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
@@ -77,10 +78,10 @@ export default function TeamPage() {
   const [isSending, setIsSending] = useState(false)
   const [showUpgradeModal, setShowUpgradeModal] = useState(false)
   const [memberToRemove, setMemberToRemove] = useState<TeamMember | null>(null)
-  const currentPlan = 'free' // In a real app, this would come from the user's subscription
+  const { isFree, limits } = usePlan()
 
-  const canInvite = currentPlan !== 'free'
-  const memberLimit = currentPlan === 'free' ? 1 : currentPlan === 'pro' ? 5 : Infinity
+  const canInvite = !isFree
+  const memberLimit = limits.teamMembers
 
   const handleInvite = async () => {
     if (!inviteForm.email) return
@@ -165,7 +166,7 @@ export default function TeamPage() {
       </div>
 
       {/* Plan Info */}
-      {currentPlan === 'free' && (
+      {isFree && (
         <Card className="bg-gradient-to-r from-primary/10 to-primary/5 border-primary/20">
           <CardContent className="pt-6">
             <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">

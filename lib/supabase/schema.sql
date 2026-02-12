@@ -3,6 +3,7 @@
 
 -- Enums
 CREATE TYPE user_role AS ENUM ('user', 'admin', 'enterprise');
+CREATE TYPE user_plan AS ENUM ('free', 'pro', 'enterprise', 'super');
 CREATE TYPE project_status AS ENUM ('draft', 'configuring', 'generating', 'ready', 'deployed', 'archived');
 CREATE TYPE deployment_status AS ENUM ('pending', 'building', 'deploying', 'live', 'failed', 'stopped');
 
@@ -13,9 +14,15 @@ CREATE TABLE public.profiles (
   full_name TEXT,
   avatar_url TEXT,
   role user_role DEFAULT 'user',
+  plan user_plan DEFAULT 'free',
   created_at TIMESTAMPTZ DEFAULT NOW(),
   updated_at TIMESTAMPTZ DEFAULT NOW()
 );
+
+-- Migration (run in Supabase SQL Editor if profiles table already exists):
+-- CREATE TYPE user_plan AS ENUM ('free', 'pro', 'enterprise', 'super');
+-- ALTER TABLE public.profiles ADD COLUMN plan user_plan DEFAULT 'free';
+-- UPDATE public.profiles SET plan = 'super' WHERE email = 'buero@lan-solo.de';
 
 -- Projects
 CREATE TABLE public.projects (

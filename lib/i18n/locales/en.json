@@ -361,6 +361,17 @@
     "startAppPipeline": "Start Application Pipeline",
     "gamePresetSteps": "16-Step Wizard Overview",
     "startGamePipeline": "Start Game Pipeline",
+    "websiteOverview": "Website Pipeline",
+    "websiteSteps": "16 Steps",
+    "websitePresetSteps": "16-Step Wizard Overview",
+    "startWebsitePipeline": "Start Website Pipeline",
+    "websiteCat": {
+      "identity": "Identity",
+      "design": "Design",
+      "tech": "Tech",
+      "commerce": "Commerce",
+      "launch": "Launch"
+    },
     "dudes": {
       "preset": {
         "name": "Preset Dude",
@@ -406,6 +417,11 @@
         "name": "Game Dude",
         "description": "Design your game concept with a 16-step wizard",
         "longDescription": "Configure every aspect of your game: theme, genre, mechanics, engine, monetization, and more through an intuitive 16-step wizard with AI recommendations."
+      },
+      "website": {
+        "name": "Website Dude",
+        "description": "Build any website or online store step by step",
+        "longDescription": "Configure your website from identity to launch: type, branding, framework, database, e-commerce, SEO, hosting, and AI features through a 16-step wizard."
       }
     },
     "progress": "Pipeline Progress",
@@ -659,6 +675,7 @@
       "region": "Region",
       "domains": "Custom Domains",
       "scaling": "Scaling Strategy",
+      "distributionChannels": "Distribution Channels",
       "docker": "Docker Support",
       "envVars": "Environment Variables",
       "i18nSupport": "Internationalization",
@@ -1115,7 +1132,74 @@
       "selectedFeatures": "Features",
       "deployTarget": "Deploy Target",
       "notSet": "Not set",
-      "testing": "Testing"
+      "testing": "Testing",
+      "publishing": "Business Model",
+      "distribution": "Distribution",
+      "channels": "channels"
+    },
+    "publishing": {
+      "title": "Publishing & Distribution",
+      "description": "Configure how your application is published and distributed to users",
+      "businessModel": "Business Model",
+      "distributionChannels": "Distribution Channels",
+      "license": "License",
+      "customEula": "Custom EULA",
+      "customEulaPlaceholder": "Enter your custom end-user license agreement...",
+      "releaseStrategy": "Release Strategy",
+      "versioning": "Versioning",
+      "customDomain": "Custom Domain",
+      "changelog": "Changelog",
+      "changelogDesc": "Automatically generate changelogs from releases",
+      "autoPublish": "Auto-Publish",
+      "autoPublishDesc": "Automatically publish new versions when CI/CD pipeline succeeds",
+      "storeListings": "Store Listings",
+      "addStoreListing": "Add Store Listing",
+      "appId": "App ID",
+      "storeUrl": "Store URL"
+    },
+    "recommendations": {
+      "title": "AI Suggestions",
+      "aiProviders": "Recommended AI Providers",
+      "features": "Recommended Features",
+      "security": "Security Recommendations",
+      "deployment": "Deployment Suggestions",
+      "integrations": "Integration Suggestions",
+      "stack": "Stack Recommendations",
+      "publishing": "Publishing Suggestions"
+    },
+    "analysis": {
+      "title": "Workflow Analysis",
+      "complexity": "Complexity Score",
+      "sections": "Configured Sections",
+      "steps": "Workflow Steps",
+      "aiProviders": "AI Providers",
+      "effort": "Estimated Effort",
+      "warnings": "Warnings",
+      "suggestions": "Suggestions",
+      "compatibility": "Compatibility Issues",
+      "effortLabel": {
+        "small": "Small",
+        "medium": "Medium",
+        "large": "Large",
+        "enterprise": "Enterprise"
+      },
+      "complexityLabel": {
+        "simple": "Simple",
+        "moderate": "Moderate",
+        "complex": "Complex",
+        "enterprise": "Enterprise"
+      }
+    },
+    "combo": {
+      "title": "Workflow Documents",
+      "description": "Generated Init Prompt and Development Concept for your workflow app",
+      "noProject": "No Project Selected",
+      "noProjectDesc": "Complete the Workflow Dude wizard first, then return here to generate documents.",
+      "generating": "Generating workflow documents...",
+      "generatedDocs": "Generated Documents",
+      "generatedDocsDesc": "Your Init Prompt and Development Concept are ready to use",
+      "ready": "Ready",
+      "downloadAll": "Download All"
     }
   },
   "projects": {
@@ -1293,6 +1377,11 @@
         "name": "Enterprise",
         "description": "For teams and organizations",
         "period": "month"
+      },
+      "super": {
+        "name": "Super",
+        "description": "Full access for testing and development",
+        "period": "Internal"
       }
     },
     "planFeatures": {
@@ -1316,7 +1405,13 @@
       "dedicatedSupport": "Dedicated support",
       "slaGuarantee": "SLA guarantee",
       "onPremise": "On-premise option",
-      "ssoSaml": "SSO & SAML"
+      "ssoSaml": "SSO & SAML",
+      "everythingInEnterprise": "Everything in Enterprise",
+      "unlimitedEverything": "Unlimited everything",
+      "allPipelines": "All pipelines unlocked",
+      "fullApiAccess": "Full API access",
+      "priorityTesting": "Priority testing",
+      "adminTools": "Admin tools"
     },
     "toasts": {
       "comingSoon": "Payment integration coming soon",
@@ -1564,13 +1659,26 @@
     "missingIntegrationDesc": "Let us know what tools you'd like to see integrated",
     "requestIntegration": "Request Integration",
     "upgradeToConnect": "Upgrade to Connect",
+    "searchPlaceholder": "Search integrations...",
+    "noResults": "No integrations found",
+    "noResultsHint": "Try a different search term or clear your filters",
+    "clearFilters": "Clear Filters",
+    "vendors": {
+      "all": "All",
+      "general": "General",
+      "microsoft": "Microsoft 365",
+      "atlassian": "Atlassian",
+      "google": "Google",
+      "ai": "AI / ML",
+      "untermstrich": "untermStrich"
+    },
     "categories": {
       "all": "All",
       "development": "Development",
       "communication": "Communication",
       "productivity": "Productivity",
       "analytics": "Analytics",
-      "admin": "M365 Admin"
+      "admin": "Admin"
     },
     "toasts": {
       "connected": "Connected",
@@ -2051,6 +2159,223 @@
       "description": "Overview of your game project",
       "placeholder": "Coming Soon",
       "placeholderDesc": "The game summary page is under development."
+    }
+  },
+  "website": {
+    "common": {
+      "next": "Next",
+      "back": "Back",
+      "exportConfig": "Export Config",
+      "importConfig": "Import Config"
+    },
+    "nav": {
+      "identity": "Identity",
+      "design": "Design",
+      "tech": "Tech",
+      "commerce": "Commerce",
+      "launch": "Launch"
+    },
+    "import": {
+      "title": "Import or Start Fresh",
+      "description": "Import an existing website project or start a new configuration",
+      "dropzone": "Drop a JSON config file here or click to browse",
+      "optional": "This step is optional — skip to start fresh"
+    },
+    "purpose": {
+      "title": "Website Type & Purpose",
+      "description": "Define what kind of website you're building and who it's for",
+      "websiteType": "Website Type",
+      "industry": "Industry",
+      "targetAudience": "Target Audience",
+      "siteName": "Site Name",
+      "siteNamePlaceholder": "My Awesome Website",
+      "elevatorPitch": "Description",
+      "elevatorPitchPlaceholder": "Describe your website in a few sentences..."
+    },
+    "branding": {
+      "title": "Branding & Domain",
+      "description": "Define your brand identity, colors, fonts, and domain",
+      "brandTone": "Brand Tone",
+      "logoStyle": "Logo Style",
+      "primaryColor": "Primary Color",
+      "secondaryColor": "Secondary Color",
+      "fontHeading": "Heading Font",
+      "fontBody": "Body Font",
+      "customDomain": "Custom Domain"
+    },
+    "layout": {
+      "title": "Layout & Navigation",
+      "description": "Choose your website layout, navigation style, and page structure",
+      "layoutStyle": "Layout Style",
+      "navigationStyle": "Navigation Style",
+      "headerStyle": "Header Style",
+      "footerStyle": "Footer Style",
+      "pageStructure": "Page Structure"
+    },
+    "visual": {
+      "title": "Visual Design & Theme",
+      "description": "Configure your visual design system, theme, and styling preferences",
+      "theme": "Theme",
+      "designSystem": "Design System",
+      "animationLevel": "Animation Level",
+      "iconStyle": "Icon Style",
+      "imageStrategy": "Image Strategy",
+      "borderRadius": "Border Radius"
+    },
+    "content": {
+      "title": "Content Strategy",
+      "description": "Define your content types, CMS, and content management approach",
+      "contentTypes": "Content Types",
+      "cmsProvider": "CMS Provider",
+      "blog": "Blog",
+      "i18n": "Internationalization",
+      "search": "Search",
+      "searchProvider": "Search Provider"
+    },
+    "framework": {
+      "title": "Framework & Stack",
+      "description": "Choose your framework, language, styling, and component library",
+      "framework": "Framework",
+      "language": "Language",
+      "styling": "Styling",
+      "componentLibrary": "Component Library",
+      "packageManager": "Package Manager",
+      "monorepo": "Monorepo"
+    },
+    "backend": {
+      "title": "Database & Backend",
+      "description": "Configure your database, ORM, authentication, and API layer",
+      "database": "Database",
+      "orm": "ORM",
+      "auth": "Auth Provider",
+      "authMethods": "Auth Methods",
+      "storageProvider": "Storage Provider",
+      "apiStyle": "API Style"
+    },
+    "integrations": {
+      "title": "Integrations & APIs",
+      "description": "Set up email, analytics, monitoring, CRM, and marketing integrations",
+      "emailProvider": "Email Provider",
+      "analytics": "Analytics",
+      "monitoring": "Monitoring",
+      "crm": "CRM",
+      "marketing": "Marketing",
+      "chatWidget": "Chat Widget"
+    },
+    "products": {
+      "title": "Products & Catalog",
+      "description": "Configure your product catalog, types, and features",
+      "productType": "Product Type",
+      "catalogSize": "Catalog Size",
+      "features": "Product Features",
+      "categories": "Categories",
+      "variants": "Variants (size, color, etc.)",
+      "inventory": "Inventory Tracking",
+      "reviews": "Product Reviews",
+      "wishlist": "Wishlist",
+      "compareProducts": "Compare Products"
+    },
+    "payments": {
+      "title": "Payments & Checkout",
+      "description": "Set up payment processing, checkout flow, and billing options",
+      "paymentProcessor": "Payment Processor",
+      "checkoutStyle": "Checkout Style",
+      "taxCalculation": "Tax Calculation",
+      "features": "Billing Features",
+      "invoicing": "Invoicing",
+      "subscriptionBilling": "Subscription Billing",
+      "coupons": "Coupons & Discounts",
+      "giftCards": "Gift Cards"
+    },
+    "shipping": {
+      "title": "Shipping & Fulfillment",
+      "description": "Configure shipping providers, fulfillment, and delivery options",
+      "shippingProviders": "Shipping Providers",
+      "fulfillment": "Fulfillment Method",
+      "features": "Shipping Features",
+      "internationalShipping": "International Shipping",
+      "shippingZones": "Shipping Zones",
+      "trackingEnabled": "Order Tracking",
+      "returnsPolicy": "Returns & Refunds"
+    },
+    "seo": {
+      "title": "SEO & Analytics",
+      "description": "Optimize for search engines with structured data, meta tags, and performance budgets",
+      "seoStrategy": "SEO Strategy",
+      "structuredData": "Structured Data",
+      "sitemap": "Sitemap",
+      "robotsTxt": "robots.txt",
+      "openGraph": "Open Graph",
+      "twitterCards": "Twitter Cards",
+      "canonicalUrls": "Canonical URLs",
+      "performanceBudget": "Performance Budget"
+    },
+    "security": {
+      "title": "Performance & Security",
+      "description": "Configure SSL, security headers, compliance, CDN, and caching",
+      "ssl": "SSL / HTTPS",
+      "csp": "Content Security Policy",
+      "rateLimiting": "Rate Limiting",
+      "ddosProtection": "DDoS Protection",
+      "waf": "Web Application Firewall",
+      "compliance": "Compliance",
+      "backups": "Backups",
+      "cdn": "CDN",
+      "caching": "Caching"
+    },
+    "hosting": {
+      "title": "Hosting & Deployment",
+      "description": "Choose your hosting provider, CI/CD, environments, and scaling strategy",
+      "hosting": "Hosting Provider",
+      "ci": "CI/CD",
+      "environments": "Environments",
+      "region": "Region",
+      "scaling": "Scaling",
+      "containerized": "Containerized (Docker)",
+      "distributionChannels": "Distribution Channels"
+    },
+    "aiNotes": {
+      "title": "AI & Notes",
+      "description": "Configure AI features and add additional notes for document generation",
+      "aiFeatures": "AI Features",
+      "aiProvider": "AI Provider",
+      "detailedDescription": "Detailed Description",
+      "detailedDescriptionPlaceholder": "Describe your website in detail — goals, audience, unique features...",
+      "targetPages": "Target Pages",
+      "targetPagesPlaceholder": "List the main pages and their purpose...",
+      "referenceWebsites": "Reference Websites",
+      "referenceWebsitesPlaceholder": "Links to websites you'd like to reference...",
+      "constraints": "Constraints",
+      "constraintsPlaceholder": "Any technical or business constraints...",
+      "additionalNotes": "Additional Notes",
+      "additionalNotesPlaceholder": "Anything else the AI should know...",
+      "complete": "Complete Configuration"
+    },
+    "complete": {
+      "title": "Configuration Complete!",
+      "description": "Your website configuration is ready. Save and generate your project documents.",
+      "failedToSave": "Failed to save configuration",
+      "websiteTypes": "Website Types",
+      "framework": "Framework",
+      "database": "Database",
+      "hosting": "Hosting",
+      "payments": "Payments",
+      "pages": "Pages",
+      "saving": "Saving...",
+      "continueToDocuments": "Generate Documents",
+      "exportConfig": "Export JSON",
+      "edit": "Edit"
+    },
+    "combo": {
+      "title": "Website Documents",
+      "description": "AI-generated init prompt and development concept for your website",
+      "noProject": "No Project Selected",
+      "noProjectDesc": "Complete the website wizard first to generate documents.",
+      "generating": "Generating documents...",
+      "generatedDocs": "Generated Documents",
+      "generatedDocsDesc": "Your website documents are ready for use",
+      "ready": "Ready",
+      "downloadAll": "Download All"
     }
   }
 }

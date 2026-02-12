@@ -1,4 +1,5 @@
 export type UserRole = 'user' | 'admin' | 'enterprise'
+export type UserPlan = 'free' | 'pro' | 'enterprise' | 'super'
 export type ProjectStatus = 'draft' | 'configuring' | 'generating' | 'ready' | 'deployed' | 'archived'
 export type DeploymentStatus = 'pending' | 'building' | 'deploying' | 'live' | 'failed' | 'stopped'
 
@@ -8,6 +9,7 @@ export interface Profile {
   full_name: string | null
   avatar_url: string | null
   role: UserRole
+  plan: UserPlan
   created_at: string
   updated_at: string
 }

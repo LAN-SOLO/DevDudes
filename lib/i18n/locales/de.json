@@ -659,6 +659,7 @@
       "region": "Region",
       "domains": "Eigene Domains",
       "scaling": "Skalierungsstrategie",
+      "distributionChannels": "Vertriebskanäle",
       "docker": "Docker-Unterstützung",
       "envVars": "Umgebungsvariablen",
       "i18nSupport": "Internationalisierung",
@@ -1115,7 +1116,74 @@
       "selectedFeatures": "Funktionen",
       "deployTarget": "Bereitstellungsziel",
       "notSet": "Nicht festgelegt",
-      "testing": "Testen"
+      "testing": "Testen",
+      "publishing": "Geschäftsmodell",
+      "distribution": "Vertrieb",
+      "channels": "Kanäle"
+    },
+    "publishing": {
+      "title": "Veröffentlichung & Vertrieb",
+      "description": "Konfigurieren Sie, wie Ihre Anwendung veröffentlicht und an Benutzer verteilt wird",
+      "businessModel": "Geschäftsmodell",
+      "distributionChannels": "Vertriebskanäle",
+      "license": "Lizenz",
+      "customEula": "Benutzerdefinierte EULA",
+      "customEulaPlaceholder": "Geben Sie Ihre benutzerdefinierte Endbenutzer-Lizenzvereinbarung ein...",
+      "releaseStrategy": "Release-Strategie",
+      "versioning": "Versionierung",
+      "customDomain": "Eigene Domain",
+      "changelog": "Änderungsprotokoll",
+      "changelogDesc": "Automatisch Änderungsprotokolle aus Releases generieren",
+      "autoPublish": "Auto-Veröffentlichung",
+      "autoPublishDesc": "Neue Versionen automatisch veröffentlichen, wenn die CI/CD-Pipeline erfolgreich ist",
+      "storeListings": "Store-Einträge",
+      "addStoreListing": "Store-Eintrag hinzufügen",
+      "appId": "App-ID",
+      "storeUrl": "Store-URL"
+    },
+    "recommendations": {
+      "title": "KI-Vorschläge",
+      "aiProviders": "Empfohlene KI-Anbieter",
+      "features": "Empfohlene Funktionen",
+      "security": "Sicherheitsempfehlungen",
+      "deployment": "Bereitstellungsvorschläge",
+      "integrations": "Integrationsvorschläge",
+      "stack": "Stack-Empfehlungen",
+      "publishing": "Veröffentlichungsvorschläge"
+    },
+    "analysis": {
+      "title": "Workflow-Analyse",
+      "complexity": "Komplexitätswert",
+      "sections": "Konfigurierte Abschnitte",
+      "steps": "Workflow-Schritte",
+      "aiProviders": "KI-Anbieter",
+      "effort": "Geschätzter Aufwand",
+      "warnings": "Warnungen",
+      "suggestions": "Vorschläge",
+      "compatibility": "Kompatibilitätsprobleme",
+      "effortLabel": {
+        "small": "Klein",
+        "medium": "Mittel",
+        "large": "Groß",
+        "enterprise": "Enterprise"
+      },
+      "complexityLabel": {
+        "simple": "Einfach",
+        "moderate": "Moderat",
+        "complex": "Komplex",
+        "enterprise": "Enterprise"
+      }
+    },
+    "combo": {
+      "title": "Workflow-Dokumente",
+      "description": "Generierter Init Prompt und Entwicklungskonzept für Ihre Workflow-App",
+      "noProject": "Kein Projekt ausgewählt",
+      "noProjectDesc": "Schließen Sie zuerst den Workflow Dude Assistenten ab und kehren Sie dann hierher zurück.",
+      "generating": "Workflow-Dokumente werden generiert...",
+      "generatedDocs": "Generierte Dokumente",
+      "generatedDocsDesc": "Ihr Init Prompt und Entwicklungskonzept sind einsatzbereit",
+      "ready": "Bereit",
+      "downloadAll": "Alle herunterladen"
     }
   },
   "projects": {
@@ -1293,6 +1361,11 @@
         "name": "Enterprise",
         "description": "Für Teams und Organisationen",
         "period": "Monat"
+      },
+      "super": {
+        "name": "Super",
+        "description": "Vollzugriff für Tests und Entwicklung",
+        "period": "Intern"
       }
     },
     "planFeatures": {
@@ -1316,7 +1389,13 @@
       "dedicatedSupport": "Dedizierter Support",
       "slaGuarantee": "SLA-Garantie",
       "onPremise": "On-Premise Option",
-      "ssoSaml": "SSO & SAML"
+      "ssoSaml": "SSO & SAML",
+      "everythingInEnterprise": "Alles aus Enterprise",
+      "unlimitedEverything": "Alles unbegrenzt",
+      "allPipelines": "Alle Pipelines freigeschaltet",
+      "fullApiAccess": "Voller API-Zugang",
+      "priorityTesting": "Prioritäts-Tests",
+      "adminTools": "Admin-Werkzeuge"
     },
     "toasts": {
       "comingSoon": "Zahlungsintegration kommt bald",
@@ -1564,13 +1643,26 @@
     "missingIntegrationDesc": "Teilen Sie uns mit, welche Tools Sie gerne integriert sehen würden",
     "requestIntegration": "Integration anfragen",
     "upgradeToConnect": "Upgraden zum Verbinden",
+    "searchPlaceholder": "Integrationen durchsuchen...",
+    "noResults": "Keine Integrationen gefunden",
+    "noResultsHint": "Versuchen Sie einen anderen Suchbegriff oder setzen Sie die Filter zurück",
+    "clearFilters": "Filter zurücksetzen",
+    "vendors": {
+      "all": "Alle",
+      "general": "Allgemein",
+      "microsoft": "Microsoft 365",
+      "atlassian": "Atlassian",
+      "google": "Google",
+      "ai": "KI / ML",
+      "untermstrich": "untermStrich"
+    },
     "categories": {
       "all": "Alle",
       "development": "Entwicklung",
       "communication": "Kommunikation",
       "productivity": "Produktivität",
       "analytics": "Analysen",
-      "admin": "M365 Admin"
+      "admin": "Admin"
     },
     "toasts": {
       "connected": "Verbunden",
@@ -2051,6 +2143,223 @@
       "description": "Übersicht deines Spielprojekts",
       "placeholder": "Demnächst verfügbar",
       "placeholderDesc": "Die Spielübersichtsseite befindet sich in Entwicklung."
+    }
+  },
+  "website": {
+    "common": {
+      "next": "Weiter",
+      "back": "Zurück",
+      "exportConfig": "Konfig exportieren",
+      "importConfig": "Konfig importieren"
+    },
+    "nav": {
+      "identity": "Identität",
+      "design": "Design",
+      "tech": "Technik",
+      "commerce": "Commerce",
+      "launch": "Launch"
+    },
+    "import": {
+      "title": "Importieren oder neu starten",
+      "description": "Importiere ein bestehendes Website-Projekt oder starte eine neue Konfiguration",
+      "dropzone": "JSON-Konfigurationsdatei hier ablegen oder klicken zum Durchsuchen",
+      "optional": "Dieser Schritt ist optional — überspringe zum Neustart"
+    },
+    "purpose": {
+      "title": "Website-Typ & Zweck",
+      "description": "Definiere, welche Art von Website du erstellst und für wen",
+      "websiteType": "Website-Typ",
+      "industry": "Branche",
+      "targetAudience": "Zielgruppe",
+      "siteName": "Website-Name",
+      "siteNamePlaceholder": "Meine tolle Website",
+      "elevatorPitch": "Beschreibung",
+      "elevatorPitchPlaceholder": "Beschreibe deine Website in wenigen Sätzen..."
+    },
+    "branding": {
+      "title": "Branding & Domain",
+      "description": "Definiere deine Markenidentität, Farben, Schriftarten und Domain",
+      "brandTone": "Markenton",
+      "logoStyle": "Logo-Stil",
+      "primaryColor": "Primärfarbe",
+      "secondaryColor": "Sekundärfarbe",
+      "fontHeading": "Überschriften-Schrift",
+      "fontBody": "Text-Schrift",
+      "customDomain": "Eigene Domain"
+    },
+    "layout": {
+      "title": "Layout & Navigation",
+      "description": "Wähle Layout, Navigationsart und Seitenstruktur deiner Website",
+      "layoutStyle": "Layout-Stil",
+      "navigationStyle": "Navigationsart",
+      "headerStyle": "Header-Stil",
+      "footerStyle": "Footer-Stil",
+      "pageStructure": "Seitenstruktur"
+    },
+    "visual": {
+      "title": "Visuelles Design & Theme",
+      "description": "Konfiguriere Design-System, Theme und Stilvorlieben",
+      "theme": "Theme",
+      "designSystem": "Design-System",
+      "animationLevel": "Animationslevel",
+      "iconStyle": "Icon-Stil",
+      "imageStrategy": "Bildstrategie",
+      "borderRadius": "Eckenradius"
+    },
+    "content": {
+      "title": "Content-Strategie",
+      "description": "Definiere Content-Typen, CMS und Content-Management-Ansatz",
+      "contentTypes": "Content-Typen",
+      "cmsProvider": "CMS-Anbieter",
+      "blog": "Blog",
+      "i18n": "Mehrsprachigkeit",
+      "search": "Suche",
+      "searchProvider": "Suchanbieter"
+    },
+    "framework": {
+      "title": "Framework & Stack",
+      "description": "Wähle Framework, Sprache, Styling und Komponentenbibliothek",
+      "framework": "Framework",
+      "language": "Sprache",
+      "styling": "Styling",
+      "componentLibrary": "Komponentenbibliothek",
+      "packageManager": "Paketmanager",
+      "monorepo": "Monorepo"
+    },
+    "backend": {
+      "title": "Datenbank & Backend",
+      "description": "Konfiguriere Datenbank, ORM, Authentifizierung und API-Schicht",
+      "database": "Datenbank",
+      "orm": "ORM",
+      "auth": "Auth-Anbieter",
+      "authMethods": "Auth-Methoden",
+      "storageProvider": "Speicheranbieter",
+      "apiStyle": "API-Stil"
+    },
+    "integrations": {
+      "title": "Integrationen & APIs",
+      "description": "E-Mail, Analytics, Monitoring, CRM und Marketing-Integrationen einrichten",
+      "emailProvider": "E-Mail-Anbieter",
+      "analytics": "Analytics",
+      "monitoring": "Monitoring",
+      "crm": "CRM",
+      "marketing": "Marketing",
+      "chatWidget": "Chat-Widget"
+    },
+    "products": {
+      "title": "Produkte & Katalog",
+      "description": "Konfiguriere deinen Produktkatalog, Typen und Features",
+      "productType": "Produkttyp",
+      "catalogSize": "Kataloggröße",
+      "features": "Produkt-Features",
+      "categories": "Kategorien",
+      "variants": "Varianten (Größe, Farbe, etc.)",
+      "inventory": "Bestandsverfolgung",
+      "reviews": "Produktbewertungen",
+      "wishlist": "Wunschliste",
+      "compareProducts": "Produkte vergleichen"
+    },
+    "payments": {
+      "title": "Zahlungen & Checkout",
+      "description": "Zahlungsverarbeitung, Checkout-Ablauf und Abrechnungsoptionen einrichten",
+      "paymentProcessor": "Zahlungsanbieter",
+      "checkoutStyle": "Checkout-Stil",
+      "taxCalculation": "Steuerberechnung",
+      "features": "Abrechnungs-Features",
+      "invoicing": "Rechnungserstellung",
+      "subscriptionBilling": "Abo-Abrechnung",
+      "coupons": "Gutscheine & Rabatte",
+      "giftCards": "Geschenkkarten"
+    },
+    "shipping": {
+      "title": "Versand & Fulfillment",
+      "description": "Versandanbieter, Fulfillment und Lieferoptionen konfigurieren",
+      "shippingProviders": "Versandanbieter",
+      "fulfillment": "Fulfillment-Methode",
+      "features": "Versand-Features",
+      "internationalShipping": "Internationaler Versand",
+      "shippingZones": "Versandzonen",
+      "trackingEnabled": "Sendungsverfolgung",
+      "returnsPolicy": "Rückgaben & Erstattungen"
+    },
+    "seo": {
+      "title": "SEO & Analytics",
+      "description": "Optimiere für Suchmaschinen mit strukturierten Daten, Meta-Tags und Performance-Budgets",
+      "seoStrategy": "SEO-Strategie",
+      "structuredData": "Strukturierte Daten",
+      "sitemap": "Sitemap",
+      "robotsTxt": "robots.txt",
+      "openGraph": "Open Graph",
+      "twitterCards": "Twitter Cards",
+      "canonicalUrls": "Canonical URLs",
+      "performanceBudget": "Performance-Budget"
+    },
+    "security": {
+      "title": "Performance & Sicherheit",
+      "description": "SSL, Sicherheits-Header, Compliance, CDN und Caching konfigurieren",
+      "ssl": "SSL / HTTPS",
+      "csp": "Content Security Policy",
+      "rateLimiting": "Rate Limiting",
+      "ddosProtection": "DDoS-Schutz",
+      "waf": "Web Application Firewall",
+      "compliance": "Compliance",
+      "backups": "Backups",
+      "cdn": "CDN",
+      "caching": "Caching"
+    },
+    "hosting": {
+      "title": "Hosting & Deployment",
+      "description": "Hosting-Anbieter, CI/CD, Umgebungen und Skalierungsstrategie wählen",
+      "hosting": "Hosting-Anbieter",
+      "ci": "CI/CD",
+      "environments": "Umgebungen",
+      "region": "Region",
+      "scaling": "Skalierung",
+      "containerized": "Containerisiert (Docker)",
+      "distributionChannels": "Vertriebskanäle"
+    },
+    "aiNotes": {
+      "title": "KI & Notizen",
+      "description": "KI-Features konfigurieren und zusätzliche Notizen für die Dokumentenerstellung hinzufügen",
+      "aiFeatures": "KI-Features",
+      "aiProvider": "KI-Anbieter",
+      "detailedDescription": "Detaillierte Beschreibung",
+      "detailedDescriptionPlaceholder": "Beschreibe deine Website im Detail — Ziele, Zielgruppe, besondere Features...",
+      "targetPages": "Zielseiten",
+      "targetPagesPlaceholder": "Liste die Hauptseiten und ihren Zweck auf...",
+      "referenceWebsites": "Referenz-Websites",
+      "referenceWebsitesPlaceholder": "Links zu Websites, die als Referenz dienen sollen...",
+      "constraints": "Einschränkungen",
+      "constraintsPlaceholder": "Technische oder geschäftliche Einschränkungen...",
+      "additionalNotes": "Zusätzliche Notizen",
+      "additionalNotesPlaceholder": "Alles weitere, das die KI wissen sollte...",
+      "complete": "Konfiguration abschließen"
+    },
+    "complete": {
+      "title": "Konfiguration abgeschlossen!",
+      "description": "Deine Website-Konfiguration ist bereit. Speichere und generiere deine Projektdokumente.",
+      "failedToSave": "Fehler beim Speichern der Konfiguration",
+      "websiteTypes": "Website-Typen",
+      "framework": "Framework",
+      "database": "Datenbank",
+      "hosting": "Hosting",
+      "payments": "Zahlungen",
+      "pages": "Seiten",
+      "saving": "Speichern...",
+      "continueToDocuments": "Dokumente generieren",
+      "exportConfig": "JSON exportieren",
+      "edit": "Bearbeiten"
+    },
+    "combo": {
+      "title": "Website-Dokumente",
+      "description": "KI-generierter Init-Prompt und Entwicklungskonzept für deine Website",
+      "noProject": "Kein Projekt ausgewählt",
+      "noProjectDesc": "Schließe zuerst den Website-Wizard ab, um Dokumente zu generieren.",
+      "generating": "Dokumente werden generiert...",
+      "generatedDocs": "Generierte Dokumente",
+      "generatedDocsDesc": "Deine Website-Dokumente sind einsatzbereit",
+      "ready": "Bereit",
+      "downloadAll": "Alle herunterladen"
     }
   }
 }

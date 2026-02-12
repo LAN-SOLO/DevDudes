@@ -11,6 +11,7 @@ import { useToast } from '@/components/ui/toast'
 import { createClient } from '@/lib/supabase/client'
 import { Loader2, Camera } from 'lucide-react'
 import { useTranslation } from '@/lib/i18n/language-provider'
+import { usePlan } from '@/lib/hooks/use-plan'
 import type { User } from '@supabase/supabase-js'
 
 export default function ProfilePage() {
@@ -21,6 +22,7 @@ export default function ProfilePage() {
   const [isDeleting, setIsDeleting] = useState(false)
   const { addToast } = useToast()
   const { t } = useTranslation()
+  const { label: planLabel } = usePlan()
   const [profileForm, setProfileForm] = useState({
     fullName: '',
     company: '',
@@ -240,7 +242,7 @@ export default function ProfilePage() {
               <p className="text-sm text-muted-foreground">{t('profile.templatesUsed')}</p>
             </div>
             <div className="rounded-lg border p-4 text-center">
-              <p className="text-2xl font-bold">Free</p>
+              <p className="text-2xl font-bold">{planLabel}</p>
               <p className="text-sm text-muted-foreground">{t('profile.currentPlan')}</p>
             </div>
           </div>
