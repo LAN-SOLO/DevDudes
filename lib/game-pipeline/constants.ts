@@ -421,6 +421,10 @@ export const DISTRIBUTION_OPTIONS: GameOption[] = [
   { value: 'gog', label: 'GOG', icon: 'Shield', description: 'DRM-free distribution' },
   { value: 'console-store', label: 'Console Stores', icon: 'Joystick', description: 'PlayStation/Xbox/Nintendo stores' },
   { value: 'pwa', label: 'PWA', icon: 'Smartphone', description: 'Installable Progressive Web App' },
+  { value: 'lan-server', label: 'LAN Server', icon: 'Network', description: 'Deploy to a local area network server' },
+  { value: 'local-docker', label: 'Local Docker', icon: 'Container', description: 'Run as a Docker container on local infrastructure' },
+  { value: 'usb-portable', label: 'USB / Portable', icon: 'Usb', description: 'Package for offline USB or portable distribution' },
+  { value: 'network-share', label: 'Network Share', icon: 'FolderSync', description: 'Deploy via network file share (SMB/NFS)' },
 ]
 
 // ── Step 16: AI ─────────────────────────────────────────────────

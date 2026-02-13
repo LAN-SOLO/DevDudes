@@ -129,11 +129,11 @@ export function StepFeatures() {
 
         {/* Navigation */}
         <div className="flex justify-between">
-          <Button variant="outline" onClick={() => setCurrentStep(5)}>
+          <Button variant="outline" onClick={() => setCurrentStep(6)}>
             <ArrowLeft className="mr-2 h-4 w-4" />
             {t('preset.common.back')}
           </Button>
-          <Button onClick={() => setCurrentStep(7)}>
+          <Button onClick={() => setCurrentStep(8)}>
             {t('preset.common.continue')}
             <ArrowRight className="ml-2 h-4 w-4" />
           </Button>

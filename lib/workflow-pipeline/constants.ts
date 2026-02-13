@@ -6,7 +6,7 @@ export const WORKFLOW_STEP_CATEGORIES: WorkflowStepCategory[] = [
   { id: 'data', label: 'Data', steps: [4, 5, 6] },
   { id: 'intelligence', label: 'Intelligence', steps: [7, 8, 9] },
   { id: 'secure', label: 'Secure', steps: [10, 11, 12] },
-  { id: 'ship', label: 'Ship', steps: [13, 14, 15, 16] },
+  { id: 'ship', label: 'Ship', steps: [13, 14, 15, 16, 17, 18] },
 ]
 
 export const WORKFLOW_STEP_LABELS: Record<number, string> = {
@@ -26,6 +26,8 @@ export const WORKFLOW_STEP_LABELS: Record<number, string> = {
   14: 'Testing',
   15: 'Deployment & CI/CD',
   16: 'UI & Documentation',
+  17: 'Corporate Identity',
+  18: 'Publishing & Distribution',
 }
 
 // ── Step 1: Meta ────────────────────────────────────────────────
@@ -102,6 +104,7 @@ export const DATA_CONNECTOR_PROVIDER_OPTIONS: WorkflowOption[] = [
   { value: 'firebase', label: 'Firebase', description: 'Google real-time database' },
   { value: 'elasticsearch', label: 'Elasticsearch', description: 'Search engine' },
   { value: 'kafka', label: 'Kafka', description: 'Event streaming' },
+  { value: 'untermstrich', label: 'untermStrich', description: 'Project controlling & time tracking' },
   { value: 'custom', label: 'Custom', description: 'Custom connection' },
 ]
 
@@ -432,4 +435,59 @@ export const LOCALE_OPTIONS: WorkflowOption[] = [
   { value: 'pt', label: 'Portuguese', description: 'pt' },
   { value: 'ja', label: 'Japanese', description: 'ja' },
   { value: 'zh', label: 'Chinese', description: 'zh' },
+]
+
+// ── Step 17: Publishing & Distribution ──────────────────────────
+export const BUSINESS_MODEL_OPTIONS: WorkflowOption[] = [
+  { value: 'saas-subscription', label: 'SaaS Subscription', description: 'Recurring monthly/yearly payments' },
+  { value: 'one-time-license', label: 'One-Time License', description: 'Single purchase, lifetime access' },
+  { value: 'freemium', label: 'Freemium', description: 'Free tier with paid upgrades' },
+  { value: 'open-source', label: 'Open Source', description: 'Free, community-driven' },
+  { value: 'usage-based', label: 'Usage-Based', description: 'Pay per API call or resource' },
+  { value: 'per-seat', label: 'Per-Seat', description: 'Price per user or team member' },
+  { value: 'enterprise', label: 'Enterprise', description: 'Custom contracts and pricing' },
+  { value: 'free-donation', label: 'Free / Donation', description: 'Free with optional donations' },
+]
+
+export const DISTRIBUTION_CHANNEL_OPTIONS: WorkflowOption[] = [
+  { value: 'web-custom', label: 'Web (Custom Domain)', description: 'Self-hosted web application' },
+  { value: 'app-store-ios', label: 'App Store (iOS)', description: 'Apple App Store distribution' },
+  { value: 'google-play', label: 'Google Play', description: 'Android app distribution' },
+  { value: 'pwa', label: 'PWA', description: 'Progressive Web App installable' },
+  { value: 'npm', label: 'npm', description: 'Node.js package registry' },
+  { value: 'docker-hub', label: 'Docker Hub', description: 'Container image registry' },
+  { value: 'chrome-web-store', label: 'Chrome Web Store', description: 'Browser extension marketplace' },
+  { value: 'slack-app-directory', label: 'Slack App Directory', description: 'Slack integration marketplace' },
+  { value: 'shopify-app-store', label: 'Shopify App Store', description: 'Shopify plugin marketplace' },
+  { value: 'microsoft-appsource', label: 'Microsoft AppSource', description: 'Microsoft 365 marketplace' },
+  { value: 'github-marketplace', label: 'GitHub Marketplace', description: 'GitHub Actions and Apps' },
+  { value: 'wordpress-plugins', label: 'WordPress Plugins', description: 'WordPress plugin directory' },
+  { value: 'lan-server', label: 'LAN Server', description: 'Deploy to a local area network server' },
+  { value: 'local-docker', label: 'Local Docker', description: 'Run as a Docker container on local infrastructure' },
+  { value: 'usb-portable', label: 'USB / Portable', description: 'Package for offline USB or portable distribution' },
+  { value: 'network-share', label: 'Network Share', description: 'Deploy via network file share (SMB/NFS)' },
+  { value: 'intranet', label: 'Intranet Portal', description: 'Deploy to an internal company intranet' },
+]
+
+export const APP_LICENSE_OPTIONS: WorkflowOption[] = [
+  { value: 'MIT', label: 'MIT', description: 'Permissive open source' },
+  { value: 'Apache-2.0', label: 'Apache 2.0', description: 'Permissive with patent grant' },
+  { value: 'GPL-3.0', label: 'GPL 3.0', description: 'Copyleft open source' },
+  { value: 'BSD-3', label: 'BSD 3-Clause', description: 'Permissive with attribution' },
+  { value: 'proprietary', label: 'Proprietary', description: 'Closed source, all rights reserved' },
+  { value: 'custom-eula', label: 'Custom EULA', description: 'Custom end-user license agreement' },
+]
+
+export const RELEASE_STRATEGY_OPTIONS: WorkflowOption[] = [
+  { value: 'stable', label: 'Stable', description: 'Full releases only' },
+  { value: 'beta', label: 'Beta', description: 'Beta channel for early adopters' },
+  { value: 'canary', label: 'Canary', description: 'Bleeding-edge nightly builds' },
+  { value: 'rolling', label: 'Rolling', description: 'Continuous deployment on merge' },
+  { value: 'lts', label: 'LTS', description: 'Long-term support releases' },
+]
+
+export const VERSIONING_OPTIONS: WorkflowOption[] = [
+  { value: 'semver', label: 'SemVer', description: 'Semantic Versioning (major.minor.patch)' },
+  { value: 'calver', label: 'CalVer', description: 'Calendar Versioning (YYYY.MM.DD)' },
+  { value: 'custom', label: 'Custom', description: 'Custom versioning scheme' },
 ]

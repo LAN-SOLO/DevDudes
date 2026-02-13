@@ -11,9 +11,10 @@ import { Switch } from '@/components/ui/switch'
 import { Select } from '@/components/ui/select'
 import { ArrowLeft, ArrowRight, Check, Plus, X } from 'lucide-react'
 import { ENCRYPTION_OPTIONS, COMPLIANCE_OPTIONS } from '@/lib/workflow-pipeline/constants'
+import { RecommendationChips } from '@/components/dudes/shared/recommendation-chips'
 
 export function StepSecurity() {
-  const { config, updateSecurity, nextStep, prevStep } = useWorkflowWizard()
+  const { config, recommendations, updateSecurity, nextStep, prevStep } = useWorkflowWizard()
   const { t } = useTranslation()
   const [newOrigin, setNewOrigin] = useState('')
 
@@ -45,6 +46,14 @@ export function StepSecurity() {
         <CardDescription>{t('workflow.security.description')}</CardDescription>
       </CardHeader>
       <CardContent className="space-y-6">
+        {/* Security Recommendations */}
+        {recommendations.security.length > 0 && (
+          <RecommendationChips
+            recommendations={recommendations.security}
+            label={t('workflow.recommendations.security')}
+          />
+        )}
+
         {/* Encryption */}
         <div className="space-y-2">
           <Label>{t('workflow.security.encryption')}</Label>

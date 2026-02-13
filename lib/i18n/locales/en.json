@@ -786,6 +786,17 @@
       "importConfig": "Import Config",
       "exportConfig": "Export Config"
     },
+    "templates": {
+      "title": "Start from Template",
+      "description": "Apply a pre-built workflow template to get started quickly",
+      "categories": {
+        "employeeServices": "Employee Services",
+        "itAdmin": "IT & Admin",
+        "businessOps": "Business Ops"
+      },
+      "applyTemplate": "Apply Template",
+      "templateApplied": "Applied"
+    },
     "meta": {
       "title": "Meta & Info",
       "description": "Basic project metadata and information",
@@ -1752,6 +1763,32 @@
     "english": "English",
     "german": "Deutsch"
   },
+  "ci": {
+    "title": "Corporate Identity",
+    "description": "Upload your branding assets, define brand colors, and specify font preferences.",
+    "categories": {
+      "logo": "Logo",
+      "letterhead": "Company Letterhead",
+      "font": "Font Files",
+      "pptx-master": "PPTX Master Template",
+      "style-example": "Style Examples",
+      "other": "Other Assets"
+    },
+    "upload": {
+      "dropOrClick": "Drop file here or click to upload",
+      "maxSize": "Max 5 MB per file",
+      "rejected": "Some files were rejected:"
+    },
+    "brandColors": "Brand Colors",
+    "addColor": "Add Color",
+    "fontPrimary": "Primary Font Family",
+    "fontPrimaryPlaceholder": "e.g. Inter, Helvetica Neue",
+    "fontSecondary": "Secondary Font Family",
+    "fontSecondaryPlaceholder": "e.g. Merriweather, Georgia",
+    "brandUrl": "Brand Guidelines URL",
+    "brandNotes": "Brand Notes",
+    "brandNotesPlaceholder": "Any additional notes about your brand identity, style preferences, or CI requirements..."
+  },
   "game": {
     "common": {
       "next": "Next",
@@ -2173,7 +2210,8 @@
       "design": "Design",
       "tech": "Tech",
       "commerce": "Commerce",
-      "launch": "Launch"
+      "launch": "Launch",
+      "business": "Business"
     },
     "import": {
       "title": "Import or Start Fresh",
@@ -2350,6 +2388,28 @@
       "additionalNotes": "Additional Notes",
       "additionalNotesPlaceholder": "Anything else the AI should know...",
       "complete": "Complete Configuration"
+    },
+    "businessModules": {
+      "title": "Business Service Modules",
+      "description": "Select and configure the business modules for your employee portal",
+      "modules": "Business Modules",
+      "adminFeatures": "Admin Area Features",
+      "formBuilder": "Form Builder Features",
+      "signatureBuilder": "Signature Builder",
+      "signatureLayout": "Signature Layout",
+      "signatureFeatures": "Signature Features",
+      "travelExpenses": "Travel Expense Features",
+      "employeeBudget": "Employee Budget Features",
+      "sickLeave": "Sick Leave Features"
+    },
+    "directory": {
+      "title": "Directory & Messaging",
+      "description": "Configure Active Directory integration and notification channels",
+      "provider": "Directory Provider",
+      "syncFields": "Sync Fields",
+      "autoSync": "Auto-sync user data on login",
+      "communicationChannels": "Communication Channels",
+      "defaultChannel": "Default Notification Channel"
     },
     "complete": {
       "title": "Configuration Complete!",

@@ -1,4 +1,5 @@
 import { z } from 'zod'
+import { ciConfigSchema } from '@/lib/shared-pipeline/ci'
 
 // ── Shared Sub-schemas (preserved from v1) ─────────────────────
 
@@ -375,6 +376,28 @@ const documentationSchema = z.object({
   includeExamples: z.boolean().default(true),
 })
 
+// ── Step 17: Publishing & Distribution ──────────────────────────
+
+const storeListingSchema = z.object({
+  id: z.string(),
+  channel: z.string().default(''),
+  appId: z.string().default(''),
+  url: z.string().default(''),
+})
+
+const publishingSchema = z.object({
+  businessModel: z.string().default(''),
+  distributionChannels: z.array(z.string()).default([]),
+  license: z.string().default(''),
+  customEula: z.string().default(''),
+  releaseStrategy: z.string().default('stable'),
+  versioning: z.string().default('semver'),
+  customDomain: z.string().default(''),
+  storeListings: z.array(storeListingSchema).default([]),
+  changelogEnabled: z.boolean().default(false),
+  autoPublish: z.boolean().default(false),
+})
+
 // ── Full v2 Schema ─────────────────────────────────────────────
 
 export const workflowConfigV2Schema = z.object({
@@ -403,6 +426,8 @@ export const workflowConfigV2Schema = z.object({
   deployment: deploymentSchema.default(deploymentSchema.parse({})),
   ui: uiSchema.default(uiSchema.parse({})),
   documentation: documentationSchema.default(documentationSchema.parse({})),
+  ci: ciConfigSchema.default(ciConfigSchema.parse({})),
+  publishing: publishingSchema.default(publishingSchema.parse({})),
 })
 
 // ── Type Exports ──────────────────────────────────────────────

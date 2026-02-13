@@ -1,3 +1,5 @@
+import type { CIConfig } from '@/lib/shared-pipeline/ci'
+
 // ── Workflow Pipeline v2 Types ─────────────────────────────────────
 
 export interface WorkflowOption {
@@ -366,6 +368,33 @@ export interface WorkflowDocumentationConfig {
   includeExamples: boolean
 }
 
+// ── Step 17: Publishing & Distribution ──────────────────────────────
+export interface WorkflowStoreListing {
+  id: string
+  channel: string
+  appId: string
+  url: string
+}
+
+export interface WorkflowPublishingConfig {
+  businessModel: string
+  distributionChannels: string[]
+  license: string
+  customEula: string
+  releaseStrategy: string
+  versioning: string
+  customDomain: string
+  storeListings: WorkflowStoreListing[]
+  changelogEnabled: boolean
+  autoPublish: boolean
+}
+
+// ── Generated Documents ──────────────────────────────────────────
+export interface GeneratedWorkflowDocs {
+  initPrompt: string
+  developmentConcept: string
+}
+
 // ── Main Aggregate Config ──────────────────────────────────────────
 export interface WorkflowConfigV2 {
   meta: WorkflowMetaConfig
@@ -393,4 +422,6 @@ export interface WorkflowConfigV2 {
   deployment: WorkflowDeploymentConfig
   ui: WorkflowUiConfig
   documentation: WorkflowDocumentationConfig
+  ci: CIConfig
+  publishing: WorkflowPublishingConfig
 }

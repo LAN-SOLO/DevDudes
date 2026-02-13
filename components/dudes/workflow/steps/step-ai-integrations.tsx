@@ -16,11 +16,12 @@ import {
   RAG_PROVIDER_OPTIONS,
 } from '@/lib/workflow-pipeline/constants'
 import type { WorkflowConfigV2 } from '@/lib/workflow-pipeline/types'
+import { RecommendationChips } from '@/components/dudes/shared/recommendation-chips'
 
 type AiProvider = WorkflowConfigV2['aiIntegrations']['providers'][number]
 
 export function StepAIIntegrations() {
-  const { config, updateAiIntegrations, nextStep, prevStep } = useWorkflowWizard()
+  const { config, recommendations, updateAiIntegrations, nextStep, prevStep } = useWorkflowWizard()
   const { t } = useTranslation()
   const ai = config.aiIntegrations
 
@@ -122,6 +123,14 @@ export function StepAIIntegrations() {
             {t('workflow.ai.addProvider')}
           </Button>
         </div>
+
+        {/* AI Recommendations */}
+        {recommendations.aiProviders.length > 0 && (
+          <RecommendationChips
+            recommendations={recommendations.aiProviders}
+            label={t('workflow.recommendations.aiProviders')}
+          />
+        )}
 
         {/* RAG */}
         <div className="space-y-3 border-t pt-4">

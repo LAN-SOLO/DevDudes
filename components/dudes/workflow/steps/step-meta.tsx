@@ -10,12 +10,18 @@ import { Label } from '@/components/ui/label'
 import { Select } from '@/components/ui/select'
 import { Textarea } from '@/components/ui/textarea'
 import { LICENSE_OPTIONS } from '@/lib/workflow-pipeline/constants'
-import { ArrowRight, Plus, X } from 'lucide-react'
+import { WORKFLOW_TEMPLATES, TEMPLATE_CATEGORIES } from '@/lib/workflow-pipeline/templates'
+import type { WorkflowTemplateDefinition } from '@/lib/workflow-pipeline/templates'
+import { ArrowRight, Plus, X, ChevronDown, ChevronUp, Check } from 'lucide-react'
+import { cn } from '@/lib/utils'
 
 export function StepMeta() {
-  const { config, updateMeta, nextStep } = useWorkflowWizard()
+  const { config, updateConfig, updateMeta, nextStep } = useWorkflowWizard()
   const { t } = useTranslation()
   const [newTag, setNewTag] = useState('')
+  const [showTemplates, setShowTemplates] = useState(true)
+  const [activeCategory, setActiveCategory] = useState<string>('employee-services')
+  const [appliedTemplate, setAppliedTemplate] = useState<string | null>(null)
 
   const addTag = () => {
     const tag = newTag.trim().toLowerCase()
@@ -29,6 +35,13 @@ export function StepMeta() {
     updateMeta({ tags: config.meta.tags.filter((t) => t !== tag) })
   }
 
+  const applyTemplate = (template: WorkflowTemplateDefinition) => {
+    updateConfig(template.config as Partial<typeof config>)
+    setAppliedTemplate(template.id)
+  }
+
+  const filteredTemplates = WORKFLOW_TEMPLATES.filter((tpl) => tpl.category === activeCategory)
+
   return (
     <Card>
       <CardHeader>
@@ -38,6 +51,84 @@ export function StepMeta() {
         </CardDescription>
       </CardHeader>
       <CardContent className="space-y-6">
+        {/* Template Library */}
+        <div className="rounded-lg border">
+          <button
+            onClick={() => setShowTemplates(!showTemplates)}
+            className="flex w-full items-center justify-between p-4 text-left"
+          >
+            <div>
+              <p className="text-sm font-medium">{t('workflow.templates.title')}</p>
+              <p className="text-xs text-muted-foreground">{t('workflow.templates.description')}</p>
+            </div>
+            {showTemplates ? <ChevronUp className="h-4 w-4" /> : <ChevronDown className="h-4 w-4" />}
+          </button>
+
+          {showTemplates && (
+            <div className="border-t p-4 space-y-4">
+              {/* Category Filter */}
+              <div className="flex flex-wrap gap-2">
+                {TEMPLATE_CATEGORIES.map((cat) => (
+                  <button
+                    key={cat.value}
+                    onClick={() => setActiveCategory(cat.value)}
+                    className={cn(
+                      'rounded-full px-3 py-1 text-xs font-medium transition-colors',
+                      activeCategory === cat.value
+                        ? 'bg-rose-500 text-white'
+                        : 'bg-muted text-muted-foreground hover:bg-muted/80'
+                    )}
+                  >
+                    {t(`workflow.templates.categories.${cat.value === 'employee-services' ? 'employeeServices' : cat.value === 'it-admin' ? 'itAdmin' : 'businessOps'}`)}
+                  </button>
+                ))}
+              </div>
+
+              {/* Template Cards */}
+              <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+                {filteredTemplates.map((tpl) => {
+                  const isApplied = appliedTemplate === tpl.id
+                  return (
+                    <div
+                      key={tpl.id}
+                      className={cn(
+                        'rounded-lg border p-3 transition-colors',
+                        isApplied ? 'border-rose-500 bg-rose-500/5' : 'hover:border-muted-foreground/30'
+                      )}
+                    >
+                      <div className="space-y-1">
+                        <p className="text-sm font-medium">{tpl.name}</p>
+                        <p className="text-xs text-muted-foreground line-clamp-2">{tpl.description}</p>
+                        <div className="flex flex-wrap gap-1 pt-1">
+                          {tpl.tags.slice(0, 3).map((tag) => (
+                            <span key={tag} className="rounded bg-muted px-1.5 py-0.5 text-[10px]">{tag}</span>
+                          ))}
+                        </div>
+                      </div>
+                      <Button
+                        size="sm"
+                        variant={isApplied ? 'default' : 'outline'}
+                        onClick={() => applyTemplate(tpl)}
+                        className="mt-2 w-full text-xs"
+                        disabled={isApplied}
+                      >
+                        {isApplied ? (
+                          <>
+                            <Check className="mr-1 h-3 w-3" />
+                            {t('workflow.templates.templateApplied')}
+                          </>
+                        ) : (
+                          t('workflow.templates.applyTemplate')
+                        )}
+                      </Button>
+                    </div>
+                  )
+                })}
+              </div>
+            </div>
+          )}
+        </div>
+
         {/* Name */}
         <div className="space-y-2">
           <Label htmlFor="meta-name">{t('workflow.meta.name')}</Label>

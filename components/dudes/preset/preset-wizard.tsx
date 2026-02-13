@@ -5,6 +5,7 @@ import { PresetWizardProvider, usePresetWizard } from './wizard-context'
 import { WizardNav } from './wizard-nav'
 import { WizardComplete } from './wizard-complete'
 import { StepMeta } from './steps/step-meta'
+import { StepCI } from './steps/step-ci'
 import { StepAppShell } from './steps/step-app-shell'
 import { StepAuthSecurity } from './steps/step-auth-security'
 import { StepDatabase } from './steps/step-database'
@@ -29,21 +30,22 @@ export interface PresetWizardHandle {
 
 const STEP_COMPONENTS: Record<number, React.FC> = {
   1: StepMeta,
-  2: StepAppShell,
-  3: StepAuthSecurity,
-  4: StepDatabase,
-  5: StepApi,
-  6: StepFeatures,
-  7: StepUiTheme,
-  8: StepPages,
-  9: StepStorage,
-  10: StepNotifications,
-  11: StepAiSearch,
-  12: StepPayments,
-  13: StepRealtimeBackground,
-  14: StepTestingCiCd,
-  15: StepIntegrations,
-  16: StepDeploy,
+  2: StepCI,
+  3: StepAppShell,
+  4: StepAuthSecurity,
+  5: StepDatabase,
+  6: StepApi,
+  7: StepFeatures,
+  8: StepUiTheme,
+  9: StepPages,
+  10: StepStorage,
+  11: StepNotifications,
+  12: StepAiSearch,
+  13: StepPayments,
+  14: StepRealtimeBackground,
+  15: StepTestingCiCd,
+  16: StepIntegrations,
+  17: StepDeploy,
 }
 
 const WizardContentInner = forwardRef<PresetWizardHandle>(function WizardContentInner(_, ref) {

@@ -2,30 +2,31 @@ import type { PresetOption, StepCategory } from './types'
 
 // ── Step Categories ──────────────────────────────────────────────
 export const STEP_CATEGORIES: StepCategory[] = [
-  { id: 'configure', label: 'Configure', steps: [1, 2, 3] },
-  { id: 'data', label: 'Data', steps: [4, 5, 6] },
-  { id: 'design', label: 'Design', steps: [7, 8, 9] },
-  { id: 'services', label: 'Services', steps: [10, 11, 12, 13] },
-  { id: 'ship', label: 'Ship', steps: [14, 15, 16] },
+  { id: 'configure', label: 'Configure', steps: [1, 2, 3, 4] },
+  { id: 'data', label: 'Data', steps: [5, 6, 7] },
+  { id: 'design', label: 'Design', steps: [8, 9, 10] },
+  { id: 'services', label: 'Services', steps: [11, 12, 13, 14] },
+  { id: 'ship', label: 'Ship', steps: [15, 16, 17] },
 ]
 
 export const STEP_LABELS: Record<number, string> = {
   1: 'Meta & Business',
-  2: 'App Shell',
-  3: 'Auth & Security',
-  4: 'Database',
-  5: 'API Layer',
-  6: 'Features & Modules',
-  7: 'UI & Theme',
-  8: 'Pages & Navigation',
-  9: 'Storage & Media',
-  10: 'Notifications',
-  11: 'AI & Search',
-  12: 'Payments',
-  13: 'Real-time & Background',
-  14: 'Testing & CI/CD',
-  15: 'Integrations',
-  16: 'Deploy',
+  2: 'Corporate Identity',
+  3: 'App Shell',
+  4: 'Auth & Security',
+  5: 'Database',
+  6: 'API Layer',
+  7: 'Features & Modules',
+  8: 'UI & Theme',
+  9: 'Pages & Navigation',
+  10: 'Storage & Media',
+  11: 'Notifications',
+  12: 'AI & Search',
+  13: 'Payments',
+  14: 'Real-time & Background',
+  15: 'Testing & CI/CD',
+  16: 'Integrations',
+  17: 'Deploy',
 }
 
 // ── Step 1: Meta ─────────────────────────────────────────────────
@@ -347,6 +348,7 @@ export const INTEGRATION_TYPE_OPTIONS: PresetOption[] = [
   { value: 'monitoring', label: 'Monitoring', description: 'Error tracking' },
   { value: 'ai', label: 'AI', description: 'AI capabilities' },
   { value: 'automation', label: 'Automation', description: 'Workflow automation' },
+  { value: 'project-management', label: 'Project Management', description: 'Project controlling & tracking' },
 ]
 
 export const INTEGRATION_SERVICE_OPTIONS: PresetOption[] = [
@@ -362,6 +364,7 @@ export const INTEGRATION_SERVICE_OPTIONS: PresetOption[] = [
   { value: 'sentry', label: 'Sentry', description: 'Error tracking' },
   { value: 'openai', label: 'OpenAI', description: 'AI capabilities' },
   { value: 'zapier', label: 'Zapier', description: 'Workflow automation' },
+  { value: 'untermstrich', label: 'untermStrich', description: 'Project controlling & time tracking' },
 ]
 
 // ── Step 16: Deploy ──────────────────────────────────────────────
@@ -387,4 +390,21 @@ export const SCALING_OPTIONS: PresetOption[] = [
   { value: 'auto', label: 'Auto Scaling', description: 'Scale based on load' },
   { value: 'fixed', label: 'Fixed', description: 'Static resources' },
   { value: 'serverless', label: 'Serverless', description: 'Pay per request' },
+]
+
+export const DISTRIBUTION_CHANNEL_OPTIONS: PresetOption[] = [
+  { value: 'web-custom', label: 'Web (Custom Domain)', description: 'Self-hosted web application' },
+  { value: 'app-store-ios', label: 'App Store (iOS)', description: 'Apple App Store distribution' },
+  { value: 'google-play', label: 'Google Play', description: 'Android app distribution' },
+  { value: 'pwa', label: 'PWA', description: 'Progressive Web App installable' },
+  { value: 'npm', label: 'npm', description: 'Node.js package registry' },
+  { value: 'docker-hub', label: 'Docker Hub', description: 'Container image registry' },
+  { value: 'chrome-web-store', label: 'Chrome Web Store', description: 'Browser extension marketplace' },
+  { value: 'github-marketplace', label: 'GitHub Marketplace', description: 'GitHub Actions and Apps' },
+  { value: 'microsoft-appsource', label: 'Microsoft AppSource', description: 'Microsoft 365 marketplace' },
+  { value: 'lan-server', label: 'LAN Server', description: 'Deploy to a local area network server' },
+  { value: 'local-docker', label: 'Local Docker', description: 'Run as a Docker container on local infrastructure' },
+  { value: 'usb-portable', label: 'USB / Portable', description: 'Package for offline USB or portable distribution' },
+  { value: 'network-share', label: 'Network Share', description: 'Deploy via network file share (SMB/NFS)' },
+  { value: 'intranet', label: 'Intranet Portal', description: 'Deploy to an internal company intranet' },
 ]

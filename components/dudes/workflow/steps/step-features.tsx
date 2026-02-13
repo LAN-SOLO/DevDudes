@@ -6,9 +6,10 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Button } from '@/components/ui/button'
 import { Check } from 'lucide-react'
 import { FEATURE_OPTIONS } from '@/lib/workflow-pipeline/constants'
+import { RecommendationChips } from '@/components/dudes/shared/recommendation-chips'
 
 export function StepFeatures() {
-  const { config, updateFeatures, nextStep, prevStep } = useWorkflowWizard()
+  const { config, recommendations, updateFeatures, nextStep, prevStep } = useWorkflowWizard()
   const { t } = useTranslation()
 
   const toggleFeature = (id: string) => {
@@ -27,6 +28,16 @@ export function StepFeatures() {
         <CardDescription>{t('workflow.features.description')}</CardDescription>
       </CardHeader>
       <CardContent className="space-y-6">
+        {/* Feature Recommendations */}
+        {recommendations.features.length > 0 && (
+          <RecommendationChips
+            recommendations={recommendations.features}
+            selectedValues={config.features.featureIds}
+            onSelect={(id) => toggleFeature(id)}
+            label={t('workflow.recommendations.features')}
+          />
+        )}
+
         <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
           {FEATURE_OPTIONS.map((feature) => (
             <button

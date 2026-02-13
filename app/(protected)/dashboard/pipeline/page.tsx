@@ -29,6 +29,7 @@ import {
   BarChart3,
   Database,
   Zap,
+  ShoppingCart,
 } from 'lucide-react'
 import { useTranslation } from '@/lib/i18n/language-provider'
 
@@ -306,6 +307,89 @@ export default function PipelinePage() {
       icon: FileText,
       color: 'bg-blue-100 text-blue-600',
       href: '/dashboard/pipeline/game-summary',
+    },
+  ]
+
+  // Website Pipeline category groups with individual steps
+  const websiteCategories = [
+    {
+      id: 'identity',
+      name: t('pipeline.websiteCat.identity'),
+      icon: Globe,
+      color: 'bg-rose-100 text-rose-600',
+      dotColor: 'bg-rose-500',
+      steps: [
+        { num: 1, label: 'Import' },
+        { num: 2, label: 'Purpose' },
+        { num: 3, label: 'Branding' },
+      ],
+    },
+    {
+      id: 'design',
+      name: t('pipeline.websiteCat.design'),
+      icon: Palette,
+      color: 'bg-pink-100 text-pink-600',
+      dotColor: 'bg-pink-500',
+      steps: [
+        { num: 4, label: 'Layout' },
+        { num: 5, label: 'Visual' },
+        { num: 6, label: 'Content' },
+      ],
+    },
+    {
+      id: 'tech',
+      name: t('pipeline.websiteCat.tech'),
+      icon: Code2,
+      color: 'bg-fuchsia-100 text-fuchsia-600',
+      dotColor: 'bg-fuchsia-500',
+      steps: [
+        { num: 7, label: 'Framework' },
+        { num: 8, label: 'Backend' },
+        { num: 9, label: 'Integrations' },
+      ],
+    },
+    {
+      id: 'commerce',
+      name: t('pipeline.websiteCat.commerce'),
+      icon: ShoppingCart,
+      color: 'bg-orange-100 text-orange-600',
+      dotColor: 'bg-orange-500',
+      steps: [
+        { num: 10, label: 'Products' },
+        { num: 11, label: 'Payments' },
+        { num: 12, label: 'Shipping' },
+      ],
+    },
+    {
+      id: 'launch',
+      name: t('pipeline.websiteCat.launch'),
+      icon: Rocket,
+      color: 'bg-red-100 text-red-600',
+      dotColor: 'bg-red-500',
+      steps: [
+        { num: 13, label: 'SEO' },
+        { num: 14, label: 'Security' },
+        { num: 15, label: 'Hosting' },
+        { num: 16, label: 'AI & Notes' },
+      ],
+    },
+  ]
+
+  // Website pipeline downstream steps
+  const websitePipelineSteps = [
+    {
+      id: 'website-preset',
+      name: t('pipeline.dudes.website.name'),
+      icon: Globe,
+      color: 'bg-rose-100 text-rose-600',
+      href: '/dashboard/pipeline/website',
+    },
+    {
+      id: 'website-combo',
+      name: t('website.combo.title'),
+      icon: Wand2,
+      color: 'bg-pink-100 text-pink-600',
+      href: '/dashboard/pipeline/website-combo',
     },
   ]
 
@@ -716,6 +800,105 @@ export default function PipelinePage() {
               <Button variant="outline" className="border-emerald-500/30 hover:bg-emerald-500/10 hover:text-emerald-500">
                 <Gamepad2 className="mr-2 h-4 w-4" />
                 {t('pipeline.startGamePipeline')}
+                <ArrowRight className="ml-2 h-4 w-4" />
+              </Button>
+            </Link>
+          </div>
+        </div>
+      </Card>
+
+      {/* Website Pipeline Stepper */}
+      <Card className="overflow-hidden">
+        <div className="bg-gradient-to-r from-rose-500/5 via-rose-500/10 to-rose-500/5 p-6">
+          <div className="flex items-center justify-between mb-4">
+            <div className="flex items-center gap-2">
+              <Globe className="h-5 w-5 text-rose-500" />
+              <span className="font-medium">{t('pipeline.websiteOverview')}</span>
+            </div>
+            <Badge variant="secondary" className="bg-background">
+              {t('pipeline.websiteSteps')}
+            </Badge>
+          </div>
+
+          {/* Pipeline Flow: Website Preset → Website Combo */}
+          <div className="hidden lg:block mb-6">
+            <div className="relative">
+              <div className="absolute top-6 left-0 right-0 h-0.5 bg-muted" />
+              <div className="relative flex justify-around">
+                {websitePipelineSteps.map((step, index) => (
+                  <Link
+                    key={step.id}
+                    href={step.href}
+                    className="flex flex-col items-center gap-2 group"
+                  >
+                    <div className={`relative z-10 p-3 rounded-full ${step.color} border-4 border-background shadow-sm group-hover:scale-110 transition-transform`}>
+                      <step.icon className="h-5 w-5" />
+                    </div>
+                    <span className="text-sm font-medium group-hover:text-rose-500 transition-colors">
+                      {step.name}
+                    </span>
+                    <span className="text-xs text-muted-foreground">{`${t('common.step')} ${index + 1}`}</span>
+                  </Link>
+                ))}
+              </div>
+            </div>
+          </div>
+
+          {/* Mobile Pipeline Flow */}
+          <div className="lg:hidden grid grid-cols-2 gap-2 mb-4">
+            {websitePipelineSteps.map((step) => (
+              <Link
+                key={step.id}
+                href={step.href}
+                className="flex flex-col items-center gap-1 p-2 rounded-lg hover:bg-background/50 transition-colors"
+              >
+                <div className={`p-2 rounded-full ${step.color}`}>
+                  <step.icon className="h-4 w-4" />
+                </div>
+                <span className="text-xs text-center">{step.name}</span>
+              </Link>
+            ))}
+          </div>
+
+          {/* 16-Step Detail by Category */}
+          <div className="border-t border-rose-500/10 pt-4">
+            <p className="text-xs text-muted-foreground uppercase tracking-wider mb-3 font-medium">
+              {t('pipeline.websitePresetSteps')}
+            </p>
+            <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-5">
+              {websiteCategories.map((cat) => (
+                <div key={cat.id} className="rounded-lg border bg-background/50 p-3">
+                  <div className="flex items-center gap-2 mb-2">
+                    <div className={`p-1.5 rounded-md ${cat.color}`}>
+                      <cat.icon className="h-3.5 w-3.5" />
+                    </div>
+                    <span className="text-xs font-semibold">{cat.name}</span>
+                  </div>
+                  <div className="space-y-1">
+                    {cat.steps.map((step) => (
+                      <Link
+                        key={step.num}
+                        href="/dashboard/pipeline/website"
+                        className="flex items-center gap-2 rounded-md px-2 py-1 text-xs hover:bg-muted transition-colors group"
+                      >
+                        <span className={`h-1.5 w-1.5 rounded-full ${cat.dotColor} flex-shrink-0`} />
+                        <span className="text-muted-foreground group-hover:text-foreground transition-colors">
+                          {step.num}. {step.label}
+                        </span>
+                      </Link>
+                    ))}
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* Start Website Pipeline Button */}
+          <div className="mt-4 pt-4 border-t border-rose-500/10 flex justify-center">
+            <Link href="/dashboard/pipeline/website">
+              <Button variant="outline" className="border-rose-500/30 hover:bg-rose-500/10 hover:text-rose-500">
+                <Globe className="mr-2 h-4 w-4" />
+                {t('pipeline.startWebsitePipeline')}
                 <ArrowRight className="ml-2 h-4 w-4" />
               </Button>
             </Link>

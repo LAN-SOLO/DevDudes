@@ -8,7 +8,7 @@ import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Switch } from '@/components/ui/switch'
 import { Select } from '@/components/ui/select'
-import { ArrowLeft, Sparkles, Check } from 'lucide-react'
+import { ArrowLeft, ArrowRight, Check } from 'lucide-react'
 import {
   THEME_OPTIONS,
   LAYOUT_OPTIONS,
@@ -20,14 +20,10 @@ import {
 } from '@/lib/workflow-pipeline/constants'
 
 export function StepUIDocumentation() {
-  const { config, updateUi, updateDocumentation, prevStep, setIsComplete } = useWorkflowWizard()
+  const { config, updateUi, updateDocumentation, prevStep, nextStep } = useWorkflowWizard()
   const { t } = useTranslation()
   const ui = config.ui
   const docs = config.documentation
-
-  const handleComplete = () => {
-    setIsComplete(true)
-  }
 
   const toggleLocale = (locale: string) => {
     if (ui.i18nLocales.includes(locale)) {
@@ -269,9 +265,9 @@ export function StepUIDocumentation() {
             <ArrowLeft className="mr-2 h-4 w-4" />
             {t('workflow.common.back')}
           </Button>
-          <Button onClick={handleComplete} className="gap-2">
-            <Sparkles className="h-4 w-4" />
-            {t('workflow.deploy.completeConfig')}
+          <Button onClick={nextStep}>
+            {t('workflow.common.continue')}
+            <ArrowRight className="ml-2 h-4 w-4" />
           </Button>
         </div>
       </CardContent>

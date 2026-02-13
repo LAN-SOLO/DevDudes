@@ -1,13 +1,15 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useMemo } from 'react'
 import { useRouter } from 'next/navigation'
 import { useWorkflowWizard } from './workflow-context'
 import { useTranslation } from '@/lib/i18n/language-provider'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
-import { Check, Loader2, ArrowRight, Download, Edit, AlertCircle } from 'lucide-react'
+import { Check, Loader2, ArrowRight, Download, Edit, AlertCircle, AlertTriangle, Info, XCircle, Sparkles, BarChart3 } from 'lucide-react'
+import { Badge } from '@/components/ui/badge'
 import { saveWorkflowConfig } from '@/app/actions/pipeline'
+import { analyzeWorkflowConfig, type WorkflowAnalysisReport } from '@/lib/workflow-pipeline/analysis'
 
 export function WorkflowComplete() {
   const router = useRouter()
@@ -15,6 +17,8 @@ export function WorkflowComplete() {
   const { t } = useTranslation()
   const [isSaving, setIsSaving] = useState(false)
   const [error, setError] = useState<string | null>(null)
+
+  const analysis: WorkflowAnalysisReport = useMemo(() => analyzeWorkflowConfig(config), [config])
 
   const handleSaveAndContinue = async () => {
     setIsSaving(true)
@@ -29,7 +33,7 @@ export function WorkflowComplete() {
     }
 
     setIsSaving(false)
-    router.push(`/dashboard/pipeline/combo?project=${result.projectId}`)
+    router.push(`/dashboard/pipeline/workflow-combo?project=${result.projectId}`)
   }
 
   const handleExportConfig = () => {
@@ -153,6 +157,117 @@ export function WorkflowComplete() {
               <p className="text-sm capitalize">{config.testing.unitFramework}</p>
             </div>
           </div>
+
+          <div className="border-t pt-3 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+            <div>
+              <p className="text-xs text-muted-foreground">{t('workflow.complete.publishing')}</p>
+              <p className="text-sm">
+                {config.publishing.businessModel
+                  ? config.publishing.businessModel.replace(/-/g, ' ').replace(/\b\w/g, (c) => c.toUpperCase())
+                  : t('workflow.complete.notSet')}
+              </p>
+            </div>
+            <div>
+              <p className="text-xs text-muted-foreground">{t('workflow.complete.distribution')}</p>
+              <p className="text-sm">
+                {config.publishing.distributionChannels.length > 0
+                  ? `${config.publishing.distributionChannels.length} ${t('workflow.complete.channels')}`
+                  : t('workflow.complete.none')}
+              </p>
+            </div>
+          </div>
+        </div>
+
+        {/* Analysis Report */}
+        <div className="rounded-lg border p-4 space-y-4">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-2">
+              <BarChart3 className="h-5 w-5 text-primary" />
+              <h3 className="font-semibold text-sm">{t('workflow.analysis.title')}</h3>
+            </div>
+            <Badge
+              variant="outline"
+              className={
+                analysis.complexityScore <= 2 ? 'border-green-500 text-green-600' :
+                analysis.complexityScore <= 4 ? 'border-yellow-500 text-yellow-600' :
+                analysis.complexityScore <= 7 ? 'border-orange-500 text-orange-600' :
+                'border-red-500 text-red-600'
+              }
+            >
+              {analysis.complexityLabel} ({analysis.complexityScore}/10)
+            </Badge>
+          </div>
+
+          {/* Scope Summary */}
+          <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4 text-sm">
+            <div>
+              <p className="text-xs text-muted-foreground">{t('workflow.analysis.sections')}</p>
+              <p className="font-medium">{analysis.scopeEstimate.configuredSections} / 19</p>
+            </div>
+            <div>
+              <p className="text-xs text-muted-foreground">{t('workflow.analysis.steps')}</p>
+              <p className="font-medium">{analysis.scopeEstimate.totalSteps}</p>
+            </div>
+            <div>
+              <p className="text-xs text-muted-foreground">{t('workflow.analysis.aiProviders')}</p>
+              <p className="font-medium">{analysis.scopeEstimate.aiProviderCount}</p>
+            </div>
+            <div>
+              <p className="text-xs text-muted-foreground">{t('workflow.analysis.effort')}</p>
+              <p className="font-medium capitalize">{t(`workflow.analysis.effortLabel.${analysis.scopeEstimate.estimatedEffort}`)}</p>
+            </div>
+          </div>
+
+          {/* Warnings */}
+          {analysis.warnings.length > 0 && (
+            <div className="space-y-2">
+              <p className="text-xs font-medium text-muted-foreground">{t('workflow.analysis.warnings')}</p>
+              <div className="space-y-1.5">
+                {analysis.warnings.map((warning, i) => (
+                  <div key={i} className="flex items-start gap-2 text-sm">
+                    {warning.type === 'error' ? (
+                      <XCircle className="h-4 w-4 text-destructive flex-shrink-0 mt-0.5" />
+                    ) : warning.type === 'warning' ? (
+                      <AlertTriangle className="h-4 w-4 text-yellow-500 flex-shrink-0 mt-0.5" />
+                    ) : (
+                      <Info className="h-4 w-4 text-blue-500 flex-shrink-0 mt-0.5" />
+                    )}
+                    <span className="text-muted-foreground">{warning.message}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {/* Suggestions */}
+          {analysis.suggestions.length > 0 && (
+            <div className="space-y-2">
+              <p className="text-xs font-medium text-muted-foreground">{t('workflow.analysis.suggestions')}</p>
+              <div className="space-y-1.5">
+                {analysis.suggestions.map((suggestion, i) => (
+                  <div key={i} className="flex items-start gap-2 text-sm">
+                    <Sparkles className="h-4 w-4 text-amber-500 flex-shrink-0 mt-0.5" />
+                    <span className="text-muted-foreground">{suggestion}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {/* Compatibility Issues */}
+          {analysis.compatibilityIssues.length > 0 && (
+            <div className="space-y-2">
+              <p className="text-xs font-medium text-muted-foreground">{t('workflow.analysis.compatibility')}</p>
+              <div className="space-y-1.5">
+                {analysis.compatibilityIssues.map((issue, i) => (
+                  <div key={i} className="flex items-start gap-2 text-sm">
+                    <AlertCircle className="h-4 w-4 text-destructive flex-shrink-0 mt-0.5" />
+                    <span className="text-muted-foreground">{issue}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
         </div>
 
         {/* Actions */}

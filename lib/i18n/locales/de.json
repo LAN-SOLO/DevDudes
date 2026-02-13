@@ -785,6 +785,17 @@
       "license": "Lizenz",
       "licensePlaceholder": "Lizenz auswählen"
     },
+    "templates": {
+      "title": "Vorlagen-Bibliothek",
+      "description": "Starten Sie mit einer vorkonfigurierten Workflow-Vorlage",
+      "categories": {
+        "employeeServices": "Mitarbeiter-Services",
+        "itAdmin": "IT & Admin",
+        "businessOps": "Geschäftsprozesse"
+      },
+      "applyTemplate": "Vorlage anwenden",
+      "templateApplied": "Vorlage angewendet"
+    },
     "stepBuilder": {
       "title": "Erstellen Sie Ihren Workflow",
       "description": "Definieren Sie jeden Schritt Ihres Workflows mit Vorlagen, Links und API-Diensten",
@@ -1736,6 +1747,32 @@
     "english": "English",
     "german": "Deutsch"
   },
+  "ci": {
+    "title": "Corporate Identity",
+    "description": "Laden Sie Ihre Branding-Assets hoch, definieren Sie Markenfarben und legen Sie Schriftpraeferenzen fest.",
+    "categories": {
+      "logo": "Logo",
+      "letterhead": "Firmenbriefpapier",
+      "font": "Schriftdateien",
+      "pptx-master": "PPTX-Mastervorlage",
+      "style-example": "Stilbeispiele",
+      "other": "Sonstige Assets"
+    },
+    "upload": {
+      "dropOrClick": "Datei hierher ziehen oder klicken zum Hochladen",
+      "maxSize": "Max. 5 MB pro Datei",
+      "rejected": "Einige Dateien wurden abgelehnt:"
+    },
+    "brandColors": "Markenfarben",
+    "addColor": "Farbe hinzufuegen",
+    "fontPrimary": "Primaere Schriftfamilie",
+    "fontPrimaryPlaceholder": "z.B. Inter, Helvetica Neue",
+    "fontSecondary": "Sekundaere Schriftfamilie",
+    "fontSecondaryPlaceholder": "z.B. Merriweather, Georgia",
+    "brandUrl": "URL der Markenrichtlinien",
+    "brandNotes": "Markenhinweise",
+    "brandNotesPlaceholder": "Zusaetzliche Hinweise zu Ihrer Markenidentitaet, Stilpraeferenzen oder CI-Anforderungen..."
+  },
   "game": {
     "common": {
       "next": "Weiter",
@@ -2157,7 +2194,8 @@
       "design": "Design",
       "tech": "Technik",
       "commerce": "Commerce",
-      "launch": "Launch"
+      "launch": "Launch",
+      "business": "Business"
     },
     "import": {
       "title": "Importieren oder neu starten",
@@ -2334,6 +2372,28 @@
       "additionalNotes": "Zusätzliche Notizen",
       "additionalNotesPlaceholder": "Alles weitere, das die KI wissen sollte...",
       "complete": "Konfiguration abschließen"
+    },
+    "businessModules": {
+      "title": "Business-Service-Module",
+      "description": "Wähle und konfiguriere die Geschäftsmodule für dein Mitarbeiterportal",
+      "modules": "Business-Module",
+      "adminFeatures": "Admin-Bereich Funktionen",
+      "formBuilder": "Formular-Builder Funktionen",
+      "signatureBuilder": "Signatur-Builder",
+      "signatureLayout": "Signatur-Layout",
+      "signatureFeatures": "Signatur-Funktionen",
+      "travelExpenses": "Reisekosten-Funktionen",
+      "employeeBudget": "Mitarbeiter-Budget Funktionen",
+      "sickLeave": "Krankmeldung-Funktionen"
+    },
+    "directory": {
+      "title": "Verzeichnis & Messaging",
+      "description": "Konfiguriere Active-Directory-Integration und Benachrichtigungskanäle",
+      "provider": "Verzeichnis-Anbieter",
+      "syncFields": "Sync-Felder",
+      "autoSync": "Benutzerdaten bei Login automatisch synchronisieren",
+      "communicationChannels": "Kommunikationskanäle",
+      "defaultChannel": "Standard-Benachrichtigungskanal"
     },
     "complete": {
       "title": "Konfiguration abgeschlossen!",

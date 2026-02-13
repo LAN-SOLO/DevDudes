@@ -1,6 +1,7 @@
 'use client'
 
 import { createContext, useContext, useState, useCallback, ReactNode } from 'react'
+import type { CIConfig } from '@/lib/shared-pipeline/ci'
 import type {
   PresetConfigV2,
   MetaConfig,
@@ -44,6 +45,7 @@ interface PresetWizardContextType {
   config: PresetConfigV2
   updateConfig: (updates: Partial<PresetConfigV2>) => void
   updateMeta: (updates: Partial<MetaConfig>) => void
+  updateCI: (updates: Partial<CIConfig>) => void
   updateApp: (updates: Partial<AppShellConfig>) => void
   updateAuth: (updates: Partial<AuthSecurityConfig>) => void
   updateDatabase: (updates: Partial<DatabaseConfig>) => void
@@ -77,7 +79,7 @@ export function PresetWizardProvider({ children }: { children: ReactNode }) {
   const [config, setConfig] = useState<PresetConfigV2>(defaultPresetConfigV2)
   const [currentStep, setCurrentStep] = useState(1)
   const [isComplete, setIsComplete] = useState(false)
-  const totalSteps = 16
+  const totalSteps = 17
 
   const updateConfig = useCallback((updates: Partial<PresetConfigV2>) => {
     setConfig((prev) => ({ ...prev, ...updates }))
@@ -85,6 +87,10 @@ export function PresetWizardProvider({ children }: { children: ReactNode }) {
 
   const updateMeta = useCallback((updates: Partial<MetaConfig>) => {
     setConfig((prev) => ({ ...prev, meta: { ...prev.meta, ...updates } }))
+  }, [])
+
+  const updateCI = useCallback((updates: Partial<CIConfig>) => {
+    setConfig((prev) => ({ ...prev, ci: { ...prev.ci, ...updates } }))
   }, [])
 
   const updateApp = useCallback((updates: Partial<AppShellConfig>) => {
@@ -168,6 +174,7 @@ export function PresetWizardProvider({ children }: { children: ReactNode }) {
         config,
         updateConfig,
         updateMeta,
+        updateCI,
         updateApp,
         updateAuth,
         updateDatabase,

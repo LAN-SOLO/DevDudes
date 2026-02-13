@@ -1,6 +1,6 @@
 'use client'
 
-import { createContext, useContext, useState, useCallback, ReactNode } from 'react'
+import { createContext, useContext, useState, useCallback, useMemo, ReactNode } from 'react'
 import type { WorkflowConfigV2, WorkflowStepV2 } from '@/lib/workflow-pipeline/types'
 import type { WorkflowTemplate, WorkflowLink, WorkflowService } from '@/lib/validations/workflow'
 import {
@@ -11,9 +11,29 @@ import {
   migrateWorkflowV1toV2,
   workflowConfigV2Schema,
 } from '@/lib/validations/workflow'
+import {
+  getAiProviderRecommendations,
+  getFeatureRecommendations,
+  getSecurityRecommendations,
+  getDeploymentRecommendations,
+  getIntegrationRecommendations,
+  getStackRecommendations,
+  getPublishingRecommendations,
+} from '@/lib/workflow-pipeline/recommendations'
+
+interface WorkflowRecommendations {
+  aiProviders: string[]
+  features: string[]
+  security: string[]
+  deployment: string[]
+  integrations: string[]
+  stack: string[]
+  publishing: string[]
+}
 
 interface WorkflowWizardContextType {
   config: WorkflowConfigV2
+  recommendations: WorkflowRecommendations
   updateConfig: (updates: Partial<WorkflowConfigV2>) => void
   importConfig: (config: Record<string, unknown>) => void
   currentStep: number
@@ -49,6 +69,8 @@ interface WorkflowWizardContextType {
   updateDeployment: (updates: Partial<WorkflowConfigV2['deployment']>) => void
   updateUi: (updates: Partial<WorkflowConfigV2['ui']>) => void
   updateDocumentation: (updates: Partial<WorkflowConfigV2['documentation']>) => void
+  updateCI: (updates: Partial<WorkflowConfigV2['ci']>) => void
+  updatePublishing: (updates: Partial<WorkflowConfigV2['publishing']>) => void
 
   // Step CRUD
   addStep: () => void
@@ -71,7 +93,17 @@ export function WorkflowWizardProvider({ children }: { children: ReactNode }) {
   const [config, setConfig] = useState<WorkflowConfigV2>(defaultWorkflowConfigV2)
   const [currentStep, setCurrentStep] = useState(1)
   const [isComplete, setIsComplete] = useState(false)
-  const totalSteps = 16
+  const totalSteps = 18
+
+  const recommendations = useMemo<WorkflowRecommendations>(() => ({
+    aiProviders: getAiProviderRecommendations(config),
+    features: getFeatureRecommendations(config),
+    security: getSecurityRecommendations(config),
+    deployment: getDeploymentRecommendations(config),
+    integrations: getIntegrationRecommendations(config),
+    stack: getStackRecommendations(config),
+    publishing: getPublishingRecommendations(config),
+  }), [config])
 
   const updateConfig = (updates: Partial<WorkflowConfigV2>) => {
     setConfig((prev) => ({ ...prev, ...updates }))
@@ -86,7 +118,7 @@ export function WorkflowWizardProvider({ children }: { children: ReactNode }) {
       sanitized = result.success ? result.data : defaultWorkflowConfigV2
     }
     setConfig(sanitized)
-    setCurrentStep(16)
+    setCurrentStep(18)
     setIsComplete(false)
   }, [])
 
@@ -128,6 +160,8 @@ export function WorkflowWizardProvider({ children }: { children: ReactNode }) {
   const updateDeployment = makeUpdater('deployment')
   const updateUi = makeUpdater('ui')
   const updateDocumentation = makeUpdater('documentation')
+  const updateCI = makeUpdater('ci')
+  const updatePublishing = makeUpdater('publishing')
 
   // Step management
   const addStep = () => {
@@ -228,6 +262,7 @@ export function WorkflowWizardProvider({ children }: { children: ReactNode }) {
     <WorkflowWizardContext.Provider
       value={{
         config,
+        recommendations,
         updateConfig,
         importConfig,
         currentStep,
@@ -261,6 +296,8 @@ export function WorkflowWizardProvider({ children }: { children: ReactNode }) {
         updateDeployment,
         updateUi,
         updateDocumentation,
+        updateCI,
+        updatePublishing,
         addStep,
         removeStep,
         updateStep,

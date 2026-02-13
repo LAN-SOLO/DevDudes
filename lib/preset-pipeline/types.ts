@@ -1,3 +1,5 @@
+import type { CIConfig } from '@/lib/shared-pipeline/ci'
+
 // ── Preset Pipeline v2 Types ─────────────────────────────────────
 
 export interface PresetOption {
@@ -248,11 +250,13 @@ export interface DeployConfig {
   i18n: boolean
   accessibility: boolean
   seo: boolean
+  distributionChannels: string[]
 }
 
 // ── Main Aggregate Config ────────────────────────────────────────
 export interface PresetConfigV2 {
   meta: MetaConfig
+  ci: CIConfig
   app: AppShellConfig
   auth: AuthSecurityConfig
   database: DatabaseConfig

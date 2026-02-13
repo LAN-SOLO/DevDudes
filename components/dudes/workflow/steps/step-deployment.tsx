@@ -20,11 +20,12 @@ import {
 } from '@/lib/workflow-pipeline/constants'
 import { generateId } from '@/lib/validations/workflow'
 import type { WorkflowConfigV2 } from '@/lib/workflow-pipeline/types'
+import { RecommendationChips } from '@/components/dudes/shared/recommendation-chips'
 
 type Environment = WorkflowConfigV2['deployment']['environments'][number]
 
 export function StepDeployment() {
-  const { config, updateDeployment, nextStep, prevStep } = useWorkflowWizard()
+  const { config, recommendations, updateDeployment, nextStep, prevStep } = useWorkflowWizard()
   const { t } = useTranslation()
   const deploy = config.deployment
 
@@ -72,6 +73,14 @@ export function StepDeployment() {
         <CardDescription>{t('workflow.deploy.description')}</CardDescription>
       </CardHeader>
       <CardContent className="space-y-6">
+        {/* Deployment Recommendations */}
+        {recommendations.deployment.length > 0 && (
+          <RecommendationChips
+            recommendations={recommendations.deployment}
+            label={t('workflow.recommendations.deployment')}
+          />
+        )}
+
         {/* Deploy Target */}
         <div className="space-y-2">
           <Label>{t('workflow.deploy.deploymentTarget')}</Label>

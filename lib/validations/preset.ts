@@ -1,4 +1,5 @@
 import { z } from 'zod'
+import { ciConfigSchema } from '@/lib/shared-pipeline/ci'
 import type { PresetConfigV2 } from '@/lib/preset-pipeline/types'
 
 // ── Sub-schemas ──────────────────────────────────────────────────
@@ -222,12 +223,14 @@ const deployConfigSchema = z.object({
   i18n: z.boolean().default(false),
   accessibility: z.boolean().default(true),
   seo: z.boolean().default(true),
+  distributionChannels: z.array(z.string()).default([]),
 })
 
 // ── Main Schema ──────────────────────────────────────────────────
 
 export const presetConfigV2Schema = z.object({
   meta: metaConfigSchema.default(metaConfigSchema.parse({})),
+  ci: ciConfigSchema.default(ciConfigSchema.parse({})),
   app: appShellConfigSchema.default(appShellConfigSchema.parse({})),
   auth: authSecurityConfigSchema.default(authSecurityConfigSchema.parse({})),
   database: databaseConfigSchema.default(databaseConfigSchema.parse({})),

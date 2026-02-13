@@ -9,7 +9,7 @@ import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Switch } from '@/components/ui/switch'
 import { ArrowLeft, Sparkles, Plus, X } from 'lucide-react'
-import { DEPLOY_TARGET_OPTIONS, REGION_OPTIONS, SCALING_OPTIONS } from '@/lib/preset-pipeline/constants'
+import { DEPLOY_TARGET_OPTIONS, REGION_OPTIONS, SCALING_OPTIONS, DISTRIBUTION_CHANNEL_OPTIONS } from '@/lib/preset-pipeline/constants'
 
 export function StepDeploy() {
   const { config, updateDeploy, setCurrentStep, setIsComplete } = usePresetWizard()
@@ -27,6 +27,15 @@ export function StepDeploy() {
 
   const removeDomain = (domain: string) => {
     updateDeploy({ domains: deploy.domains.filter((d) => d !== domain) })
+  }
+
+  const handleToggleDistribution = (value: string) => {
+    const current = deploy.distributionChannels
+    if (current.includes(value)) {
+      updateDeploy({ distributionChannels: current.filter((v: string) => v !== value) })
+    } else {
+      updateDeploy({ distributionChannels: [...current, value] })
+    }
   }
 
   return (
@@ -100,6 +109,20 @@ export function StepDeploy() {
           </div>
         </div>
 
+        {/* Distribution Channels */}
+        <div className="space-y-2">
+          <Label>{t('preset.deploy.distributionChannels')}</Label>
+          <div className="grid gap-2 sm:grid-cols-2 lg:grid-cols-3">
+            {DISTRIBUTION_CHANNEL_OPTIONS.map((opt) => (
+              <button key={opt.value} onClick={() => handleToggleDistribution(opt.value)}
+                className={`rounded-lg border p-3 text-left text-sm transition-colors ${deploy.distributionChannels.includes(opt.value) ? 'border-primary bg-primary/5' : 'border-border hover:border-primary/50'}`}>
+                <span className="font-medium">{opt.label}</span>
+                {opt.description && <p className="text-xs text-muted-foreground">{opt.description}</p>}
+              </button>
+            ))}
+          </div>
+        </div>
+
         {/* Toggles */}
         <div className="flex flex-col gap-4">
           <div className="flex items-center justify-between">
@@ -125,7 +148,7 @@ export function StepDeploy() {
         </div>
 
         <div className="flex justify-between">
-          <Button variant="outline" onClick={() => setCurrentStep(15)}>
+          <Button variant="outline" onClick={() => setCurrentStep(16)}>
             <ArrowLeft className="mr-2 h-4 w-4" />{t('preset.common.back')}
           </Button>
           <Button onClick={() => setIsComplete(true)} className="gap-2">

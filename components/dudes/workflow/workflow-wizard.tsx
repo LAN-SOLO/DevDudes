@@ -20,6 +20,8 @@ import { StepLoggingMonitoring } from './steps/step-logging-monitoring'
 import { StepTesting } from './steps/step-testing'
 import { StepDeployment } from './steps/step-deployment'
 import { StepUIDocumentation } from './steps/step-ui-preferences'
+import { StepCI } from './steps/step-ci'
+import { StepPublishing } from './steps/step-publishing'
 
 export interface WorkflowWizardHandle {
   importConfig: (config: Record<string, unknown>) => void
@@ -43,6 +45,8 @@ const STEP_COMPONENTS: Record<number, React.FC> = {
   14: StepTesting,
   15: StepDeployment,
   16: StepUIDocumentation,
+  17: StepCI,
+  18: StepPublishing,
 }
 
 const WizardContentInner = forwardRef<WorkflowWizardHandle>(function WizardContentInner(_, ref) {
