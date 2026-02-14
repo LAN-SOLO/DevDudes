@@ -42,8 +42,11 @@ components/
 ├── auth/                # Auth forms, OAuth buttons, password strength
 ├── dashboard/           # Sidebar, header, stats, quick-actions
 ├── dudes/               # Pipeline wizard components
-│   ├── preset/          # Preset Dude wizard (8-step business config)
-│   └── workflow/        # Workflow Dude wizard (6-step workflow builder)
+│   ├── shared/          # Shared components (ci-upload, recommendation-chips)
+│   ├── preset/          # Preset Dude wizard (17-step business config)
+│   ├── workflow/        # Workflow Dude wizard (18-step workflow builder)
+│   ├── website/         # Website Dude wizard (19-step website config)
+│   └── game/            # Game Dude wizard (16-step game config)
 ├── landing/             # Header, hero, features, pricing, footer
 └── ui/                  # shadcn/ui components
 
@@ -52,11 +55,15 @@ lib/
 │   ├── client.ts        # Browser client
 │   ├── server.ts        # Server client
 │   └── schema.sql       # Database schema (run in Supabase SQL Editor)
+├── shared-pipeline/     # Shared pipeline modules (CI upload)
 ├── types/
 │   └── database.ts      # TypeScript types for database tables
 ├── validations/
 │   ├── auth.ts          # Zod schemas for auth
-│   └── workflow.ts      # Zod schemas for workflow pipeline
+│   ├── workflow.ts      # Zod schemas for workflow pipeline
+│   ├── preset.ts        # Zod schemas for preset pipeline
+│   ├── website.ts       # Zod schemas for website pipeline
+│   └── game.ts          # Zod schemas for game pipeline
 ├── i18n/
 │   └── locales/         # en.json, de.json translations
 └── utils.ts             # cn() utility
@@ -126,8 +133,9 @@ The pipeline is a multi-step wizard system for building applications. Located at
 
 | Dude | Route | Description |
 |------|-------|-------------|
-| Preset | `/pipeline/preset` | 8-step business app configuration |
-| Workflow | `/pipeline/workflow` | 6-step workflow builder with rich content |
+| Preset | `/pipeline/preset` | 17-step business app configuration |
+| Workflow | `/pipeline/workflow` | 18-step workflow builder with rich content |
+| **Website** | `/pipeline/website` | **19-step website configuration wizard** |
 | **Game** | `/pipeline/game-preset` | **16-step game configuration wizard** |
 | Combo | `/pipeline/combo` | AI concept generation |
 | Prepair | `/pipeline/prepair` | Environment setup |
@@ -136,55 +144,148 @@ The pipeline is a multi-step wizard system for building applications. Located at
 | Deploy | `/pipeline/deploy` | Deployment configuration |
 | Docu | `/pipeline/docu` | Documentation generation |
 
+### Shared: Corporate Identity (CI) Upload
+
+A shared CI upload step is integrated into all three main pipelines (Preset, Workflow, Website). It allows users to upload branding assets that inform the generated output.
+
+**Step Placement:**
+
+| Pipeline | Step # | Position |
+|----------|--------|----------|
+| Preset | 2 | After Meta (1), before App Shell (3) |
+| Workflow | 17 | After UI & Docs (16), before Publishing (18) |
+| Website | 4 | After Branding (3), before Layout (5) |
+
+**Data Model:**
+```typescript
+interface CIAsset {
+  id: string
+  category: 'logo' | 'letterhead' | 'font' | 'pptx-master' | 'style-example' | 'other'
+  fileName: string
+  fileType: string    // MIME type
+  fileSize: number    // bytes (max 5MB)
+  preview?: string    // base64 data URL (raster images only, no SVG)
+}
+
+interface CIConfig {
+  assets: CIAsset[]
+  brandColors: string[]   // hex (#RRGGBB), max 20
+  fontPrimary: string
+  fontSecondary: string
+  brandUrl: string
+  brandNotes: string
+}
+```
+
+**Asset Categories:**
+
+| Category | Accept | Max Files |
+|----------|--------|-----------|
+| Logo | PNG, SVG, JPG, JPEG, WebP | 1 |
+| Letterhead | PNG, JPG, JPEG, PDF | 1 |
+| Font Files | TTF, OTF, WOFF, WOFF2 | 5 |
+| PPTX Master | PPTX | 1 |
+| Style Examples | PNG, JPG, JPEG, PDF, WebP | 10 |
+| Other | Any | 5 |
+
+**Key Files:**
+- `lib/shared-pipeline/ci.ts` - Types, Zod schemas (`ciAssetSchema`, `ciConfigSchema`), defaults, constants
+- `components/dudes/shared/ci-upload.tsx` - Shared upload component (used by all 3 pipelines)
+- `components/dudes/*/steps/step-ci.tsx` - Pipeline-specific CI step wrappers
+
+**Security:**
+- SVG data URIs blocked in both Zod schema and render (XSS prevention)
+- Client-side file extension validation beyond browser `accept` attribute
+- FileReader error/abort handlers prevent Promise leaks
+- Zod constraints: max file size, max array lengths, hex regex on colors, max string lengths
+- Rejected files shown in warning banner with reason
+
+**i18n:** Uses shared `ci.*` namespace (root-level, not pipeline-specific)
+
+**Field naming:** Website pipeline uses `corporateIdentity: CIConfig` (not `ci`) to avoid collision with the existing `ci: string` field (CI/CD provider)
+
 ### Workflow Pipeline
 
 The Workflow Dude (`/dashboard/pipeline/workflow`) allows users to define step-by-step workflows with rich content.
 
-**6-Step Wizard:**
-1. **Step Builder** - Define workflow steps with drag-and-drop reordering
-2. **Features** - Select app features (dashboard, notifications, webhooks, etc.)
-3. **Auth Config** - Toggle authentication, select methods, define roles
-4. **UI Preferences** - Theme, primary color, layout style
-5. **AI Integrations** - Configure n8n, OpenAI, Claude, Mistral, DeepSeek
-6. **Deployment** - Target platform and region
+**18-Step Wizard:**
 
-**Data Model:**
-```typescript
-interface WorkflowStep {
-  id: string
-  order: number
-  title: string
-  description: string
-  templates: { id, name, type, size?, url? }[]  // File attachments
-  links: { id, label, url, type }[]              // Reference links
-  services: { id, name, type, endpoint?, authType }[]  // API services
-  isExpanded: boolean
-}
+| # | Step | Category |
+|---|------|----------|
+| 1 | Meta & Info | Define |
+| 2 | Steps Builder | Define |
+| 3 | Triggers & Orchestration | Define |
+| 4 | Data Connectors | Data |
+| 5 | Variables & Secrets | Data |
+| 6 | Storage & Caching | Data |
+| 7 | AI Integrations | Intelligence |
+| 8 | Features & Modules | Intelligence |
+| 9 | Middleware & Plugins | Intelligence |
+| 10 | Authentication | Secure |
+| 11 | Security & Compliance | Secure |
+| 12 | Notifications & Hooks | Secure |
+| 13 | Logging & Monitoring | Ship |
+| 14 | Testing | Ship |
+| 15 | Deployment & CI/CD | Ship |
+| 16 | UI & Documentation | Ship |
+| 17 | **Corporate Identity** | Ship |
+| 18 | Publishing & Distribution | Ship |
 
-interface WorkflowConfig {
-  steps: WorkflowStep[]
-  features: string[]
-  authEnabled: boolean
-  authMethods: string[]
-  roles: string[]
-  theme: 'light' | 'dark' | 'system'
-  primaryColor: string
-  layout: 'sidebar' | 'topnav' | 'minimal'
-  aiIntegrations: AIIntegration[]
-  deployTarget: string
-  region: string
-}
-```
+**Nav Categories:** Define (1-3), Data (4-6), Intelligence (7-9), Secure (10-12), Ship (13-18)
+
+**Navigation:** Uses `prevStep()`/`nextStep()` functions — step components do NOT use hardcoded step numbers.
 
 **Key Files:**
-- `lib/validations/workflow.ts` - Zod schemas and types
-- `components/dudes/workflow/workflow-context.tsx` - State management
+- `lib/validations/workflow.ts` - Zod schemas (V1 + V2 with migration)
+- `lib/workflow-pipeline/types.ts` - TypeScript interfaces (`WorkflowConfigV2`)
+- `lib/workflow-pipeline/constants.ts` - Step categories, labels, option arrays
+- `lib/workflow-pipeline/analysis.ts` - Complexity scoring, scope estimation
+- `lib/workflow-pipeline/prompts.ts` - Document generation
+- `lib/workflow-pipeline/recommendations.ts` - AI recommendation engine
+- `components/dudes/workflow/workflow-context.tsx` - State management (useWorkflowWizard hook)
 - `components/dudes/workflow/step-card.tsx` - Draggable step editor
 - `components/dudes/workflow/workflow-wizard.tsx` - Main wizard component
 - `app/actions/pipeline.ts` - Server actions (`saveWorkflowConfig`)
 
 **Dependencies:**
 - `@dnd-kit/core` and `@dnd-kit/sortable` for drag-and-drop
+
+### Preset Pipeline
+
+The Preset Dude (`/dashboard/pipeline/preset`) configures full-stack business applications.
+
+**17-Step Wizard:**
+
+| # | Step | Category |
+|---|------|----------|
+| 1 | Meta & Business | Configure |
+| 2 | **Corporate Identity** | Configure |
+| 3 | App Shell | Configure |
+| 4 | Auth & Security | Configure |
+| 5 | Database | Data |
+| 6 | API Layer | Data |
+| 7 | Features & Modules | Data |
+| 8 | UI & Theme | Design |
+| 9 | Pages & Navigation | Design |
+| 10 | Storage & Media | Design |
+| 11 | Notifications | Services |
+| 12 | AI & Search | Services |
+| 13 | Payments | Services |
+| 14 | Real-time & Background | Services |
+| 15 | Testing & CI/CD | Ship |
+| 16 | Integrations | Ship |
+| 17 | Deploy | Ship |
+
+**Nav Categories:** Configure (1-4), Data (5-7), Design (8-10), Services (11-14), Ship (15-17)
+
+**Navigation:** Uses hardcoded `setCurrentStep(N)` in step components.
+
+**Key Files:**
+- `lib/validations/preset.ts` - Zod schemas (V1 + V2 with migration)
+- `lib/preset-pipeline/types.ts` - TypeScript interfaces (`PresetConfigV2`)
+- `lib/preset-pipeline/constants.ts` - Step categories, labels, option arrays
+- `components/dudes/preset/wizard-context.tsx` - State management (usePresetWizard hook)
+- `components/dudes/preset/preset-wizard.tsx` - Main wizard component
 
 ### Game Pipeline
 
@@ -296,3 +397,4 @@ Unity, Unreal Engine, Godot, Phaser 3, Three.js, PixiJS, GameMaker, RPG Maker, C
 6. Add to pipeline hub in `app/(protected)/dashboard/pipeline/page.tsx`
 7. Add server action in `app/actions/pipeline.ts`
 8. Add i18n translations in `lib/i18n/locales/`
+9. Integrate CI step: add `CIConfig` to types, `ciConfigSchema` to validation, create `step-ci.tsx` wrapper using shared `<CIUpload />` component
